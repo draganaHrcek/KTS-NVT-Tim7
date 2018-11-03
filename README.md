@@ -1,0 +1,1 @@
+Projekat predstavlja digitalizaciju gradskog prevoza na teritoriji opstine Novi Sad. 

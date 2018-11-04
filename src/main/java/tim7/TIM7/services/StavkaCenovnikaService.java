@@ -1,9 +1,14 @@
 package tim7.TIM7.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import tim7.TIM7.repositories.StavkaCenovnikaRepository;
+
+@Service
 public class StavkaCenovnikaService {
 
-	public StavkaCenovnikaService() {
-		// TODO Auto-generated constructor stub
-	}
+	@Autowired
+	StavkaCenovnikaRepository stavkaCenovnikaRepository;
 
 }

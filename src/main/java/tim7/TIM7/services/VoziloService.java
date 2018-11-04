@@ -1,9 +1,14 @@
 package tim7.TIM7.services;
 
-public class VoziloService {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-	public VoziloService() {
-		// TODO Auto-generated constructor stub
-	}
+import tim7.TIM7.repositories.VoziloRepository;
+
+@Service
+public class VoziloService {
+	
+	@Autowired
+	VoziloRepository voziloRepository;
 
 }

@@ -32,4 +32,48 @@ public class Zona {
 	
 	@OneToMany(mappedBy = "zona", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<VisednevnaKarta> karte;
+
+	public Zona() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public String getOznaka() {
+		return oznaka;
+	}
+
+	public void setOznaka(String oznaka) {
+		this.oznaka = oznaka;
+	}
+
+	public List<Linija> getLinije() {
+		return linije;
+	}
+
+	public void setLinije(List<Linija> linije) {
+		this.linije = linije;
+	}
+
+	public List<Stavka> getStavkeCenovnika() {
+		return stavkeCenovnika;
+	}
+
+	public void setStavkeCenovnika(List<Stavka> stavkeCenovnika) {
+		this.stavkeCenovnika = stavkeCenovnika;
+	}
+
+	public List<VisednevnaKarta> getKarte() {
+		return karte;
+	}
+
+	public void setKarte(List<VisednevnaKarta> karte) {
+		this.karte = karte;
+	}
+	
+	
 }

@@ -25,4 +25,38 @@ public class StavkaCenovnika {
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Cenovnik cenovnik;
 
+	public StavkaCenovnika() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public double getCena() {
+		return cena;
+	}
+
+	public void setCena(double cena) {
+		this.cena = cena;
+	}
+
+	public Stavka getStavka() {
+		return stavka;
+	}
+
+	public void setStavka(Stavka stavka) {
+		this.stavka = stavka;
+	}
+
+	public Cenovnik getCenovnik() {
+		return cenovnik;
+	}
+
+	public void setCenovnik(Cenovnik cenovnik) {
+		this.cenovnik = cenovnik;
+	}
+
 }

@@ -16,4 +16,16 @@ public class Administrator extends Osoba{
 	public Administrator() {
 		super();
 	}
+
+
+
+	public List<Izvestaj> getIzvestaji() {
+		return izvestaji;
+	}
+
+	public void setIzvestaji(List<Izvestaj> izvestaji) {
+		this.izvestaji = izvestaji;
+	}
+	
+	
 }

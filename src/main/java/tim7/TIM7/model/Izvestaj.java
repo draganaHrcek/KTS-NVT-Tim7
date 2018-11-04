@@ -27,5 +27,43 @@ public class Izvestaj {
 	
 	@Column (name="sadrzaj")
 	String sadrzaj;
+
+	
+
+	public Izvestaj() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+
+
+	public Administrator getAutor() {
+		return autor;
+	}
+
+	public void setAutor(Administrator autor) {
+		this.autor = autor;
+	}
+
+	public Date getDatumIzrade() {
+		return datumIzrade;
+	}
+
+	public void setDatumIzrade(Date datumIzrade) {
+		this.datumIzrade = datumIzrade;
+	}
+
+	public String getSadrzaj() {
+		return sadrzaj;
+	}
+
+	public void setSadrzaj(String sadrzaj) {
+		this.sadrzaj = sadrzaj;
+	}
+	
 	
 }

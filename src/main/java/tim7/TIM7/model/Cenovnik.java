@@ -28,6 +28,43 @@ public class Cenovnik {
 	
 	@OneToMany(mappedBy = "cenovnik", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<StavkaCenovnika> stavke;
+
+	
+
+	public Cenovnik() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+
+
+	public Date getDatumObjavljivanja() {
+		return datumObjavljivanja;
+	}
+
+	public void setDatumObjavljivanja(Date datumObjavljivanja) {
+		this.datumObjavljivanja = datumObjavljivanja;
+	}
+
+	public Date getDatumIsteka() {
+		return datumIsteka;
+	}
+
+	public void setDatumIsteka(Date datumIsteka) {
+		this.datumIsteka = datumIsteka;
+	}
+
+	public List<StavkaCenovnika> getStavke() {
+		return stavke;
+	}
+
+	public void setStavke(List<StavkaCenovnika> stavke) {
+		this.stavke = stavke;
+	}
 	
 	
 }

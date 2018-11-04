@@ -19,5 +19,36 @@ public class Korisnik extends Osoba {
 	
 	@OneToMany(mappedBy = "korisnik", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List <Karta> karte;
+
+
+	public Korisnik() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public StatusKorisnika getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusKorisnika status) {
+		this.status = status;
+	}
+
+	public String getLokacijaDokumenta() {
+		return lokacijaDokumenta;
+	}
+
+	public void setLokacijaDokumenta(String lokacijaDokumenta) {
+		this.lokacijaDokumenta = lokacijaDokumenta;
+	}
+
+	public List<Karta> getKarte() {
+		return karte;
+	}
+
+	public void setKarte(List<Karta> karte) {
+		this.karte = karte;
+	}
+	
 	
 }

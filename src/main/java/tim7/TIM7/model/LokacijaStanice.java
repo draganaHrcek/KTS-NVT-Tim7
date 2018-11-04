@@ -25,5 +25,59 @@ public class LokacijaStanice {
 	
 	@OneToOne(fetch=FetchType.LAZY )
 	Stanica stanica;
+
+
+	public LokacijaStanice() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+
+	public String getNazivMesta() {
+		return nazivMesta;
+	}
+
+
+	public void setNazivMesta(String nazivMesta) {
+		this.nazivMesta = nazivMesta;
+	}
+
+
+	public double getLongituda() {
+		return longituda;
+	}
+
+
+	public void setLongituda(double longituda) {
+		this.longituda = longituda;
+	}
+
+
+	public double getLatituda() {
+		return latituda;
+	}
+
+
+	public void setLatituda(double latituda) {
+		this.latituda = latituda;
+	}
+
+
+	public Stanica getStanica() {
+		return stanica;
+	}
+
+
+	public void setStanica(Stanica stanica) {
+		this.stanica = stanica;
+	}
+	
+	
 	
 }

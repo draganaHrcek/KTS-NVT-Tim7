@@ -31,4 +31,48 @@ public class Stavka {
 	
 	@OneToMany(mappedBy = "stavka", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<StavkaCenovnika> stavkeCenovnika;
+
+	public Stavka() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public TipKarte getTipKarte() {
+		return tipKarte;
+	}
+
+	public void setTipKarte(TipKarte tipKarte) {
+		this.tipKarte = tipKarte;
+	}
+
+	public TipVozila getVrstaPrevoza() {
+		return vrstaPrevoza;
+	}
+
+	public void setVrstaPrevoza(TipVozila vrstaPrevoza) {
+		this.vrstaPrevoza = vrstaPrevoza;
+	}
+
+	public Zona getZona() {
+		return zona;
+	}
+
+	public void setZona(Zona zona) {
+		this.zona = zona;
+	}
+
+	public List<StavkaCenovnika> getStavkeCenovnika() {
+		return stavkeCenovnika;
+	}
+
+	public void setStavkeCenovnika(List<StavkaCenovnika> stavkeCenovnika) {
+		this.stavkeCenovnika = stavkeCenovnika;
+	}
+	
+	
 }

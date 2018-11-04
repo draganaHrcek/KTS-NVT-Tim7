@@ -32,5 +32,44 @@ public class Linija {
 	
 	@ManyToMany(mappedBy="linije")
 	List<Stanica> stanice;
+
+	
+
+	public Linija() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	
+
+	public List<Vozilo> getVozila() {
+		return vozila;
+	}
+
+	public void setVozila(List<Vozilo> vozila) {
+		this.vozila = vozila;
+	}
+
+	public List<Zona> getZone() {
+		return zone;
+	}
+
+	public void setZone(List<Zona> zone) {
+		this.zone = zone;
+	}
+
+	public List<Stanica> getStanice() {
+		return stanice;
+	}
+
+	public void setStanice(List<Stanica> stanice) {
+		this.stanice = stanice;
+	}
+	
+	
 		
 }

@@ -27,6 +27,46 @@ public abstract class Karta {
 	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Korisnik korisnik;
+
+	
+	
+	public Karta() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	public Long getId() {
+		return id;
+	}
+
+	
+
+	public Date getDatumIsteka() {
+		return datumIsteka;
+	}
+
+	public void setDatumIsteka(Date datumIsteka) {
+		this.datumIsteka = datumIsteka;
+	}
+
+	public Double getCena() {
+		return cena;
+	}
+
+	public void setCena(Double cena) {
+		this.cena = cena;
+	}
+
+	public Korisnik getKorisnik() {
+		return korisnik;
+	}
+
+	public void setKorisnik(Korisnik korisnik) {
+		this.korisnik = korisnik;
+	}
+	
 	
 
 }

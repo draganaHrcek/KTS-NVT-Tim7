@@ -27,5 +27,57 @@ public abstract class Osoba {
 	
 	@Column(name = "email")
 	private String email;
+
+	public Osoba() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	
+
+	public String getKorIme() {
+		return korIme;
+	}
+
+	public void setKorIme(String korIme) {
+		this.korIme = korIme;
+	}
+
+	public String getLozinka() {
+		return lozinka;
+	}
+
+	public void setLozinka(String lozinka) {
+		this.lozinka = lozinka;
+	}
+
+	public String getIme() {
+		return ime;
+	}
+
+	public void setIme(String ime) {
+		this.ime = ime;
+	}
+
+	public String getPrezime() {
+		return prezime;
+	}
+
+	public void setPrezime(String prezime) {
+		this.prezime = prezime;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
 	
 }

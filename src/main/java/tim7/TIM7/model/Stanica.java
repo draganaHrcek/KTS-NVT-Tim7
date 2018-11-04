@@ -32,4 +32,41 @@ public class Stanica {
                joinColumns = @JoinColumn(name="stanica_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="linija_id", referencedColumnName="id"))
 	List<Linija> linije;
+
+	public Stanica() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	
+
+	public String getOznaka() {
+		return oznaka;
+	}
+
+	public void setOznaka(String oznaka) {
+		this.oznaka = oznaka;
+	}
+
+	public LokacijaStanice getLokacija() {
+		return lokacija;
+	}
+
+	public void setLokacija(LokacijaStanice lokacija) {
+		this.lokacija = lokacija;
+	}
+
+	public List<Linija> getLinije() {
+		return linije;
+	}
+
+	public void setLinije(List<Linija> linije) {
+		this.linije = linije;
+	}
+	
+	
 }

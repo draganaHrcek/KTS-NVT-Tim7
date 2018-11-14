@@ -15,12 +15,15 @@ public class DnevnaKarta extends Karta {
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Linija linija;
 
-
+	
 
 	public DnevnaKarta() {
 		super();
+		
 		// TODO Auto-generated constructor stub
 	}
+
+
 
 	public boolean isUpotrebljena() {
 		return upotrebljena;

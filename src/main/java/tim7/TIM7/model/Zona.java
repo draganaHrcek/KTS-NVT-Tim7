@@ -33,9 +33,21 @@ public class Zona {
 	@OneToMany(mappedBy = "zona", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<VisednevnaKarta> karte;
 
+	
+	@Column(name="obrisan")
+	boolean obrisan;
 	public Zona() {
 		super();
+		this.obrisan= false;
 		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isObrisan() {
+		return obrisan;
+	}
+
+	public void setObrisan(boolean obrisan) {
+		this.obrisan = obrisan;
 	}
 
 	public Long getId() {

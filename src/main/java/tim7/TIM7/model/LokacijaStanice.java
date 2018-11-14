@@ -26,10 +26,24 @@ public class LokacijaStanice {
 	@OneToOne(fetch=FetchType.LAZY )
 	Stanica stanica;
 
-
+	@Column(name="obrisan")
+	boolean obrisan;
+	
 	public LokacijaStanice() {
 		super();
+		this.obrisan= false;
+	
 		// TODO Auto-generated constructor stub
+	}
+
+
+	public boolean isObrisan() {
+		return obrisan;
+	}
+
+
+	public void setObrisan(boolean obrisan) {
+		this.obrisan = obrisan;
 	}
 
 

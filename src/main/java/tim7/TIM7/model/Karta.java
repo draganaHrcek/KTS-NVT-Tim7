@@ -28,11 +28,25 @@ public abstract class Karta {
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Korisnik korisnik;
 
-	
+	@Column(name="obrisan")
+	boolean obrisan;
 	
 	public Karta() {
 		super();
+		this.obrisan=false;	
 		// TODO Auto-generated constructor stub
+	}
+
+
+
+	public boolean isObrisan() {
+		return obrisan;
+	}
+
+
+
+	public void setObrisan(boolean obrisan) {
+		this.obrisan = obrisan;
 	}
 
 

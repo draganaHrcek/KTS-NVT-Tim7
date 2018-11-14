@@ -32,10 +32,21 @@ public class Stanica {
                joinColumns = @JoinColumn(name="stanica_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="linija_id", referencedColumnName="id"))
 	List<Linija> linije;
-
+	
+	@Column(name="obrisan")
+	boolean obrisan;
 	public Stanica() {
 		super();
+		this.obrisan= false;
 		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isObrisan() {
+		return obrisan;
+	}
+
+	public void setObrisan(boolean obrisan) {
+		this.obrisan = obrisan;
 	}
 
 	public Long getId() {

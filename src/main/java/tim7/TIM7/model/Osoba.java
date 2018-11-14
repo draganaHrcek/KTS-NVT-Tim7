@@ -28,9 +28,22 @@ public abstract class Osoba {
 	@Column(name = "email")
 	private String email;
 
+	
+	@Column(name="obrisan")
+	boolean obrisan;
+	
 	public Osoba() {
 		super();
+		this.obrisan= false;
 		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isObrisan() {
+		return obrisan;
+	}
+
+	public void setObrisan(boolean obrisan) {
+		this.obrisan = obrisan;
 	}
 
 	public Long getId() {

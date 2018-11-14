@@ -24,10 +24,21 @@ public class StavkaCenovnika {
 	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Cenovnik cenovnik;
-
+	
+	@Column(name="obrisan")
+	boolean obrisan;
 	public StavkaCenovnika() {
 		super();
+		this.obrisan= false;
 		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isObrisan() {
+		return obrisan;
+	}
+
+	public void setObrisan(boolean obrisan) {
+		this.obrisan = obrisan;
 	}
 
 	public Long getId() {

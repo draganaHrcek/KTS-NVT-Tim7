@@ -29,11 +29,21 @@ public class Cenovnik {
 	@OneToMany(mappedBy = "cenovnik", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<StavkaCenovnika> stavke;
 
-	
+	@Column(name="obrisan")
+	boolean obrisan;
 
 	public Cenovnik() {
 		super();
+		this.obrisan= false;
 		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isObrisan() {
+		return obrisan;
+	}
+
+	public void setObrisan(boolean obrisan) {
+		this.obrisan = obrisan;
 	}
 
 	public Long getId() {

@@ -24,9 +24,33 @@ public class Vozilo {
 	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Linija linija;
+	
+	@Column(name="obrisan")
+	boolean obrisan;
+
+	
+	@Column(name="oznaka")
+	String oznaka;
+	
+	public boolean isObrisan() {
+		return obrisan;
+	}
+
+	public void setObrisan(boolean obrisan) {
+		this.obrisan = obrisan;
+	}
+
+	public String getOznaka() {
+		return oznaka;
+	}
+
+	public void setOznaka(String oznaka) {
+		this.oznaka = oznaka;
+	}
 
 	public Vozilo() {
 		super();
+		this.obrisan= false;
 		// TODO Auto-generated constructor stub
 	}
 

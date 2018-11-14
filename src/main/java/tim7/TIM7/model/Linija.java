@@ -21,6 +21,9 @@ public class Linija {
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 	
+	@Column(name="naziv")
+	String naziv;
+	
 	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List <Vozilo> vozila;
 	 
@@ -89,6 +92,14 @@ public class Linija {
 
 	public void setStanice(List<Stanica> stanice) {
 		this.stanice = stanice;
+	}
+
+	public String getNaziv() {
+		return naziv;
+	}
+
+	public void setNaziv(String naziv) {
+		this.naziv = naziv;
 	}
 	
 	

@@ -21,8 +21,8 @@ public class Zona {
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 	
-	@Column(name="oznaka")
-	String oznaka;
+	@Column(name="naziv")
+	String naziv;
 	
 	@ManyToMany(mappedBy="zone")
 	List<Linija> linije;
@@ -55,12 +55,13 @@ public class Zona {
 	}
 
 
-	public String getOznaka() {
-		return oznaka;
+
+	public String getNaziv() {
+		return naziv;
 	}
 
-	public void setOznaka(String oznaka) {
-		this.oznaka = oznaka;
+	public void setNaziv(String naziv) {
+		this.naziv = naziv;
 	}
 
 	public List<Linija> getLinije() {

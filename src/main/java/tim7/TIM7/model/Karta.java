@@ -18,7 +18,19 @@ public abstract class Karta {
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 	
+	@Column(name="tip_prevoza")
+	TipVozila tipPrevoza;
 	
+	public TipVozila getTipPrevoza() {
+		return tipPrevoza;
+	}
+
+
+
+	public void setTipPrevoza(TipVozila tipPrevoza) {
+		this.tipPrevoza = tipPrevoza;
+	}
+
 	@Column(name = "datum_isteka")
 	Date datumIsteka;
 	

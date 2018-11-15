@@ -27,6 +27,16 @@ public class Linija {
 	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List <Vozilo> vozila;
 	 
+	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	List<Stavka> stavkeCenovnika;
+	public List<Stavka> getStavkeCenovnika() {
+		return stavkeCenovnika;
+	}
+
+	public void setStavkeCenovnika(List<Stavka> stavkeCenovnika) {
+		this.stavkeCenovnika = stavkeCenovnika;
+	}
+
 	@ManyToMany
     @JoinTable(name = "linije_u_zonama",
                joinColumns = @JoinColumn(name="linija_id", referencedColumnName="id"),

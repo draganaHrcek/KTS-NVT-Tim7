@@ -19,8 +19,9 @@ public class Stavka {
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 	
+	//nova enumeracija za cenovnik zbog dnevne karte koja nije u enumeraciji tip karte
 	@Column(name="tip_karte")
-	TipKarte tipKarte;
+	TipKarteCenovnik tipKarte;
 	
 	@Column(name="vrsta_prevoza")
 	TipVozila vrstaPrevoza;
@@ -28,6 +29,10 @@ public class Stavka {
 	//ako je karta dnevna zona je null, za sve ostale tipove cena zavisi i od zone
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Zona zona;
+	
+	//za dnevnu kartu u ostalim slucajevima null
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	Linija linija;
 	
 	@OneToMany(mappedBy = "stavka", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<StavkaCenovnika> stavkeCenovnika;
@@ -54,12 +59,20 @@ public class Stavka {
 	}
 
 
-	public TipKarte getTipKarte() {
+	public TipKarteCenovnik getTipKarte() {
 		return tipKarte;
 	}
 
-	public void setTipKarte(TipKarte tipKarte) {
+	public void setTipKarte(TipKarteCenovnik tipKarte) {
 		this.tipKarte = tipKarte;
+	}
+
+	public Linija getLinija() {
+		return linija;
+	}
+
+	public void setLinija(Linija linija) {
+		this.linija = linija;
 	}
 
 	public TipVozila getVrstaPrevoza() {

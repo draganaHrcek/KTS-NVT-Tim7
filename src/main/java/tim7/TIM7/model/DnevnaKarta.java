@@ -19,6 +19,7 @@ public class DnevnaKarta extends Karta {
 
 	public DnevnaKarta() {
 		super();
+		this.upotrebljena= false;
 		
 		// TODO Auto-generated constructor stub
 	}

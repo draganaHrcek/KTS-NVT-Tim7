@@ -1,6 +1,8 @@
 package tim7.TIM7.model;
 
 import java.util.Date;
+
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +14,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Where;
+
+//uvek bi trebao da bude aktivan 1 cenovnik, ko se bude ovim bavio nek stavi kada se dodaje novi cenovnik neka se logicki obrise stari, ili dodati neku metodu koja ce kad se pokrene proveriti datume isteka svih cenovnika i pobrisati stare 
+@Where(clause= "obrisan = 'false' ")
 @Entity
 public class Cenovnik {
 

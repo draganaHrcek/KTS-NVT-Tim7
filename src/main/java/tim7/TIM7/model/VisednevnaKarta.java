@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class VisednevnaKarta extends Karta {
 
+	
 	@Column(name = "tip")
 	TipKarte tip;
 	
@@ -43,6 +44,7 @@ public class VisednevnaKarta extends Karta {
 
 	public VisednevnaKarta() {
 		super();
+		this.odobrena= false;
 		// TODO Auto-generated constructor stub
 	}
 

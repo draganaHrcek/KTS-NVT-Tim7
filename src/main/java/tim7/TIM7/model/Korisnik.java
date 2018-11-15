@@ -11,8 +11,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class Korisnik extends Osoba {
 
-	@Column(name = "status")
-	StatusKorisnika status;
+	
 	//	lokacija slike prilozenog dokumenta o statusu korisnika
 	@Column(name = "lokacija_dokumenta")
 	String lokacijaDokumenta;
@@ -26,13 +25,7 @@ public class Korisnik extends Osoba {
 		// TODO Auto-generated constructor stub
 	}
 
-	public StatusKorisnika getStatus() {
-		return status;
-	}
-
-	public void setStatus(StatusKorisnika status) {
-		this.status = status;
-	}
+	
 
 	public String getLokacijaDokumenta() {
 		return lokacijaDokumenta;

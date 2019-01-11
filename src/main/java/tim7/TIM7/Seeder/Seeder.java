@@ -145,7 +145,7 @@ public class Seeder {
 			linija = linijaRepository.findByNaziv("linija 3");
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
 
-			linija = linijaRepository.findByNaziv("linija 2");
+			linija = linijaRepository.findByNaziv("linija 4");
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));

@@ -27,6 +27,17 @@ public class StavkaCenovnika {
 	
 	@Column(name="obrisan")
 	boolean obrisan;
+	
+	
+	
+	public StavkaCenovnika(double cena, Stavka stavka, Cenovnik cenovnik, boolean obrisan) {
+		super();
+		this.cena = cena;
+		this.stavka = stavka;
+		this.cenovnik = cenovnik;
+		this.obrisan = obrisan;
+	}
+
 	public StavkaCenovnika() {
 		super();
 		this.obrisan= false;

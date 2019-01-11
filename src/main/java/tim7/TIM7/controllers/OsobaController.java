@@ -82,12 +82,14 @@ public class OsobaController {
         	UsernamePasswordAuthenticationToken token = 
         			new UsernamePasswordAuthenticationToken(
 					loginDTO.getUsername(), loginDTO.getPassword());
-            Authentication authentication = authenticationManager.authenticate(token);            
+            Authentication authentication = authenticationManager.authenticate(token);  
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // Reload user details so we can generate token
             UserDetails details = userDetailsService.
             		loadUserByUsername(loginDTO.getUsername());
+          
             return new ResponseEntity<String>(
             		tokenUtils.generateToken(details), HttpStatus.OK);
         } catch (Exception ex) {

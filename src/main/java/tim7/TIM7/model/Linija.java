@@ -29,16 +29,10 @@ public class Linija {
 	 
 	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<Stavka> stavkeCenovnika;
-	public List<Stavka> getStavkeCenovnika() {
-		return stavkeCenovnika;
-	}
 
-	public void setStavkeCenovnika(List<Stavka> stavkeCenovnika) {
-		this.stavkeCenovnika = stavkeCenovnika;
-	}
-
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "linije_u_zonama",
+    			
                joinColumns = @JoinColumn(name="linija_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="zona_id", referencedColumnName="id"))
 	List<Zona> zone;
@@ -55,6 +49,12 @@ public class Linija {
 	public Linija() {
 		super();
 		this.obrisan= false;
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Linija(String naziv, boolean obrisan) {
+		this.obrisan= obrisan;
+		this.naziv = naziv;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -78,7 +78,13 @@ public class Linija {
 		return id;
 	}
 
+	public List<Stavka> getStavkeCenovnika() {
+		return stavkeCenovnika;
+	}
 	
+	public void setStavkeCenovnika(List<Stavka> stavkeCenovnika) {
+		this.stavkeCenovnika = stavkeCenovnika;
+	}
 
 	public List<Vozilo> getVozila() {
 		return vozila;

@@ -10,6 +10,7 @@ public class StavkaCenovnikaDto {
 	private TipVozila vrstaPrevoza;
 	private String nazivZone;
 	private String nazivLinije;
+	private Long id;
 	
 	public StavkaCenovnikaDto(StavkaCenovnika stavka) {
 		this.cena = stavka.getCena();
@@ -17,7 +18,19 @@ public class StavkaCenovnikaDto {
 		this.vrstaPrevoza = stavka.getStavka().getVrstaPrevoza();
 		this.nazivZone = stavka.getStavka().getZona().getNaziv();
 		this.nazivLinije = stavka.getStavka().getLinija().getNaziv();
+		this.id = stavka.getId();
 	}
+
+	
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 
 	public Double getCena() {
 		return cena;

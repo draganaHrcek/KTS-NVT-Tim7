@@ -18,31 +18,42 @@ public class Stavka {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
-	
-	//nova enumeracija za cenovnik zbog dnevne karte koja nije u enumeraciji tip karte
-	@Column(name="tip_karte")
+
+	// nova enumeracija za cenovnik zbog dnevne karte koja nije u enumeraciji
+	// tip karte
+	@Column(name = "tip_karte")
 	TipKarteCenovnik tipKarte;
-	
-	@Column(name="vrsta_prevoza")
+
+	@Column(name = "vrsta_prevoza")
 	TipVozila vrstaPrevoza;
-	
-	//ako je karta dnevna zona je null, za sve ostale tipove cena zavisi i od zone
+
+	// ako je karta dnevna zona je null, za sve ostale tipove cena zavisi i od
+	// zone
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Zona zona;
-	
-	//za dnevnu kartu u ostalim slucajevima null
+
+	// za dnevnu kartu u ostalim slucajevima null
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Linija linija;
-	
+
 	@OneToMany(mappedBy = "stavka", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<StavkaCenovnika> stavkeCenovnika;
 
-	
-	@Column(name="obrisan")
+	@Column(name = "obrisan")
 	boolean obrisan;
+
+	public Stavka(TipKarteCenovnik tipKarte, TipVozila vrstaPrevoza, Zona zona, Linija linija, boolean obrisan) {
+		super();
+		this.tipKarte = tipKarte;
+		this.vrstaPrevoza = vrstaPrevoza;
+		this.zona = zona;
+		this.linija = linija;
+		this.obrisan = obrisan;
+	}
+
 	public Stavka() {
 		super();
-		this.obrisan= false;
+		this.obrisan = false;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -57,7 +68,6 @@ public class Stavka {
 	public Long getId() {
 		return id;
 	}
-
 
 	public TipKarteCenovnik getTipKarte() {
 		return tipKarte;
@@ -98,6 +108,5 @@ public class Stavka {
 	public void setStavkeCenovnika(List<StavkaCenovnika> stavkeCenovnika) {
 		this.stavkeCenovnika = stavkeCenovnika;
 	}
-	
-	
+
 }

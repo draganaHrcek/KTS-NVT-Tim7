@@ -36,10 +36,16 @@ public class Zona {
 	
 	@Column(name="obrisan")
 	boolean obrisan;
+	
 	public Zona() {
 		super();
 		this.obrisan= false;
-		// TODO Auto-generated constructor stub
+	}
+	
+	public Zona(String naziv, boolean obrisan) {
+		super();
+		this.obrisan= obrisan;
+		this.naziv = naziv;
 	}
 
 	public boolean isObrisan() {

@@ -38,6 +38,14 @@ public class Cenovnik {
 	@Column(name="obrisan")
 	boolean obrisan;
 
+	
+	public Cenovnik(Date datumObjavljivanja, Date datumIsteka, boolean obrisan) {
+		super();
+		this.datumObjavljivanja = datumObjavljivanja;
+		this.datumIsteka = datumIsteka;
+		this.obrisan = obrisan;
+	}
+
 	public Cenovnik() {
 		super();
 		this.obrisan= false;

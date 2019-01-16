@@ -37,6 +37,20 @@ public abstract class Osoba {
 		this.obrisan= false;
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+
+	public Osoba(String korIme, String lozinka, String ime, String prezime, String email) {
+		super();
+		this.korIme = korIme;
+		this.lozinka = lozinka;
+		this.ime = ime;
+		this.prezime = prezime;
+		this.email = email;
+		this.obrisan = false;
+	}
+
+
 
 	public boolean isObrisan() {
 		return obrisan;

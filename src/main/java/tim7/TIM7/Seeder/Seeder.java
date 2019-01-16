@@ -7,7 +7,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Cenovnik;
+import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
@@ -57,6 +59,7 @@ public class Seeder {
 		//connectZonaLinija();
 		//seedStavka();
 		//seedStavkaCenovnika();
+		//seedOsoba();
 	}
 
 	public void seedCenovnik() {
@@ -156,6 +159,13 @@ public class Seeder {
 	}
 
 	public void seedOsoba() {
+		//pass je 'e'
+		Korisnik korisnik = new Korisnik("e", "$2a$10$bP0GkdZwP923SMkCAS8ke.iG9obwvHw2d4cUcTG9VzmvQwR6RE0Ay", "Elena", "Roncevic","e@gmail.com");
+		//pass je 'a'
+		Administrator admin = new Administrator("a", "$2a$10$8FfNgX9dYC8J6TGL1tMreO8Y2PcJrJaAfRwg2IVhbKQS9m3EHkcbW", "Admin", "Adminovic","a@gmail.com");
+		
+		osobaRepository.save(korisnik);
+		osobaRepository.save(admin);
 	}
 
 }

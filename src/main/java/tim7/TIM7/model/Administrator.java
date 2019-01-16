@@ -16,6 +16,10 @@ public class Administrator extends Osoba{
 		super();
 	}
 
+	public Administrator(String korIme, String lozinka, String ime, String prezime, String email) {
+		super(korIme, lozinka, ime, prezime, email);
+	}
+
 	
 	
 }

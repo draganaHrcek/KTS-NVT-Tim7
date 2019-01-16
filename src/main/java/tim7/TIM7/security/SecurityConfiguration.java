@@ -68,8 +68,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.antMatchers("/osoba/prijava").
 					permitAll() 
-					.antMatchers("/osoba/registracija").
+				.antMatchers("/osoba/registracija").
 					permitAll() 
+				.antMatchers(HttpMethod.PUT, "/cenovnici/{id}").
+					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/**")
 				
 				//ZA SADA NAM NE TREBAJU PRAVA PRISTUPA SVI MOGU SVE ZAHTEVE(POST, GET, PUT,....)

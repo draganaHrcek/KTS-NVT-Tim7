@@ -25,7 +25,9 @@ public class Korisnik extends Osoba {
 		// TODO Auto-generated constructor stub
 	}
 
-	
+	public Korisnik(String korIme, String lozinka, String ime, String prezime, String email){
+		super(korIme, lozinka, ime, prezime, email);
+	}
 
 	public String getLokacijaDokumenta() {
 		return lokacijaDokumenta;

@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import tim7.TIM7.dto.KartaDTO;
 import tim7.TIM7.dto.KorisnikDTO;
 import tim7.TIM7.dto.LoginDTO;
-import tim7.TIM7.dto.KorisnikDTO;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Osoba;
@@ -61,11 +61,12 @@ public class OsobaController {
 	}
 
 	private void kreirajKorisnika(KorisnikDTO registracija, Korisnik noviKorisnik) {
-		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
 		noviKorisnik.setEmail(registracija.getEmail());
 		noviKorisnik.setIme(registracija.getIme());
 		noviKorisnik.setPrezime(registracija.getPrezime());
-		noviKorisnik.setLozinka(registracija.getLozinka1());
+		noviKorisnik.setLozinka(encoder.encode(registracija.getLozinka1()));
 		noviKorisnik.setKorIme(registracija.getKorIme());
 		noviKorisnik.setKarte(new ArrayList<Karta> ());
 		noviKorisnik.setLokacijaDokumenta(null);

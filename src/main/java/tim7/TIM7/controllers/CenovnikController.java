@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,16 @@ public class CenovnikController {
 				
 		return new ResponseEntity<CenovnikDTO>(cenovnik, HttpStatus.OK);
 	
+	}
+	
+	@RequestMapping(path="/{id}", method=RequestMethod.PUT, consumes = "application/json")
+	public ResponseEntity<String> editCenovnik(
+			//@RequestBody CenovnikDTO cenovnikDto,
+			@RequestHeader ("X-Auth-Token") String token){
+		
+		
+		return new ResponseEntity<String>("Cenovnik je izmenjen", HttpStatus.OK);
+		
 	}
 
 }

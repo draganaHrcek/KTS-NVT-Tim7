@@ -54,7 +54,7 @@ public class KartaController {
 	@Autowired
 	TokenUtils tokenUtils;
 
-	@RequestMapping(value="/izlistajKarte", consumes = "application/json" ,method = RequestMethod.GET)
+	@RequestMapping(value="/izlistajKarte", produces = "application/json" ,method = RequestMethod.GET)
 	public ResponseEntity<List<KartaDTO>> izlistajKarte(@RequestHeader ("X-Auth-Token") String token ) {
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 		List<KartaDTO> karteDTO = new ArrayList<>();

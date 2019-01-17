@@ -49,7 +49,11 @@ public class OsobaController {
 		
 		Osoba noviKorisnik  = osobaService.findByUsername(korisnik.getKorIme());
 		
-		if(korisnik.getLozinka1().equals(korisnik.getLozinka2()) && noviKorisnik == null) {
+		if(noviKorisnik != null) {
+			return new ResponseEntity<>(HttpStatus.FOUND);
+		}
+		
+		if(korisnik.getLozinka1().equals(korisnik.getLozinka2())) {
 			
 			noviKorisnik = new Korisnik();
 			kreirajKorisnika(korisnik, (Korisnik)noviKorisnik);

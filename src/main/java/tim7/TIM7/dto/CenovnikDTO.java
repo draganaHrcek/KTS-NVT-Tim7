@@ -23,6 +23,10 @@ public class CenovnikDTO {
 			this.stavkeCenovnika.add(stavkaDto);
 		}
 	}
+	
+	public CenovnikDTO(){
+		super();
+	}
 
 	
 	

@@ -21,6 +21,7 @@ public class StavkaCenovnikaDto {
 		this.id = stavka.getId();
 	}
 
+	public StavkaCenovnikaDto(){};
 	
 	public Long getId() {
 		return id;

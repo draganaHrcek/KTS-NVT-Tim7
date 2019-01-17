@@ -32,12 +32,12 @@ public class CenovnikController {
 	}
 	
 	@RequestMapping(path="/{id}", method=RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<String> editCenovnik(
-			//@RequestBody CenovnikDTO cenovnikDto,
+	public ResponseEntity<CenovnikDTO> editCenovnik(
+			@RequestBody CenovnikDTO cenovnikDto,
 			@RequestHeader ("X-Auth-Token") String token){
 		
 		
-		return new ResponseEntity<String>("Cenovnik je izmenjen", HttpStatus.OK);
+		return new ResponseEntity<CenovnikDTO>(cenovnikDto, HttpStatus.OK);
 		
 	}
 

@@ -22,9 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tim7.TIM7.dto.KartaDTO;
 import tim7.TIM7.dto.KorisnikDTO;
+import tim7.TIM7.dto.KorisnikTokenDTO;
 import tim7.TIM7.dto.LoginDTO;
 import tim7.TIM7.dto.TokenDTO;
+import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Karta;
+import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Osoba;
 import tim7.TIM7.security.TokenUtils;
@@ -131,6 +134,38 @@ public class OsobaController {
 		
 	
 	}
+	@RequestMapping(value="/tipKorisnika", produces = "application/json",method = RequestMethod.GET)
+	public ResponseEntity<KorisnikTokenDTO> tipKorisnika(@RequestHeader ("X-Auth-Token") String token ) {
+		
+
+		KorisnikTokenDTO kor= new KorisnikTokenDTO();
+		Osoba o= osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
+		kor.setKorIme(o.getKorIme());
+		
+		if (o instanceof Korisnik) {
+			kor.setUloga("KORISNIK");
+			
+			
+		}else if(o instanceof Administrator) {
+			
+			kor.setUloga("ADMINISTRATOR");
+			
+		}else if (o instanceof Kondukter) {
+			kor.setUloga("KONDUKTER");
+			
+			
+		}else {
+			
+			
+			kor.setUloga("VERIFIKATOR");
+		}
+		
+		return new ResponseEntity<KorisnikTokenDTO>( kor,HttpStatus.OK);
+		
+		}
+		
+
+	
 	
 	
 }

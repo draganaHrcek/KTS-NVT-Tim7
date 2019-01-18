@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tim7.TIM7.dto.KartaDTO;
 import tim7.TIM7.dto.KorisnikDTO;
 import tim7.TIM7.dto.LoginDTO;
+import tim7.TIM7.dto.TokenDTO;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Osoba;
@@ -49,7 +50,11 @@ public class OsobaController {
 		
 		Osoba noviKorisnik  = osobaService.findByUsername(korisnik.getKorIme());
 		
-		if(korisnik.getLozinka1().equals(korisnik.getLozinka2()) && noviKorisnik == null) {
+		if(noviKorisnik != null) {
+			return new ResponseEntity<>(HttpStatus.FOUND);
+		}
+		
+		if(korisnik.getLozinka1().equals(korisnik.getLozinka2())) {
 			
 			noviKorisnik = new Korisnik();
 			kreirajKorisnika(korisnik, (Korisnik)noviKorisnik);
@@ -77,7 +82,7 @@ public class OsobaController {
 
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
+	public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
         try {
         	// Perform the authentication
         	UsernamePasswordAuthenticationToken token = 
@@ -90,11 +95,12 @@ public class OsobaController {
             // Reload user details so we can generate token
             UserDetails details = userDetailsService.
             		loadUserByUsername(loginDTO.getUsername());
-          
-            return new ResponseEntity<String>(
-            		tokenUtils.generateToken(details), HttpStatus.OK);
+            TokenDTO tokenDTO = new TokenDTO();
+            tokenDTO.setToken(tokenUtils.generateToken(details));
+            return new ResponseEntity<TokenDTO>(tokenDTO, HttpStatus.OK);
+            
         } catch (Exception ex) {
-            return new ResponseEntity<String>("Invalid login", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
         }
 	}
 	

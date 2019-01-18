@@ -70,7 +70,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					permitAll() 
 				.antMatchers("/osoba/registracija").
 					permitAll() 
-				.antMatchers(HttpMethod.PUT, "/cenovnici/{id}").
+				.antMatchers(HttpMethod.POST, "/cenovnici").
 					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/**")
 				

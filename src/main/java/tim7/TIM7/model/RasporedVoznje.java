@@ -1,8 +1,5 @@
 package tim7.TIM7.model;
 
-
-
-
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
@@ -16,6 +13,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 public class RasporedVoznje {
 	@Id

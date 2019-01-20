@@ -58,13 +58,13 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-		//seedCenovnik();
-		//seedZona();
-		//seedLinija();
-		//connectZonaLinija();
-		//seedStavka();
-		//seedStavkaCenovnika();
-		//seedOsoba();
+//		seedCenovnik();
+//		seedZona();
+//		seedLinija();
+//		connectZonaLinija();
+//		seedStavka();
+//		seedStavkaCenovnika();
+//		seedOsoba();
 	}
 
 	public void seedCenovnik() {

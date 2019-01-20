@@ -45,7 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     	//PROMENJEN NACIN DODELJIVANJA PRAVA KORISNICIMA U SKLADU SA NASIM MODELOM PODATAKA
     	List<GrantedAuthority> grantedAuthorities= new ArrayList<GrantedAuthority>();
     	if (user instanceof Korisnik) {
-    		grantedAuthorities.add( new SimpleGrantedAuthority("KORINSIK"));
+    		grantedAuthorities.add( new SimpleGrantedAuthority("KORISNIK"));
     		
     	}else if(user instanceof Administrator) {
     		grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));

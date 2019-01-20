@@ -16,6 +16,9 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 //uvek bi trebao da bude aktivan 1 cenovnik, ko se bude ovim bavio nek stavi kada se dodaje novi cenovnik neka se logicki obrise stari, ili dodati neku metodu koja ce kad se pokrene proveriti datume isteka svih cenovnika i pobrisati stare 
 @Where(clause= "obrisan = 'false' ")
 @Entity
@@ -41,13 +44,13 @@ public class Cenovnik {
 	//popust izrazen u procentima npr 20 %
 	 
 	@Column(name="popust_student")
-	int popustStudent;
+	Integer popustStudent;
 	@Column(name="popust_penzioner")
-	int popustPenzioner;
+	Integer popustPenzioner;
 	@Column(name="popust_djak")
-	int popustDjak;
+	Integer popustDjak;
 	@Column(name="popust_nezaposlen")
-	int popustNezaposlen;
+	Integer popustNezaposlen;
 	
 	
 	

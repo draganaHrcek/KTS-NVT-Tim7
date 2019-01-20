@@ -146,11 +146,12 @@ public class OsobaController {
 		kor.setEmail(o.getEmail());
 		kor.setIme(o.getIme());
 		kor.setPrezime(o.getPrezime());
-
+		
 		if (o instanceof Korisnik) {
 			kor.setUloga("KORISNIK");
-		
-			
+			if(((Korisnik) o).getStatus()!=null) {
+				kor.setStatus(((Korisnik) o).getStatus().toString());
+			}
 		}else if(o instanceof Administrator) {
 			
 			kor.setUloga("ADMINISTRATOR");

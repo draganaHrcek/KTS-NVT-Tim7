@@ -38,12 +38,49 @@ public class Cenovnik {
 	@Column(name="obrisan")
 	boolean obrisan;
 
+	//popust izrazen u procentima npr 20 %
+	 
+	@Column(name="popust_student")
+	int popustStudent;
+	@Column(name="popust_penzioner")
+	int popustPenzioner;
+	@Column(name="popust_djak")
+	int popustDjak;
+	@Column(name="popust_nezaposlen")
+	int popustNezaposlen;
 	
-	public Cenovnik(Date datumObjavljivanja, Date datumIsteka, boolean obrisan) {
+	
+	
+	public int getPopustStudent() {
+		return popustStudent;
+	}
+
+	public int getPopustPenzioner() {
+		return popustPenzioner;
+	}
+
+	public int getPopustDjak() {
+		return popustDjak;
+	}
+
+	public int getPopustNezaposlen() {
+		return popustNezaposlen;
+	}
+
+
+
+	public Cenovnik(Date datumObjavljivanja, Date datumIsteka, List<StavkaCenovnika> stavke, boolean obrisan,
+			int popustStudent, int popustPenzioner, int popustDjak, int popustNezaposlen) {
 		super();
+		
 		this.datumObjavljivanja = datumObjavljivanja;
 		this.datumIsteka = datumIsteka;
+		this.stavke = stavke;
 		this.obrisan = obrisan;
+		this.popustStudent = popustStudent;
+		this.popustPenzioner = popustPenzioner;
+		this.popustDjak = popustDjak;
+		this.popustNezaposlen = popustNezaposlen;
 	}
 
 	public Cenovnik() {

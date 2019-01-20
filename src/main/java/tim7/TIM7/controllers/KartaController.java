@@ -81,18 +81,7 @@ public class KartaController {
 	{
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 		
-		Cenovnik cenovnik=  cenovnikService.findAll().stream().findFirst().get();
-		double cena= 0;
-		for (StavkaCenovnika i : cenovnik.getStavke()) {
-			if(i.getStavka().getVrstaPrevoza().toString().equals(karta.getTipPrevoza()) && i.getStavka().getTipKarte().toString().equals(karta.getTipKarte()) ) {
-				if ( i.getStavka().getLinija().getNaziv().equals(karta.getLinijaZona()) || i.getStavka().getZona().getNaziv().equals(karta.getLinijaZona())) {
-					cena=i.getCena();
-					break;
-					
-				}
-				
-			}
-		}
+		double cena= kartaService.cenaKarte(karta,(Korisnik) osobaService.findByUsername(tokenUtils.getUsernameFromToken(token)));
 		
 		if (karta.getTipKarte().equals("DNEVNA")) {
 			

@@ -78,7 +78,8 @@ public class OsobaController {
 		noviKorisnik.setKorIme(registracija.getKorIme());
 		noviKorisnik.setKarte(new ArrayList<Karta> ());
 		noviKorisnik.setLokacijaDokumenta(null);
-		
+		noviKorisnik.setStatus(null);
+
 	
 	}
 	

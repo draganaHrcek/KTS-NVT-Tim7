@@ -1,6 +1,9 @@
 package tim7.TIM7.Seeder;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -9,8 +12,10 @@ import org.springframework.stereotype.Component;
 
 import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Cenovnik;
+import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.TipKarteCenovnik;
@@ -68,14 +73,16 @@ public class Seeder {
 
 		before.set(2018, 9, 1);
 		after.set(2019, 6, 30);
-		Cenovnik trenutni = new Cenovnik(before.getTime(), after.getTime(), false);
+		
+
+		Cenovnik trenutni = new Cenovnik(before.getTime(), after.getTime(),new ArrayList<>(), false, 20,30,20,30);
 
 		after.set(2019, 0, 1);
-		Cenovnik prosli = new Cenovnik(before.getTime(), after.getTime(), false);
+		Cenovnik prosli = new Cenovnik(before.getTime(), after.getTime(), new ArrayList<>(),false, 10,20, 10 ,20);
 
 		before.setTime(after.getTime());
 		after.set(2019, 9, 1);
-		Cenovnik buduci = new Cenovnik(before.getTime(), after.getTime(), false);
+		Cenovnik buduci = new Cenovnik(before.getTime(), after.getTime(),new ArrayList<>(), false, 20,10,30,10);
 
 		cenovnikRepository.save(trenutni);
 		cenovnikRepository.save(prosli);
@@ -160,7 +167,7 @@ public class Seeder {
 
 	public void seedOsoba() {
 		//pass je 'e'
-		Korisnik korisnik = new Korisnik("e", "$2a$10$bP0GkdZwP923SMkCAS8ke.iG9obwvHw2d4cUcTG9VzmvQwR6RE0Ay", "Elena", "Roncevic","e@gmail.com");
+		Korisnik korisnik = new Korisnik("e","$2a$10$bP0GkdZwP923SMkCAS8ke.iG9obwvHw2d4cUcTG9VzmvQwR6RE0Ay", "Elena", "Roncevic","e@gmail.com", "", null, new ArrayList<>());
 		//pass je 'a'
 		Administrator admin = new Administrator("a", "$2a$10$8FfNgX9dYC8J6TGL1tMreO8Y2PcJrJaAfRwg2IVhbKQS9m3EHkcbW", "Admin", "Adminovic","a@gmail.com");
 		

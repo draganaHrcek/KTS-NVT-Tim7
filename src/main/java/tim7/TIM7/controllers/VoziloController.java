@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ public class VoziloController {
 	VoziloService voziloService;
 	
 	@RequestMapping(path="/dodaj", method = RequestMethod.POST, consumes="application/json")
-	public ResponseEntity<Void> addNovoVozilo(@RequestBody VoziloDTO newVehicle){
+	public ResponseEntity<Void> addNovoVozilo(@RequestBody VoziloDTO newVehicle, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.addNewVehicle(newVehicle)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
@@ -31,7 +32,7 @@ public class VoziloController {
 	}
 	
 	@RequestMapping(path="/brisi/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteVozilo(@PathVariable Long id){
+	public ResponseEntity<Void> deleteVozilo(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.deleteVehicle(id)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
@@ -40,7 +41,7 @@ public class VoziloController {
 	}
 	
 	@RequestMapping(path="/mijenjaj", method = RequestMethod.PUT, consumes="application/json")
-	public ResponseEntity<Void> updateVozilo(@RequestBody VoziloDTO updatedVehicle){
+	public ResponseEntity<Void> updateVozilo(@RequestBody VoziloDTO updatedVehicle, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.updateVehicle(updatedVehicle)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
@@ -60,7 +61,7 @@ public class VoziloController {
 	}
 	
 	@RequestMapping(path="/dodajULiniju/{lineId}/{vehicleId}", method = RequestMethod.PUT)
-	public ResponseEntity<Void> dodajVoziloULiniju(@PathVariable Long lineId, @PathVariable Long vehicleId){
+	public ResponseEntity<Void> dodajVoziloULiniju(@PathVariable Long lineId, @PathVariable Long vehicleId, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.addVehicleToLine(lineId, vehicleId)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
@@ -69,7 +70,7 @@ public class VoziloController {
 	}
 	
 	@RequestMapping(path="/izbaciIzLinije/{id}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> izbaciVoziloIzLinije(@PathVariable Long id){
+	public ResponseEntity<Void> izbaciVoziloIzLinije(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.removeVehicleFromLine(id)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {

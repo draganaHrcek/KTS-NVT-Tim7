@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class StanicaController {
 	}*/
 	
 	@RequestMapping(path="/dodaj", method = RequestMethod.POST, consumes="application/json")
-	public ResponseEntity<Void> addNovaStanica(@RequestBody StanicaDTO newStation){
+	public ResponseEntity<Void> addNovaStanica(@RequestBody StanicaDTO newStation, @RequestHeader ("X-Auth-Token") String token){
 		if(stanicaService.addNewStation(newStation)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
@@ -41,7 +42,7 @@ public class StanicaController {
 	}
 	
 	@RequestMapping(path="/brisi/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteStanica(@PathVariable Long id){
+	public ResponseEntity<Void> deleteStanica(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
 		if(stanicaService.deleteStation(id)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
@@ -50,7 +51,7 @@ public class StanicaController {
 	}
 	
 	@RequestMapping(path="/mijenjaj", method = RequestMethod.PUT, consumes="application/json")
-	public ResponseEntity<Void> updateStanica(@RequestBody StanicaDTO updatedStation){
+	public ResponseEntity<Void> updateStanica(@RequestBody StanicaDTO updatedStation, @RequestHeader ("X-Auth-Token") String token){
 		if(stanicaService.updateStation(updatedStation)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {

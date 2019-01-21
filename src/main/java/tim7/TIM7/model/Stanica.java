@@ -24,8 +24,11 @@ public class Stanica {
 	@Column(name="oznka")
 	String oznaka;
 	
-	@OneToOne(fetch=FetchType.LAZY )
-	LokacijaStanice lokacija; 
+	@Column(name="longituda")
+	double longituda;
+	
+	@Column(name="latituda")
+	double latituda;
 	
 	@ManyToMany
     @JoinTable(name = "stanice_u_liniji",
@@ -40,6 +43,20 @@ public class Stanica {
 		this.obrisan= false;
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+
+	public Stanica(Long id, String oznaka, double longituda, double latituda, List<Linija> linije, boolean obrisan) {
+		super();
+		this.id = id;
+		this.oznaka = oznaka;
+		this.longituda = longituda;
+		this.latituda = latituda;
+		this.linije = linije;
+		this.obrisan = obrisan;
+	}
+
+
 
 	public boolean isObrisan() {
 		return obrisan;
@@ -63,14 +80,6 @@ public class Stanica {
 		this.oznaka = oznaka;
 	}
 
-	public LokacijaStanice getLokacija() {
-		return lokacija;
-	}
-
-	public void setLokacija(LokacijaStanice lokacija) {
-		this.lokacija = lokacija;
-	}
-
 	public List<Linija> getLinije() {
 		return linije;
 	}
@@ -78,6 +87,28 @@ public class Stanica {
 	public void setLinije(List<Linija> linije) {
 		this.linije = linije;
 	}
+
+	public double getLongituda() {
+		return longituda;
+	}
+
+	public void setLongituda(double longituda) {
+		this.longituda = longituda;
+	}
+
+	public double getLatituda() {
+		return latituda;
+	}
+
+	public void setLatituda(double latituda) {
+		this.latituda = latituda;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 	
 	
 }

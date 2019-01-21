@@ -22,6 +22,10 @@ public class Vozilo {
 	@Column(name="tip_vozila")
 	TipVozila tipVozila;
 	
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	Linija linija;
 	

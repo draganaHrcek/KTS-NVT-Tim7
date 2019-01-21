@@ -57,6 +57,10 @@ public class Linija {
 		this.naziv = naziv;
 		// TODO Auto-generated constructor stub
 	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public List<RasporedVoznje> getRasporedVoznje() {
 		return rasporedVoznje;

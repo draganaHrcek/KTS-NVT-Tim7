@@ -70,7 +70,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					permitAll() 
 				.antMatchers("/osoba/registracija").
 					permitAll() 
-				.antMatchers(HttpMethod.PUT, "/cenovnici/{id}").
+				.antMatchers(HttpMethod.POST, "/cenovnici").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.GET, "/linije/zaCenovnik").
 					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/karte/kupovinaKarte").
 					hasAuthority("KORISNIK")
@@ -81,6 +83,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/linije/dodaj").
 					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/**")
+				
 				
 				//ZA SADA NAM NE TREBAJU PRAVA PRISTUPA SVI MOGU SVE ZAHTEVE(POST, GET, PUT,....)
 				// 	.hasAuthority("ROLE_ADMIN") //only administrator can add and edit data

@@ -3,10 +3,11 @@ package tim7.TIM7.dto;
 import tim7.TIM7.model.Zona;
 
 public class ZonaDTO {
-	private Long id;
-	private String name;
 	
-	public ZonaDTO() {
+	private String name;
+	private Long id;
+	
+	public ZonaDTO(){
 		super();
 	}
 	
@@ -22,12 +23,9 @@ public class ZonaDTO {
 		this.name = name;
 	}
 
+	
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getName() {

@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -77,22 +78,11 @@ public class KartaController {
 		return new ResponseEntity<>(karteDTO, HttpStatus.OK);
 	}
 	@RequestMapping(value="/kupovinaKarte", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity<List<KartaDTO>> kupovinaKarte(@RequestHeader ("X-Auth-Token") String token, KartaDTO karta )
+	public ResponseEntity<List<KartaDTO>> kupovinaKarte(@RequestHeader ("X-Auth-Token") String token, @RequestBody KartaDTO karta )
 	{
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 		
-		Cenovnik cenovnik=  cenovnikService.findAll().stream().findFirst().get();
-		double cena= 0;
-		for (StavkaCenovnika i : cenovnik.getStavke()) {
-			if(i.getStavka().getVrstaPrevoza().toString().equals(karta.getTipPrevoza()) && i.getStavka().getTipKarte().toString().equals(karta.getTipKarte()) ) {
-				if ( i.getStavka().getLinija().getNaziv().equals(karta.getLinijaZona()) || i.getStavka().getZona().getNaziv().equals(karta.getLinijaZona())) {
-					cena=i.getCena();
-					break;
-					
-				}
-				
-			}
-		}
+		double cena= kartaService.cenaKarte(karta,kor);
 		
 		if (karta.getTipKarte().equals("DNEVNA")) {
 			
@@ -104,7 +94,8 @@ public class KartaController {
 			
 			k.setKorisnik(kor);
 			kor.getKarte().add(k);
-			
+			kartaService.save(k);
+			osobaService.save(kor);			
 		}else {
 			
 			VisednevnaKarta k= new VisednevnaKarta ();
@@ -128,9 +119,11 @@ public class KartaController {
 			
 			k.setKorisnik(kor);
 			kor.getKarte().add(k);
+			kartaService.save(k);
+			osobaService.save(kor);
 		}
 		
-		osobaService.save(kor);
+		
 		return new ResponseEntity<>( HttpStatus.CREATED);
 	}
 	

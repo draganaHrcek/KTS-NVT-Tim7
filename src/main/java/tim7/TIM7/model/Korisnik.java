@@ -8,6 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 public class Korisnik extends Osoba {
 
@@ -16,18 +19,46 @@ public class Korisnik extends Osoba {
 	@Column(name = "lokacija_dokumenta")
 	String lokacijaDokumenta;
 	
+	@Column(name="status_korisnika")
+	StatusKorisnika status;
+	
+	
+	
 	@OneToMany(mappedBy = "korisnik", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List <Karta> karte;
 
-
+	
 	public Korisnik() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Korisnik(String korIme, String lozinka, String ime, String prezime, String email){
-		super(korIme, lozinka, ime, prezime, email);
+
+
+	public StatusKorisnika getStatus() {
+		return status;
 	}
+
+
+
+
+
+	public void setStatus(StatusKorisnika status) {
+		this.status = status;
+	}
+
+
+
+
+	public Korisnik(String korIme, String lozinka, String ime, String prezime, String email, String lokacijaDokumenta, StatusKorisnika status, List<Karta> karte) {
+		super(korIme, lozinka, ime, prezime, email);
+		this.lokacijaDokumenta = lokacijaDokumenta;
+		this.status = status;
+		
+		this.karte = karte;
+	}
+
+
 
 	public String getLokacijaDokumenta() {
 		return lokacijaDokumenta;

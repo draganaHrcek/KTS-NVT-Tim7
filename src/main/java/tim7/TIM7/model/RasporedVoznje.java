@@ -1,8 +1,5 @@
 package tim7.TIM7.model;
 
-
-
-
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
@@ -16,6 +13,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 public class RasporedVoznje {
 	@Id
@@ -45,6 +45,20 @@ public class RasporedVoznje {
 		super();
 		this.obrisan= false;
 		// TODO Auto-generated constructor stub
+	}
+
+
+	
+
+
+	public RasporedVoznje(DanUNedelji danUNedelji, List<LocalTime> vremena, Linija linija, RedVoznje redVoznje,
+			boolean obrisan) {
+		super();
+		this.danUNedelji = danUNedelji;
+		this.vremena = vremena;
+		this.linija = linija;
+		this.redVoznje = redVoznje;
+		this.obrisan = obrisan;
 	}
 
 
@@ -105,6 +119,24 @@ public class RasporedVoznje {
 	public void setObrisan(boolean obrisan) {
 		this.obrisan = obrisan;
 	}
+
+
+
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 	
 	
 

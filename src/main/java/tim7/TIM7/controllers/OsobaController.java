@@ -78,7 +78,8 @@ public class OsobaController {
 		noviKorisnik.setKorIme(registracija.getKorIme());
 		noviKorisnik.setKarte(new ArrayList<Karta> ());
 		noviKorisnik.setLokacijaDokumenta(null);
-		
+		noviKorisnik.setStatus(null);
+
 	
 	}
 	
@@ -134,18 +135,23 @@ public class OsobaController {
 		
 	
 	}
-	@RequestMapping(value="/tipKorisnika", produces = "application/json",method = RequestMethod.GET)
-	public ResponseEntity<KorisnikTokenDTO> tipKorisnika(@RequestHeader ("X-Auth-Token") String token ) {
+	@RequestMapping(value="/prijavljenKorisnik", produces = "application/json",method = RequestMethod.GET)
+	public ResponseEntity<KorisnikTokenDTO> prijavljenKorisnik(@RequestHeader ("X-Auth-Token") String token ) {
 		
 
 		KorisnikTokenDTO kor= new KorisnikTokenDTO();
 		Osoba o= osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
+		
 		kor.setKorIme(o.getKorIme());
+		kor.setEmail(o.getEmail());
+		kor.setIme(o.getIme());
+		kor.setPrezime(o.getPrezime());
 		
 		if (o instanceof Korisnik) {
 			kor.setUloga("KORISNIK");
-			
-			
+			if(((Korisnik) o).getStatus()!=null) {
+				kor.setStatus(((Korisnik) o).getStatus().toString());
+			}
 		}else if(o instanceof Administrator) {
 			
 			kor.setUloga("ADMINISTRATOR");

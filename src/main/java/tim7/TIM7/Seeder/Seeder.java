@@ -159,10 +159,9 @@ public class Seeder {
 	}
 
 	public void seedOsoba() {
-		//pass je 'e'
-		Korisnik korisnik = new Korisnik("e", "$2a$10$bP0GkdZwP923SMkCAS8ke.iG9obwvHw2d4cUcTG9VzmvQwR6RE0Ay", "Elena", "Roncevic","e@gmail.com");
-		//pass je 'a'
-		Administrator admin = new Administrator("a", "$2a$10$8FfNgX9dYC8J6TGL1tMreO8Y2PcJrJaAfRwg2IVhbKQS9m3EHkcbW", "Admin", "Adminovic","a@gmail.com");
+		//pass je '12345678'
+		Korisnik korisnik = new Korisnik("e", "$2a$10$OXuIGwSjybblVPa85UGMhuSdTr8/eVdAp/JwaAHTGZ4fYxg3MqMaK", "Elena", "Roncevic","e@gmail.com");
+		Administrator admin = new Administrator("a", "$2a$10$OXuIGwSjybblVPa85UGMhuSdTr8/eVdAp/JwaAHTGZ4fYxg3MqMaK", "Admin", "Adminovic","a@gmail.com");
 		
 		osobaRepository.save(korisnik);
 		osobaRepository.save(admin);

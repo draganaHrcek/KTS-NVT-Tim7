@@ -109,7 +109,7 @@ public class OsobaController {
 	}
 	
 	@RequestMapping(value="/izmenaPodataka", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity<List<KartaDTO>> izmenaPodataka(@RequestHeader ("X-Auth-Token") String token, KorisnikDTO korisnik ) {
+	public ResponseEntity<List<KartaDTO>> izmenaPodataka(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
 		
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 		
@@ -122,7 +122,7 @@ public class OsobaController {
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
 	@RequestMapping(value="/izmenaLozinke", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity<List<KartaDTO>> izmenaLozinke(@RequestHeader ("X-Auth-Token") String token, KorisnikDTO korisnik ) {
+	public ResponseEntity<List<KartaDTO>> izmenaLozinke(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
 		
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 				
@@ -146,7 +146,7 @@ public class OsobaController {
 		kor.setEmail(o.getEmail());
 		kor.setIme(o.getIme());
 		kor.setPrezime(o.getPrezime());
-		
+		kor.setLozinka(o.getLozinka());
 		if (o instanceof Korisnik) {
 			kor.setUloga("KORISNIK");
 			if(((Korisnik) o).getStatus()!=null) {

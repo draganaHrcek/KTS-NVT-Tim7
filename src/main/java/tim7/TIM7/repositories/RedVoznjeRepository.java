@@ -11,5 +11,5 @@ import tim7.TIM7.model.RedVoznje;
 public interface RedVoznjeRepository extends JpaRepository<RedVoznje, Long>{
 	
 	public List<RedVoznje> findByObrisanFalse();
-	public RedVoznje findByIdNot(Long id);
+	public RedVoznje findByIdNotAndObrisanFalse(Long id);
 }

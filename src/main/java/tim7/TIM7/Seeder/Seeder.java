@@ -1,5 +1,6 @@
 package tim7.TIM7.Seeder;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Component;
 
 import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Cenovnik;
+import tim7.TIM7.model.DanUNedelji;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.RasporedVoznje;
 import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
@@ -24,6 +27,8 @@ import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.LinijaRepository;
 import tim7.TIM7.repositories.OsobaRepository;
+import tim7.TIM7.repositories.RasporedVoznjeRepository;
+import tim7.TIM7.repositories.RedVoznjeRepository;
 import tim7.TIM7.repositories.StavkaCenovnikaRepository;
 import tim7.TIM7.repositories.StavkaRepository;
 import tim7.TIM7.repositories.VoziloRepository;
@@ -52,6 +57,13 @@ public class Seeder {
 
 	@Autowired
 	OsobaRepository osobaRepository;
+	
+	
+	@Autowired
+	RedVoznjeRepository redVoznjeRepository;
+	
+	@Autowired
+	RasporedVoznjeRepository rasporedVoznjeRepository;
 
 	public Seeder() {
 	}
@@ -178,6 +190,41 @@ public class Seeder {
 		
 		osobaRepository.save(korisnik);
 		osobaRepository.save(admin);
+	}
+	
+	
+	public void seedRasporedVoznjeVremena(){
+		List<RasporedVoznje> rasporediVoznje = rasporedVoznjeRepository.findAll();
+		for (int i=0;i<rasporediVoznje.size();i++){
+			LocalTime begin = LocalTime.of(4, 30);
+			LocalTime end = LocalTime.of(0, 0);
+			List<LocalTime> vremena = new ArrayList<LocalTime>();
+			if (rasporediVoznje.get(i).getDanUNedelji().equals(DanUNedelji.RADNI)){
+				//seeduj za radni dan 15 minuta razlike				
+				while (begin.isAfter(end)){
+					vremena.add(begin);
+					begin=begin.plusMinutes(15);
+				}
+				vremena.add(end);
+			}else if (rasporediVoznje.get(i).getDanUNedelji().equals(DanUNedelji.SUBOTA)){
+				//seeduj za subotu 30 minuta razlike
+				while (begin.isAfter(end)){
+					vremena.add(begin);
+					begin=begin.plusMinutes(30);
+				}
+				vremena.add(end);
+			}else{
+				//seeduj za nedelju 45 minuta razlike
+				while (begin.isAfter(end)){
+					vremena.add(begin);
+					begin=begin.plusMinutes(45);
+				}
+				vremena.add(end);
+			}
+			rasporediVoznje.get(i).setVremena(vremena);
+			rasporedVoznjeRepository.save(rasporediVoznje.get(i));
+		}
+		
 	}
 
 }

@@ -63,6 +63,16 @@ public class RasporedVoznje {
 
 
 
+	public RasporedVoznje(DanUNedelji danUNedelji, Linija linija, RedVoznje redVoznje, boolean obrisan) {
+		super();
+		this.danUNedelji = danUNedelji;
+		this.linija = linija;
+		this.redVoznje = redVoznje;
+		this.obrisan = obrisan;
+	}
+
+
+
 
 
 	public DanUNedelji getDanUNedelji() {

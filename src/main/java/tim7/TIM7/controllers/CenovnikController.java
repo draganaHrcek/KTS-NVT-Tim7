@@ -31,8 +31,8 @@ public class CenovnikController {
 	
 	}
 	
-	@RequestMapping(path="/{id}", method=RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<CenovnikDTO> editCenovnik(
+	@RequestMapping(path="", method=RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<CenovnikDTO> addCenovnik(
 			@RequestBody CenovnikDTO cenovnikDto,
 			@RequestHeader ("X-Auth-Token") String token){
 		

@@ -10,12 +10,12 @@ import tim7.TIM7.model.Zona;
 public class LinijaDTO {
 	private Long id;
 	private String name;
-	private List<Long> zonesIds;
+	private List<ZonaDTO> zones;
 	private List<Long> stationsIds;
 	
 	public LinijaDTO() {
 		super();
-		zonesIds = new ArrayList<Long>();
+		zones = new ArrayList<ZonaDTO>();
 		stationsIds = new ArrayList<Long>();
 	}
 	
@@ -23,11 +23,12 @@ public class LinijaDTO {
 		super();
 		id = line.getId();
 		name = line.getNaziv();
-		List<Long> temp = new ArrayList<Long>();
+		List<ZonaDTO> temp = new ArrayList<ZonaDTO>();
 		for(Zona zone : line.getZone()) {
-			temp.add(zone.getId());
+			ZonaDTO zonaDTO = new ZonaDTO(zone);
+			temp.add(zonaDTO);
 		}
-		zonesIds = temp;
+		zones = temp;
 		
 		List<Long> temp2 = new ArrayList<Long>();
 		for(Stanica station : line.getStanice()) {
@@ -36,11 +37,11 @@ public class LinijaDTO {
 		stationsIds = temp2;
 	}
 
-	public LinijaDTO(Long id, String name, List<Long> zonesIds, List<Long> stationsIds) {
+	public LinijaDTO(Long id, String name, List<ZonaDTO> zones, List<Long> stationsIds) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.zonesIds = zonesIds;
+		this.zones = zones;
 		this.stationsIds = stationsIds;
 	}
 
@@ -49,7 +50,7 @@ public class LinijaDTO {
 	public Long getId() {
 		return id;
 	}
-
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -62,12 +63,12 @@ public class LinijaDTO {
 		this.name = name;
 	}
 
-	public List<Long> getZonesIds() {
-		return zonesIds;
+	public List<ZonaDTO> getZonesIds() {
+		return zones;
 	}
 
-	public void setZonesIds(List<Long> zonesIds) {
-		this.zonesIds = zonesIds;
+	public void setZonesIds(List<ZonaDTO> zonesIds) {
+		this.zones = zonesIds;
 	}
 
 	public List<Long> getStationsIds() {

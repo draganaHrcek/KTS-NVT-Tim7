@@ -134,10 +134,10 @@ public class LinijaService {
 		return null;
 	}
 	
-	public List<Zona> getZonesFromDTO(List<Long> ids){
+	public List<Zona> getZonesFromDTO(List<ZonaDTO> list){
 		List<Zona> retValue = new ArrayList<Zona>();
-		for(Long zoneId : ids) {
-			Zona zone = zonaRepository.findById(zoneId).get();
+		for(ZonaDTO zoneDTO : list) {
+			Zona zone = zonaRepository.findById(zoneDTO.getId()).get();
 			retValue.add(zone);
 		}
 		return retValue;

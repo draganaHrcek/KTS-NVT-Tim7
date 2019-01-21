@@ -88,8 +88,8 @@ public class LinijaService {
 		potential.setId(newLine.getId());
 		potential.setNaziv(newLine.getName());
 		potential.setObrisan(false);
-		potential.setZone(getZonesFromDTO(newLine.getZonesIds()));
-		potential.setStanice(getStationsFromDTO(newLine.getStationsIds()));
+		potential.setZone(getZonesFromDTO(newLine.getZones()));
+		potential.setStanice(getStationsFromDTO(newLine.getStations()));
 		save(potential);
 		return true;
 	}
@@ -143,10 +143,10 @@ public class LinijaService {
 		return retValue;
 	}
 	
-	public List<Stanica> getStationsFromDTO(List<Long> ids){
+	public List<Stanica> getStationsFromDTO(List<StanicaDTO> stations){
 		List<Stanica> retValue = new ArrayList<Stanica>();
-		for(Long stationId : ids) {
-			Stanica station = stanicaRepository.findById(stationId).get();
+		for(StanicaDTO stationDTO : stations) {
+			Stanica station = stanicaRepository.findById(stationDTO.getId()).get();
 			retValue.add(station);
 		}
 		return retValue;

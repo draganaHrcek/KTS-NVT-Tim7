@@ -70,14 +70,14 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-//		seedCenovnik();
-//		seedZona();
-//		seedLinija();
-//		connectZonaLinija();
-//		seedStavka();
-//		seedStavkaCenovnika();
-//		seedOsoba();
-//		seedRasporedVoznjeVremena();
+		seedCenovnik();
+		seedZona();
+		seedLinija();
+		connectZonaLinija();
+		seedStavka();
+		seedStavkaCenovnika();
+		seedOsoba();
+		seedStanica();
 	}
 
 	public void seedCenovnik() {
@@ -176,6 +176,11 @@ public class Seeder {
 	}
 
 	public void seedVozilo() {
+
+	}
+	
+	public void seedStanica() {
+		
 	}
 
 	public void seedOsoba() {

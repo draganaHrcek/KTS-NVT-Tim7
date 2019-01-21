@@ -35,7 +35,7 @@ public class LinijaController {
 	}
 	
 	@RequestMapping(path="/brisi/{id}", method=RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteJednaLinija(@PathVariable Long id){
+	public ResponseEntity<Void> deleteJednaLinija(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
 		Linija line = linijaService.deleteOneLine(id);
 		if (line==null) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -44,8 +44,8 @@ public class LinijaController {
 		}
 	}
 	
-	@RequestMapping(path="/dodaj", method = RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<Void> addNovaLinija(@RequestBody LinijaDTO newLine){
+	@RequestMapping(path="/dodaj", method = RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<Void> addNovaLinija(@RequestBody LinijaDTO newLine, @RequestHeader ("X-Auth-Token") String token){
 		if(!linijaService.addNewLine(newLine)) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}else {
@@ -54,7 +54,7 @@ public class LinijaController {
 	}
 	
 	@RequestMapping(path="/mijenjaj", method=RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<Void> updateLinije(@RequestBody LinijaDTO updatedLine){
+	public ResponseEntity<Void> updateLinije(@RequestBody LinijaDTO updatedLine, @RequestHeader ("X-Auth-Token") String token){
 		if(linijaService.updateLine(updatedLine)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {

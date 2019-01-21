@@ -76,6 +76,34 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/karte/kupovinaKarte").
 					hasAuthority("KORISNIK")
+				.antMatchers(HttpMethod.DELETE, "/linije/brisi/{id}").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/linije/mijenjaj").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.POST, "/linije/dodaj").
+					hasAuthority("ADMIN")
+					.antMatchers(HttpMethod.DELETE, "/stanice/brisi/{id}").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/stanice/mijenjaj").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.POST, "/stanice/dodaj").
+					hasAuthority("ADMIN")
+					.antMatchers(HttpMethod.DELETE, "/vozila/brisi/{id}").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/vozila/mijenjaj").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.POST, "/vozila/dodaj").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/vozila/dodajULiniju/{lineId}/{vehicleId}").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/vozila/izbaciIzLinije/{id}").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.DELETE, "/zone/brisi/{id}").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/zone/mijenjaj").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.POST, "/zone/dodaj").
+					hasAuthority("ADMIN")
 					.antMatchers(HttpMethod.POST, "/karte/izlistajKarte").
 					hasAuthority("KORISNIK")
 					.antMatchers(HttpMethod.POST, "/osoba/izmenaPodataka").

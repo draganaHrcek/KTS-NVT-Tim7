@@ -4,14 +4,6 @@ public class KorisnikTokenDTO {
 
 	String korIme;
 	String uloga;
-String lozinka;
-	public String getLozinka() {
-	return lozinka;
-}
-
-public void setLozinka(String lozinka) {
-	this.lozinka = lozinka;
-}
 
 	String ime;
 	String prezime;

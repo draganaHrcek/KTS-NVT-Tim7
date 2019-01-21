@@ -123,15 +123,21 @@ public class OsobaController {
 	}
 	@RequestMapping(value="/izmenaLozinke", consumes = "application/json" ,method = RequestMethod.POST)
 	public ResponseEntity<List<KartaDTO>> izmenaLozinke(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		
-		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
-				
+		Osoba kor = osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
+		
+		if (!encoder.matches(korisnik.getTrenutnaLozinka(), kor.getLozinka())) {
+			
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+			
+		}
 		if(korisnik.getLozinka1().equals(korisnik.getLozinka2())) {
-			kor.setLozinka(korisnik.getLozinka1());
+			kor.setLozinka(encoder.encode(korisnik.getLozinka1()));
 			osobaService.save(kor);
 			return new ResponseEntity<>( HttpStatus.OK);
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
 	
 	}
@@ -146,7 +152,7 @@ public class OsobaController {
 		kor.setEmail(o.getEmail());
 		kor.setIme(o.getIme());
 		kor.setPrezime(o.getPrezime());
-		kor.setLozinka(o.getLozinka());
+		
 		if (o instanceof Korisnik) {
 			kor.setUloga("KORISNIK");
 			if(((Korisnik) o).getStatus()!=null) {

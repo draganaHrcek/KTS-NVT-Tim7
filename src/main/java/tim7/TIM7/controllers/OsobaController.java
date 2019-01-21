@@ -22,9 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tim7.TIM7.dto.KartaDTO;
 import tim7.TIM7.dto.KorisnikDTO;
+import tim7.TIM7.dto.KorisnikTokenDTO;
 import tim7.TIM7.dto.LoginDTO;
 import tim7.TIM7.dto.TokenDTO;
+import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Karta;
+import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Osoba;
 import tim7.TIM7.security.TokenUtils;
@@ -75,7 +78,8 @@ public class OsobaController {
 		noviKorisnik.setKorIme(registracija.getKorIme());
 		noviKorisnik.setKarte(new ArrayList<Karta> ());
 		noviKorisnik.setLokacijaDokumenta(null);
-		
+		noviKorisnik.setStatus(null);
+
 	
 	}
 	
@@ -131,6 +135,43 @@ public class OsobaController {
 		
 	
 	}
+	@RequestMapping(value="/prijavljenKorisnik", produces = "application/json",method = RequestMethod.GET)
+	public ResponseEntity<KorisnikTokenDTO> prijavljenKorisnik(@RequestHeader ("X-Auth-Token") String token ) {
+		
+
+		KorisnikTokenDTO kor= new KorisnikTokenDTO();
+		Osoba o= osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
+		
+		kor.setKorIme(o.getKorIme());
+		kor.setEmail(o.getEmail());
+		kor.setIme(o.getIme());
+		kor.setPrezime(o.getPrezime());
+		
+		if (o instanceof Korisnik) {
+			kor.setUloga("KORISNIK");
+			if(((Korisnik) o).getStatus()!=null) {
+				kor.setStatus(((Korisnik) o).getStatus().toString());
+			}
+		}else if(o instanceof Administrator) {
+			
+			kor.setUloga("ADMINISTRATOR");
+			
+		}else if (o instanceof Kondukter) {
+			kor.setUloga("KONDUKTER");
+			
+			
+		}else {
+			
+			
+			kor.setUloga("VERIFIKATOR");
+		}
+		
+		return new ResponseEntity<KorisnikTokenDTO>( kor,HttpStatus.OK);
+		
+		}
+		
+
+	
 	
 	
 }

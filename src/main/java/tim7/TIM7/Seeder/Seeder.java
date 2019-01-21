@@ -1,6 +1,9 @@
 package tim7.TIM7.Seeder;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -9,8 +12,10 @@ import org.springframework.stereotype.Component;
 
 import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Cenovnik;
+import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.TipKarteCenovnik;
@@ -53,13 +58,13 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-		//seedCenovnik();
-		//seedZona();
-		//seedLinija();
-		//connectZonaLinija();
-		//seedStavka();
-		//seedStavkaCenovnika();
-		//seedOsoba();
+//		seedCenovnik();
+//		seedZona();
+//		seedLinija();
+//		connectZonaLinija();
+//		seedStavka();
+//		seedStavkaCenovnika();
+//		seedOsoba();
 	}
 
 	public void seedCenovnik() {
@@ -68,14 +73,16 @@ public class Seeder {
 
 		before.set(2018, 9, 1);
 		after.set(2019, 6, 30);
-		Cenovnik trenutni = new Cenovnik(before.getTime(), after.getTime(), false);
+		
+
+		Cenovnik trenutni = new Cenovnik(before.getTime(), after.getTime(),new ArrayList<>(), false, 20,30,20,30);
 
 		after.set(2019, 0, 1);
-		Cenovnik prosli = new Cenovnik(before.getTime(), after.getTime(), false);
+		Cenovnik prosli = new Cenovnik(before.getTime(), after.getTime(), new ArrayList<>(),false, 10,20, 10 ,20);
 
 		before.setTime(after.getTime());
 		after.set(2019, 9, 1);
-		Cenovnik buduci = new Cenovnik(before.getTime(), after.getTime(), false);
+		Cenovnik buduci = new Cenovnik(before.getTime(), after.getTime(),new ArrayList<>(), false, 20,10,30,10);
 
 		cenovnikRepository.save(trenutni);
 		cenovnikRepository.save(prosli);
@@ -160,8 +167,8 @@ public class Seeder {
 
 	public void seedOsoba() {
 		//pass je '12345678'
-		Korisnik korisnik = new Korisnik("e", "$2a$10$OXuIGwSjybblVPa85UGMhuSdTr8/eVdAp/JwaAHTGZ4fYxg3MqMaK", "Elena", "Roncevic","e@gmail.com");
-		Administrator admin = new Administrator("a", "$2a$10$OXuIGwSjybblVPa85UGMhuSdTr8/eVdAp/JwaAHTGZ4fYxg3MqMaK", "Admin", "Adminovic","a@gmail.com");
+		Administrator admin = new Administrator("a", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "Admin", "Adminovic","a@gmail.com");
+		Korisnik korisnik = new Korisnik("e","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "Elena", "Roncevic","e@gmail.com", "", null, new ArrayList<>());
 		
 		osobaRepository.save(korisnik);
 		osobaRepository.save(admin);

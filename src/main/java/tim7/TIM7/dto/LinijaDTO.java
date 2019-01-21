@@ -11,12 +11,12 @@ public class LinijaDTO {
 	private Long id;
 	private String name;
 	private List<ZonaDTO> zones;
-	private List<Long> stationsIds;
+	private List<StanicaDTO> stations;
 	
 	public LinijaDTO() {
 		super();
 		zones = new ArrayList<ZonaDTO>();
-		stationsIds = new ArrayList<Long>();
+		stations = new ArrayList<StanicaDTO>();
 	}
 	
 	public LinijaDTO(Linija line) {
@@ -30,19 +30,20 @@ public class LinijaDTO {
 		}
 		zones = temp;
 		
-		List<Long> temp2 = new ArrayList<Long>();
+		List<StanicaDTO> temp2 = new ArrayList<StanicaDTO>();
 		for(Stanica station : line.getStanice()) {
-			temp2.add(station.getId());
+			StanicaDTO stationDTO = new StanicaDTO(station);
+			temp2.add(stationDTO);
 		}
-		stationsIds = temp2;
+		stations = temp2;
 	}
 
-	public LinijaDTO(Long id, String name, List<ZonaDTO> zones, List<Long> stationsIds) {
+	public LinijaDTO(Long id, String name, List<ZonaDTO> zones, List<StanicaDTO> stations) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.zones = zones;
-		this.stationsIds = stationsIds;
+		this.stations = stations;
 	}
 
 
@@ -63,20 +64,20 @@ public class LinijaDTO {
 		this.name = name;
 	}
 
-	public List<ZonaDTO> getZonesIds() {
+	public List<ZonaDTO> getZones() {
 		return zones;
 	}
 
-	public void setZonesIds(List<ZonaDTO> zonesIds) {
-		this.zones = zonesIds;
+	public void setZones(List<ZonaDTO> zones) {
+		this.zones = zones;
 	}
 
-	public List<Long> getStationsIds() {
-		return stationsIds;
+	public List<StanicaDTO> getStations() {
+		return stations;
 	}
 
-	public void setStationsIds(List<Long> stationsIds) {
-		this.stationsIds = stationsIds;
+	public void setStations(List<StanicaDTO> stations) {
+		this.stations = stations;
 	}
 
 }

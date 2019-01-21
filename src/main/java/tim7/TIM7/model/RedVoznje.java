@@ -1,5 +1,6 @@
 package tim7.TIM7.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -22,11 +23,15 @@ public class RedVoznje {
 	private Long id;
 	
 	@OneToMany(mappedBy = "redVoznje", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-	List <RasporedVoznje> rasporedVoznje;
+	List <RasporedVoznje> rasporediVoznje;
 	
 	
 	@Column(name="obrisan")
 	boolean obrisan;
+	
+	@Column(name="datum_objavljivanja")
+	Date datumObjavljivanja;
+	
 
 
 	public RedVoznje() {
@@ -36,14 +41,33 @@ public class RedVoznje {
 	}
 
 
-	public List<RasporedVoznje> getRasporedVoznje() {
-		return rasporedVoznje;
+	
+
+
+	public RedVoznje(boolean obrisan, Date datumObjavljivanja) {
+		super();
+		this.obrisan = obrisan;
+		this.datumObjavljivanja = datumObjavljivanja;
 	}
 
 
-	public void setRasporedVoznje(List<RasporedVoznje> rasporedVoznje) {
-		this.rasporedVoznje = rasporedVoznje;
+
+
+
+	public List<RasporedVoznje> getRasporediVoznje() {
+		return rasporediVoznje;
 	}
+
+
+
+
+
+	public void setRasporediVoznje(List<RasporedVoznje> rasporediVoznje) {
+		this.rasporediVoznje = rasporediVoznje;
+	}
+
+
+
 
 
 	public boolean isObrisan() {
@@ -53,6 +77,28 @@ public class RedVoznje {
 
 	public void setObrisan(boolean obrisan) {
 		this.obrisan = obrisan;
+	}
+
+
+	public Date getDatumObjavljivanja() {
+		return datumObjavljivanja;
+	}
+
+
+	public void setDatumObjavljivanja(Date datumObjavljivanja) {
+		this.datumObjavljivanja = datumObjavljivanja;
+	}
+
+
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	

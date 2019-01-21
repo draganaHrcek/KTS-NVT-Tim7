@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import tim7.TIM7.dto.LinijaDTO;
 import tim7.TIM7.dto.RutaDTO;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.services.LinijaService;
@@ -33,4 +34,20 @@ public class LinijaController {
 		}
 		return new ResponseEntity<>(rute, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value="/zaCenovnik", produces = "application/json" ,method = RequestMethod.GET)
+	public ResponseEntity<List<LinijaDTO>> getLinije(@RequestHeader ("X-Auth-Token") String token ) {
+		
+		List<Linija> linije = linijaService.findAll();
+		List<LinijaDTO> linijeDTO = new ArrayList<LinijaDTO>();
+		
+		for (Linija linija : linije) {
+			linijeDTO.add(new LinijaDTO(linija));
+		}
+		
+		return new ResponseEntity<List<LinijaDTO>>(linijeDTO, HttpStatus.OK);
+	
+	}
+
 }
+

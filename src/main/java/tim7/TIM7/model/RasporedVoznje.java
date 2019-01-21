@@ -48,6 +48,20 @@ public class RasporedVoznje {
 	}
 
 
+	
+
+
+	public RasporedVoznje(DanUNedelji danUNedelji, List<LocalTime> vremena, Linija linija, RedVoznje redVoznje,
+			boolean obrisan) {
+		super();
+		this.danUNedelji = danUNedelji;
+		this.vremena = vremena;
+		this.linija = linija;
+		this.redVoznje = redVoznje;
+		this.obrisan = obrisan;
+	}
+
+
 
 
 
@@ -105,6 +119,24 @@ public class RasporedVoznje {
 	public void setObrisan(boolean obrisan) {
 		this.obrisan = obrisan;
 	}
+
+
+
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 	
 	
 

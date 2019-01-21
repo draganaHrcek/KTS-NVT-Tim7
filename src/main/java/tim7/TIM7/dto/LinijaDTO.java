@@ -1,64 +1,82 @@
 package tim7.TIM7.dto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.Stanica;
 import tim7.TIM7.model.Zona;
 
 public class LinijaDTO {
 	private Long id;
-	private String naziv;
-	private ArrayList<ZonaDTO> zone;
+	private String name;
+	private List<ZonaDTO> zones;
+	private List<Long> stationsIds;
 	
 	public LinijaDTO() {
 		super();
-	}
-
-	public LinijaDTO(Long id, String naziv, ArrayList<ZonaDTO> zone) {
-		super();
-		this.id = id;
-		this.naziv = naziv;
-		this.zone = zone;
+		zones = new ArrayList<ZonaDTO>();
+		stationsIds = new ArrayList<Long>();
 	}
 	
-	public LinijaDTO(String naziv) {
+	public LinijaDTO(Linija line) {
 		super();
-		this.naziv = naziv;
-		this.zone = new ArrayList<ZonaDTO>();
+		id = line.getId();
+		name = line.getNaziv();
+		List<ZonaDTO> temp = new ArrayList<ZonaDTO>();
+		for(Zona zone : line.getZone()) {
+			ZonaDTO zonaDTO = new ZonaDTO(zone);
+			temp.add(zonaDTO);
+		}
+		zones = temp;
+		
+		List<Long> temp2 = new ArrayList<Long>();
+		for(Stanica station : line.getStanice()) {
+			temp2.add(station.getId());
+		}
+		stationsIds = temp2;
 	}
+
+	public LinijaDTO(Long id, String name, List<ZonaDTO> zones, List<Long> stationsIds) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.zones = zones;
+		this.stationsIds = stationsIds;
+	}
+
+
 
 	public Long getId() {
 		return id;
 	}
-
-	public String getNaziv() {
-		return naziv;
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setNaziv(String naziv) {
-		this.naziv = naziv;
+	public String getName() {
+		return name;
 	}
 
-	public ArrayList<ZonaDTO> getZone() {
-		return zone;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setZone(ArrayList<ZonaDTO> zone) {
-		this.zone = zone;
+	public List<ZonaDTO> getZonesIds() {
+		return zones;
 	}
-	
-	public LinijaDTO(Linija linija){
-		this.naziv = linija.getNaziv();
-		this.id = linija.getId();
-		this.zone = new ArrayList<ZonaDTO>();
-		for (Zona zona : linija.getZone()){
-			ZonaDTO zonaDTO= new ZonaDTO(zona);
-			this.zone.add(zonaDTO);
-		}
+
+	public void setZonesIds(List<ZonaDTO> zonesIds) {
+		this.zones = zonesIds;
 	}
-	
-	
-	
-	
+
+	public List<Long> getStationsIds() {
+		return stationsIds;
+	}
+
+	public void setStationsIds(List<Long> stationsIds) {
+		this.stationsIds = stationsIds;
+	}
 
 }

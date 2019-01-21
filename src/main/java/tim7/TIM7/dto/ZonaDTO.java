@@ -3,38 +3,37 @@ package tim7.TIM7.dto;
 import tim7.TIM7.model.Zona;
 
 public class ZonaDTO {
-	private Long id;
-	private String naziv;
 	
-	public ZonaDTO(Long id, String naziv) {
-		super();
-		this.id = id;
-		this.naziv = naziv;
-	}
+	private String name;
+	private Long id;
 	
 	public ZonaDTO(){
 		super();
 	}
-
+	
 	public ZonaDTO(Zona zona) {
-		this.id = zona.getId();
-		this.naziv = zona.getNaziv();
+		super();
+		id=zona.getId();
+		name=zona.getNaziv();
 	}
 
+	public ZonaDTO(Long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public String getName() {
+		return name;
 	}
 
-	public String getNaziv() {
-		return naziv;
-	}
-
-	public void setNaziv(String naziv) {
-		this.naziv = naziv;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	

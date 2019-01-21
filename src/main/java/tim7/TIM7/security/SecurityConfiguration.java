@@ -74,6 +74,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/karte/kupovinaKarte").
 					hasAuthority("KORISNIK")
+				.antMatchers(HttpMethod.DELETE, "/linije/brisi/{id}").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/linije/mijenjaj").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.POST, "/linije/dodaj").
+					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/**")
 				
 				//ZA SADA NAM NE TREBAJU PRAVA PRISTUPA SVI MOGU SVE ZAHTEVE(POST, GET, PUT,....)

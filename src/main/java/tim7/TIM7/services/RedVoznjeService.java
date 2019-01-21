@@ -1,6 +1,7 @@
 package tim7.TIM7.services;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class RedVoznjeService {
 	
 	@Autowired
 	LinijaRepository linijaRepository;
+	
 	
 	public RedVoznje findById(Long id){
 		return redVoznjeRepository.findById(id).get();
@@ -55,7 +57,7 @@ public class RedVoznjeService {
 	//za postavljanje aktuelnog reda voznje
 	public RedVoznjeDTO getTrenutniRedVoznje(){
 		List<RedVoznje> aktivniRedoviVoznje=redVoznjeRepository.findByObrisanFalse();
-		if (aktivniRedoviVoznje == null){
+		if (aktivniRedoviVoznje.size()==0){
 			return null;
 		}else{
 			Calendar now = Calendar.getInstance();
@@ -76,8 +78,7 @@ public class RedVoznjeService {
 					novi=aktivniRedoviVoznje.get(0);
 				}
 				if (now.getTime().after(novi.getDatumObjavljivanja())){
-					stari.setObrisan(true);
-					save(stari);
+					delete(stari.getId());
 					return new RedVoznjeDTO(novi);
 				}else{
 					return new RedVoznjeDTO(stari);
@@ -87,26 +88,47 @@ public class RedVoznjeService {
 		
 	}
 	
-	//ukoliko budem radila izmenu buduceg reda voznje
+	//dobavljanje buduceg reda voznje
 	public RedVoznjeDTO getBuduciRedVoznje() {
-		RedVoznjeDTO trenutniRedVoznjeDto = getTrenutniRedVoznje();
-		if (trenutniRedVoznjeDto==null){
+		//ne mora da postoji trenutni da bi postojao buduci
+		/*RedVoznjeDTO trenutniRedVoznjeDto = getTrenutniRedVoznje();
+		RedVoznje buduciRedVoznje=redVoznjeRepository.findByIdNotAndObrisanFalse(trenutniRedVoznjeDto.getId());
+		if (buduciRedVoznje==null){
 			return null;
 		}else{
-			List<RedVoznje> aktivniRedoviVoznje=redVoznjeRepository.findByObrisanFalse();
-			if (aktivniRedoviVoznje.size()==1){
+			return new RedVoznjeDTO(buduciRedVoznje);
+		}*/
+		
+		RedVoznjeDTO trenutniRedVoznjeDto = getTrenutniRedVoznje();
+		RedVoznjeDTO buduciRedVodnje=null;
+		if (trenutniRedVoznjeDto==null){
+			List<RedVoznje> neobrisaniRedoviVoznje = redVoznjeRepository.findByObrisanFalse();
+			if (neobrisaniRedoviVoznje.size()==0){
 				return null;
 			}else{
-				RedVoznje buduciRedVoznje=redVoznjeRepository.findByIdNot(trenutniRedVoznjeDto.getId());
+				return new RedVoznjeDTO(neobrisaniRedoviVoznje.get(0));
+			}
+		}else{
+			RedVoznje buduciRedVoznje=redVoznjeRepository.findByIdNotAndObrisanFalse(trenutniRedVoznjeDto.getId());
+			if (buduciRedVoznje==null){
+				return null;
+			}else{
 				return new RedVoznjeDTO(buduciRedVoznje);
 			}
 		}
+		
+		
+
 	}
 	
 	
 	//za dobijanje zeljenog rasporeda
 	public RasporedVoznjeDTO getSpecificRasporedVoznje(DanUNedelji danUNedelji, String nazivLinije){
-		Long idTrenutnogRedaVoznje = getTrenutniRedVoznje().getId();
+		RedVoznjeDTO trenutniRedVoznje = getTrenutniRedVoznje();
+		if (trenutniRedVoznje==null){
+			return null;
+		}
+		Long idTrenutnogRedaVoznje=trenutniRedVoznje.getId();
 		RedVoznje redVoznje = findById(idTrenutnogRedaVoznje);
 		Linija linija = linijaRepository.findByNaziv(nazivLinije);
 		RasporedVoznje rasporedVoznje = rasporedVoznjeRepository.findByDanUNedeljiAndLinijaAndRedVoznje(danUNedelji, linija, redVoznje);
@@ -116,6 +138,40 @@ public class RedVoznjeService {
 			return new RasporedVoznjeDTO(rasporedVoznje);
 		}
 		
+	}
+	
+	
+	//za kreiranje novog reda voznje, postavljace se samo godina, mesec i dan, ne znam da li vreme da bude 00:00 ili 01:00, za sad 0
+	public String createRedVoznje(Date datumObjavljivanja){
+		RedVoznjeDTO buduciRedVoznje=getBuduciRedVoznje();
+		Calendar sutrasnjiDatum=Calendar.getInstance();
+		sutrasnjiDatum.add(Calendar.DAY_OF_MONTH, 1);
+		sutrasnjiDatum.getTime().setHours(0);
+		sutrasnjiDatum.getTime().setMinutes(0);
+		if (buduciRedVoznje!=null){
+			return "POSTOJI";
+		}else if(datumObjavljivanja.before(sutrasnjiDatum.getTime())){
+			return "LOS DATUM"; 
+		}else{
+			RedVoznje noviRedVoznje = new RedVoznje(false, datumObjavljivanja);
+			save(noviRedVoznje);
+			return "KREIRAN";
+		}
+	}
+	
+	
+	//za brisanje buduceg reda voznje, moze da se obrise samo ako nije prosao datum objavljivanja
+	//iako postavljanje trenutnog reda voznje postavlja i status da li je obrisan, za svaki slucaj
+	//pisem proveru
+	
+	public String deleteBuduciRedVoznje(){
+		RedVoznjeDTO buduciRedVoznje = getBuduciRedVoznje();
+		if (buduciRedVoznje==null){
+			return "NE POSTOJI";
+		}else{
+			delete(buduciRedVoznje.getId());
+			return "OBRISAN";
+		}
 	}
 
 	

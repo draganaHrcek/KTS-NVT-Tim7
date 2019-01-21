@@ -95,6 +95,12 @@ public class Zona {
 	public void setKarte(List<VisednevnaKarta> karte) {
 		this.karte = karte;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 	
 	
 }

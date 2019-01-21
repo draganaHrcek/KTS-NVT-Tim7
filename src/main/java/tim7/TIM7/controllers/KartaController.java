@@ -66,7 +66,7 @@ public class KartaController {
 			kartaDTO.setTipPrevoza(k.getTipPrevoza().toString());
 			if(k instanceof DnevnaKarta) {
 				kartaDTO.setTipKarte("DNEVNA");
-				kartaDTO.setTipPrevoza(((DnevnaKarta) k).getLinija().getNaziv());
+				kartaDTO.setLinijaZona(((DnevnaKarta)k).getLinija().getNaziv());
 				kartaDTO.setCekiranaDnevnaKarta(((DnevnaKarta) k).isUpotrebljena());
 			} else {
 				kartaDTO.setLinijaZona(((VisednevnaKarta)k).getZona().getNaziv());

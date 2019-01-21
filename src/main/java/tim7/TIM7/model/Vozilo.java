@@ -34,10 +34,6 @@ public class Vozilo {
 	
 	@Column(name="obrisan")
 	boolean obrisan;
-
-	
-	@Column(name="oznaka")
-	String oznaka;
 	
 	public boolean isObrisan() {
 		return obrisan;
@@ -45,14 +41,6 @@ public class Vozilo {
 
 	public void setObrisan(boolean obrisan) {
 		this.obrisan = obrisan;
-	}
-
-	public String getOznaka() {
-		return oznaka;
-	}
-
-	public void setOznaka(String oznaka) {
-		this.oznaka = oznaka;
 	}
 
 	public Vozilo() {

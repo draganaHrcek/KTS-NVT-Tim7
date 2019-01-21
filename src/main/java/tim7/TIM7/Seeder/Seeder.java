@@ -82,8 +82,8 @@ public class Seeder {
 //		connectZonaLinija();
 //		seedStavka();
 //		seedStavkaCenovnika();
-		seedOsoba();
-		seedZoneLinijeStaniceRedoviRasporediVoznje();
+//		seedOsoba();
+//		seedStanica();
 	}
 
 	public void seedCenovnik() {
@@ -182,6 +182,11 @@ public class Seeder {
 	}
 
 	public void seedVozilo() {
+
+	}
+	
+	public void seedStanica() {
+		
 	}
 
 	public void seedOsoba() {

@@ -27,7 +27,7 @@ public class ZonaController {
 	ZonaService zonaService;
 	
 	@RequestMapping(path="/dodaj", method = RequestMethod.POST, consumes="application/json")
-	public ResponseEntity<Void> addNovaZona(@RequestBody ZonaDTO newZone){
+	public ResponseEntity<Void> addNovaZona(@RequestBody ZonaDTO newZone, @RequestHeader ("X-Auth-Token") String token){
 		if(zonaService.addNewZone(newZone)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
@@ -36,7 +36,7 @@ public class ZonaController {
 	}
 	
 	@RequestMapping(path="/brisi/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteZona(@PathVariable Long id){
+	public ResponseEntity<Void> deleteZona(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
 		if(zonaService.deleteZone(id)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
@@ -45,7 +45,7 @@ public class ZonaController {
 	}
 	
 	@RequestMapping(path="/mijenjaj", method = RequestMethod.PUT, consumes="application/json")
-	public ResponseEntity<Void> updateZona(@RequestBody ZonaDTO updatedZone){
+	public ResponseEntity<Void> updateZona(@RequestBody ZonaDTO updatedZone, @RequestHeader ("X-Auth-Token") String token){
 		if(zonaService.updateZone(updatedZone)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {

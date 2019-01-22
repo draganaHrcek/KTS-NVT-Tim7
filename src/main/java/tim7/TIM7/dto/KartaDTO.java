@@ -7,6 +7,8 @@ import tim7.TIM7.model.TipKarte;
 
 public class KartaDTO {
 	
+	String kod;
+	
 	Date datumIsteka;
 	Double cena;
 	String tipKarte;
@@ -14,6 +16,14 @@ public class KartaDTO {
 	String linijaZona;
 	String statusKorisnika;
 	boolean cekiranaDnevnaKarta;
+	
+	public String getKod() {
+		return kod;
+	}
+
+	public void setKod(String kod) {
+		this.kod = kod;
+	}
 
 	public boolean isCekiranaDnevnaKarta() {
 		return cekiranaDnevnaKarta;

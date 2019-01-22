@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,7 @@ public class KartaController {
 			kartaDTO.setCena(k.getCena());
 			kartaDTO.setDatumIsteka(k.getDatumIsteka());
 			kartaDTO.setTipPrevoza(k.getTipPrevoza().toString());
+			kartaDTO.setKod(k.getKod());
 			if(k instanceof DnevnaKarta) {
 				kartaDTO.setTipKarte("DNEVNA");
 				kartaDTO.setLinijaZona(((DnevnaKarta)k).getLinija().getNaziv());
@@ -84,6 +86,13 @@ public class KartaController {
 		
 		double cena= kartaService.cenaKarte(karta,kor);
 		
+		int length = 10;
+	    boolean useLetters = true;
+	    boolean useNumbers = false;
+	  
+	    
+	    
+		
 		if (karta.getTipKarte().equals("DNEVNA")) {
 			
 			DnevnaKarta k= new DnevnaKarta ();
@@ -91,7 +100,7 @@ public class KartaController {
 			k.setTipPrevoza(TipVozila.valueOf(karta.getTipPrevoza()));
 			k.setLinija(linijaService.findByName(karta.getLinijaZona()));
 			k.setCena(cena);
-			
+			k.setKod((UUID.randomUUID().toString()).substring(0, 7));
 			k.setKorisnik(kor);
 			kor.getKarte().add(k);
 			kartaService.save(k);
@@ -114,6 +123,7 @@ public class KartaController {
 			k.setTipPrevoza(TipVozila.valueOf(karta.getTipPrevoza()));
 			k.setZona(zonaService.findByName(karta.getLinijaZona()));
 			k.setCena(cena);
+			k.setKod((UUID.randomUUID().toString()).substring(0, 7));
 			
 			
 			

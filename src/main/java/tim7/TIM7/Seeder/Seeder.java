@@ -15,6 +15,7 @@ import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DanUNedelji;
 import tim7.TIM7.model.Karta;
+import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.RasporedVoznje;
@@ -25,6 +26,7 @@ import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.TipKarteCenovnik;
 import tim7.TIM7.model.TipVozila;
+import tim7.TIM7.model.Verifikator;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.LinijaRepository;
@@ -82,7 +84,7 @@ public class Seeder {
 //		connectZonaLinija();
 //		seedStavka();
 //		seedStavkaCenovnika();
-//		seedOsoba();
+//	seedOsoba();
 //		seedStanica();
 	}
 
@@ -196,6 +198,19 @@ public class Seeder {
 		
 		osobaRepository.save(korisnik);
 		osobaRepository.save(admin);
+		//KORISNICI ZA TESTOVE 
+		
+		
+		Administrator adminTest = new Administrator("AdminTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "AdminTest", "AdminTest","a@gmail.com");
+		Korisnik korisnikTest = new Korisnik("KorisnikTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KorisnikTest", "KorisnikTest","e@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
+		Verifikator verifikatorTest = new Verifikator("VerifikatorTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "VerifikatorTest", "VerifikatorTest","a@gmail.com");
+		Kondukter kondukterTest = new Kondukter("KondukterTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KondukterTest", "KondukterTest","a@gmail.com");
+		
+		osobaRepository.save(korisnikTest);
+		osobaRepository.save(adminTest);
+		osobaRepository.save(verifikatorTest);
+		osobaRepository.save(kondukterTest);
+		
 	}
 	
 	

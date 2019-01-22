@@ -89,9 +89,7 @@ public class RasporedVoznjeService {
 		if (buduciRedVoznje==null){
 			return "NE POSTOJI";
 		}else{
-			RasporedVoznje zaBrisanje=rasporedVoznjeRepository.findById(id).get();
-			zaBrisanje.setObrisan(true);
-			rasporedVoznjeRepository.save(zaBrisanje);
+			delete(buduciRedVoznje.getId());
 			return "OBRISAN";
 		}
 	}

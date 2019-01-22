@@ -185,57 +185,12 @@ public class RedVoznjeService {
 		}
 	}
 	
-	/*
-	//za kreiranje novog rasporeda voznje u buducem redu voznje
-	public String createRasporedVoznje(RasporedVoznjeDTO rasporedVoznjeDto){
-		RedVoznjeDTO buduciRedVoznje = getBuduciRedVoznje();
-		if (buduciRedVoznje==null){
-			return "NE POSTOJI";
-		}else{
-			RedVoznje buduci=findById(buduciRedVoznje.getId());
-			Linija linija = linijaRepository.findByNaziv(rasporedVoznjeDto.getNazivLinije());
-			RasporedVoznje noviRaspored=rasporedVoznjeRepository.findByDanUNedeljiAndLinijaAndRedVoznjeAndObrisanFalse(rasporedVoznjeDto.getDanUNedelji(), linija, buduci);
-			if (noviRaspored==null){
-				noviRaspored=new RasporedVoznje(rasporedVoznjeDto.getDanUNedelji(), rasporedVoznjeDto.getVremena(), linija, buduci, false);
-				rasporedVoznjeRepository.save(noviRaspored);
-				return "KREIRAN";
-			}else{
-				return "VEC POSTOJI";
-			}
-		}
-	}
-	*/
-	
-	/*
-	//za brisanje rasporeda voznje
-	public String deleteRasporedVoznje(Long id){
-		RedVoznjeDTO buduciRedVoznje = getBuduciRedVoznje();
-		if (buduciRedVoznje==null){
-			return "NE POSTOJI";
-		}else{
-			RasporedVoznje zaBrisanje=rasporedVoznjeRepository.findById(id).get();
-			zaBrisanje.setObrisan(true);
-			rasporedVoznjeRepository.save(zaBrisanje);
-			return "OBRISAN";
-		}
-	}
-	*/
 	
 	
-	/*
-	//za izmenu vremena rasporeda voznje
-	public String changeRasporedVoznje(Long id, List<LocalTime> vremena){
-		RedVoznjeDTO buduciRedVoznje = getBuduciRedVoznje();
-		if (buduciRedVoznje==null){
-			return "NE POSTOJI";
-		}else{
-			RasporedVoznje zaIzmenu=rasporedVoznjeRepository.findById(id).get();
-			zaIzmenu.setVremena(vremena);
-			rasporedVoznjeRepository.save(zaIzmenu);
-			return "IZMENJEN";
-		}
-	}
-	*/
+	
+	
+	
+	
 
 	
 }

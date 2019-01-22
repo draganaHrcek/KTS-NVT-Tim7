@@ -386,7 +386,8 @@ public class Seeder {
 		redVoznjeRepository.save(new RedVoznje(true, vreme.getTime()));
 		
 		vreme.set(2019, 10, 2, 0, 0);
-		redVoznjeRepository.save(new RedVoznje(false, vreme.getTime()));
+		RedVoznje redVoznje3=new RedVoznje(false,vreme.getTime());
+		redVoznjeRepository.save(redVoznje3);
 		
 		
 		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.RADNI, linija1, redVoznje1, false));
@@ -405,6 +406,15 @@ public class Seeder {
 		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.SUBOTA, linija5, redVoznje1, false));
 		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija5, redVoznje1, false));
 	
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.RADNI, linija1, redVoznje3, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.SUBOTA, linija1, redVoznje3, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija1, redVoznje3, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.RADNI, linija2, redVoznje3, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.SUBOTA, linija2, redVoznje3, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija2, redVoznje3, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija2, redVoznje3, true));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija2, redVoznje3, true));
+		
 		seedRasporedVoznjeVremena();
 	}
 

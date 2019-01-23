@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -135,6 +136,21 @@ public class KartaController {
 		
 		
 		return new ResponseEntity<>( HttpStatus.CREATED);
+	}
+	
+	
+	@RequestMapping(value="/proveriKartu/{tipVozila}/{nazivLinije}/{kod}", consumes = "application/json" ,method = RequestMethod.POST)
+	public ResponseEntity<String> checkKarta(@RequestHeader ("X-Auth-Token") String token, @PathVariable String tipVozila, @PathVariable String nazivLinije, @PathVariable String kod){
+		String statusProvere = kartaService.checkKarta(TipVozila.valueOf(tipVozila), nazivLinije, kod);
+		if (statusProvere.equals("NE POSTOJI")){
+			return new ResponseEntity<>("Ne postoji vazeca karta", HttpStatus.BAD_REQUEST);
+		}else if (statusProvere.equals("POSTOJI")){
+			return new ResponseEntity<>("Karta sa zadatim kodom je vazeca", HttpStatus.OK);
+		}else if (statusProvere.equals("UPOTREBLJENA")){
+			return new ResponseEntity<>("Karta sa zadatim kodom je vec cekirana", HttpStatus.IM_USED);
+		}else{
+			return new ResponseEntity<>("Karta je uspesno cekirana", HttpStatus.OK);
+		}
 	}
 	
 }

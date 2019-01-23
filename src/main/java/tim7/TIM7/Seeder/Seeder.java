@@ -1,6 +1,10 @@
 package tim7.TIM7.Seeder;
 
+import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Component;
 import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DanUNedelji;
+import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
@@ -24,11 +29,14 @@ import tim7.TIM7.model.Stanica;
 import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
+import tim7.TIM7.model.TipKarte;
 import tim7.TIM7.model.TipKarteCenovnik;
 import tim7.TIM7.model.TipVozila;
 import tim7.TIM7.model.Verifikator;
+import tim7.TIM7.model.VisednevnaKarta;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
+import tim7.TIM7.repositories.KartaRepository;
 import tim7.TIM7.repositories.LinijaRepository;
 import tim7.TIM7.repositories.OsobaRepository;
 import tim7.TIM7.repositories.RasporedVoznjeRepository;
@@ -72,6 +80,9 @@ public class Seeder {
 	
 	@Autowired
 	StanicaRepository stanicaRepository;
+	
+	@Autowired
+	KartaRepository kartaRepository;
 
 	public Seeder() {
 	}
@@ -84,8 +95,10 @@ public class Seeder {
 //		connectZonaLinija();
 //		seedStavka();
 //		seedStavkaCenovnika();
-//	seedOsoba();
+//		seedOsoba();
 //		seedStanica();
+//		seedZoneLinijeStaniceRedoviRasporediVoznje();
+		seedKarte();
 	}
 
 	public void seedCenovnik() {
@@ -418,4 +431,30 @@ public class Seeder {
 		seedRasporedVoznjeVremena();
 	}
 
+	public void seedKarte(){
+		Korisnik korisnik = (Korisnik)osobaRepository.findByKorIme("KorisnikTest");
+		
+		LocalDate cd = LocalDate.now();
+		Linija linija1=linijaRepository.findByNaziv("NazivLinije1");
+		
+		Zona zona1 = zonaRepository.findByNaziv("NazivZone1");
+		
+		//proci ce za linije 1,2,3
+		VisednevnaKarta mesecna = new VisednevnaKarta(TipKarte.MESECNA, zona1, true, TipVozila.AUTOBUS, "kod1", Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear())).atStartOfDay(ZoneId.systemDefault()).toInstant()),900.0,korisnik);
+		kartaRepository.save(mesecna);
+		
+		//proci ce za linije 1,2,3
+		VisednevnaKarta godisnja1 = new VisednevnaKarta(TipKarte.GODISNJA, zona1, true, TipVozila.METRO, "kod2", Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()), 10000.0,korisnik);
+		kartaRepository.save(godisnja1);
+		
+		VisednevnaKarta godisnja2 = new VisednevnaKarta(TipKarte.GODISNJA, zona1, false, TipVozila.TRAMVAJ, "kod3", Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()), 11000.0,korisnik);
+		kartaRepository.save(godisnja2);
+		
+		
+		DnevnaKarta dnevna1 = new DnevnaKarta(false,linija1,TipVozila.METRO,"kod4",new Date(),60.0,korisnik);
+		kartaRepository.save(dnevna1);
+		
+		DnevnaKarta dnevna2 = new DnevnaKarta(true,linija1,TipVozila.AUTOBUS,"kod5",new Date(),120.0,korisnik);
+		kartaRepository.save(dnevna2);
+	}
 }

@@ -3,7 +3,8 @@ package tim7.TIM7.dto;
 
 public class KorisnikDTO {
 	
-	private String  korIme;
+	private String korIme;
+	private String trenutnaLozinka;
     private String lozinka1;
     private String lozinka2;
     private String ime;
@@ -58,6 +59,14 @@ public class KorisnikDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getTrenutnaLozinka() {
+		return trenutnaLozinka;
+	}
+
+	public void setTrenutnaLozinka(String trenutnaLozinka) {
+		this.trenutnaLozinka = trenutnaLozinka;
 	}
 
 	public KorisnikDTO() {

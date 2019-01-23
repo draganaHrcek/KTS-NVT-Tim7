@@ -24,6 +24,10 @@ public abstract class Karta {
 	@Column(name="tip_prevoza")
 	TipVozila tipPrevoza;
 	
+	
+	@Column(name="kod")
+	String kod;
+	
 	public TipVozila getTipPrevoza() {
 		return tipPrevoza;
 	}
@@ -94,6 +98,18 @@ public abstract class Karta {
 
 	public void setKorisnik(Korisnik korisnik) {
 		this.korisnik = korisnik;
+	}
+
+
+
+	public String getKod() {
+		return kod;
+	}
+
+
+
+	public void setKod(String kod) {
+		this.kod = kod;
 	}
 	
 	

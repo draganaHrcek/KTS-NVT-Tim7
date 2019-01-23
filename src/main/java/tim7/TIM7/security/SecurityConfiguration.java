@@ -76,6 +76,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/karte/kupovinaKarte").
 					hasAuthority("KORISNIK")
+				.antMatchers(HttpMethod.GET, "/redVoznje/trenutni").
+					permitAll()
+				.antMatchers(HttpMethod.GET, "/redVoznje/buduci").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.GET, "/redVoznje/raspored").
+					permitAll()
+				.antMatchers(HttpMethod.POST, "/redVoznje/kreirajNovi").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.DELETE, "/redVoznje/obrisiBuduci").
+					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.DELETE, "/linije/brisi/{id}").
 					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.PUT, "/linije/mijenjaj").
@@ -108,6 +118,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					hasAuthority("KORISNIK")
 					.antMatchers(HttpMethod.POST, "/osoba/izmenaPodataka").
 					hasAuthority("KORISNIK")
+					.antMatchers(HttpMethod.POST, "/osoba/izmenaLozinke").
+					hasAnyAuthority("KORISNIK","ADMIN","KONDUKTER","VERIFIKATOR")
+					.antMatchers(HttpMethod.POST, "/zone/dodaj").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.POST, "/redVoznje/izmeniBuduci").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.POST, "/redVoznje/kreirajRaspored").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.DELETE, "/redVoznje/obrisiRaspored/{id}").
+					hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.POST, "/redVoznje/izmeniRasporedVremena").
+					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/**")
 				
 				

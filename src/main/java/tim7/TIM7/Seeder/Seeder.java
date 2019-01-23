@@ -16,11 +16,20 @@ import tim7.TIM7.model.DanUNedelji;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.RasporedVoznje;
+import tim7.TIM7.model.Karta;
+import tim7.TIM7.model.Kondukter;
+import tim7.TIM7.model.Korisnik;
+import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.RasporedVoznje;
+import tim7.TIM7.model.RedVoznje;
+import tim7.TIM7.model.Stanica;
+import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.TipKarteCenovnik;
 import tim7.TIM7.model.TipVozila;
 import tim7.TIM7.model.Vozilo;
+import tim7.TIM7.model.Verifikator;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.LinijaRepository;
@@ -79,6 +88,8 @@ public class Seeder {
 //		seedStavkaCenovnika();
 //		seedOsoba();
 //		seedIkija();
+//	seedOsoba();
+//		seedStanica();
 	}
 
 	public void seedCenovnik() {
@@ -208,6 +219,19 @@ public class Seeder {
 		
 		osobaRepository.save(korisnik);
 		osobaRepository.save(admin);
+		//KORISNICI ZA TESTOVE 
+		
+		
+		Administrator adminTest = new Administrator("AdminTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "AdminTest", "AdminTest","a@gmail.com");
+		Korisnik korisnikTest = new Korisnik("KorisnikTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KorisnikTest", "KorisnikTest","e@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
+		Verifikator verifikatorTest = new Verifikator("VerifikatorTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "VerifikatorTest", "VerifikatorTest","a@gmail.com");
+		Kondukter kondukterTest = new Kondukter("KondukterTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KondukterTest", "KondukterTest","a@gmail.com");
+		
+		osobaRepository.save(korisnikTest);
+		osobaRepository.save(adminTest);
+		osobaRepository.save(verifikatorTest);
+		osobaRepository.save(kondukterTest);
+		
 	}
 	
 	
@@ -243,6 +267,166 @@ public class Seeder {
 			rasporedVoznjeRepository.save(rasporediVoznje.get(i));
 		}
 		
+	}
+	
+	public void seedZoneLinijeStaniceRedoviRasporediVoznje(){
+		zonaRepository.save(new Zona("NazivZone1", false));
+		zonaRepository.save(new Zona("NazivZone2", false));
+		zonaRepository.save(new Zona("NazivZone3", false));
+		zonaRepository.save(new Zona("NazivZone4", true));
+		zonaRepository.save(new Zona("NazivZone5", true));
+		
+		linijaRepository.save(new Linija("NazivLinije1",false));
+		linijaRepository.save(new Linija("NazivLinije2",false));
+		linijaRepository.save(new Linija("NazivLinije3",false));
+		linijaRepository.save(new Linija("NazivLinije4",false));
+		linijaRepository.save(new Linija("NazivLinije5",false));
+		linijaRepository.save(new Linija("NazivLinije6",true));
+		
+		Zona zona1=zonaRepository.findByNaziv("NazivZone1");
+		Zona zona2=zonaRepository.findByNaziv("NazivZone2");
+		Zona zona3=zonaRepository.findByNaziv("NazivZone3");
+		Zona zona4=zonaRepository.findByNaziv("NazivZone4");
+		Zona zona5=zonaRepository.findByNaziv("NazivZone5");
+		
+		Linija linija1=linijaRepository.findByNaziv("NazivLinije1");
+		Linija linija2=linijaRepository.findByNaziv("NazivLinije2");
+		Linija linija3=linijaRepository.findByNaziv("NazivLinije3");
+		Linija linija4=linijaRepository.findByNaziv("NazivLinije4");
+		Linija linija5=linijaRepository.findByNaziv("NazivLinije5");
+		Linija linija6=linijaRepository.findByNaziv("NazivLinije6");
+		
+		linija1.getZone().add(zona1);
+		linija1.getZone().add(zona2);
+		linija1.getZone().add(zona3);
+		linijaRepository.save(linija1);
+		
+		linija2.getZone().add(zona1);
+		linija2.getZone().add(zona2);
+		linijaRepository.save(linija2);
+		
+		linija3.getZone().add(zona3);
+		linijaRepository.save(linija3);
+		
+		linija4.getZone().add(zona2);
+		linija4.getZone().add(zona4);
+		linijaRepository.save(linija4);
+		
+		linija5.getZone().add(zona3);
+		linija5.getZone().add(zona5);
+		linijaRepository.save(linija5);
+		
+		linija6.getZone().add(zona2);
+		linijaRepository.save(linija6);
+		
+		stanicaRepository.save(new Stanica(false, "OznakaStanice1", 45.254827, 19.831585));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice2",45.254223, 19.825620));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice3",45.256941, 19.824118));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice4",45.259600, 19.827937));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice5",45.258301, 19.833560));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice6",45.251292, 19.824333));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice7",45.249238, 19.830213));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice8",45.251262, 19.837336));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice9",45.247879, 19.837679));
+		stanicaRepository.save(new Stanica(false, "OznakaStanice10",45.246459, 19.830170));
+		stanicaRepository.save(new Stanica(true, "OznakaStanice11",45.253588, 19.845533));
+		stanicaRepository.save(new Stanica(true, "OznakaStanice12",45.256065, 19.841585));
+		
+		Stanica stanica1 = stanicaRepository.findByOznaka("OznakaStanice1");
+		Stanica stanica2 = stanicaRepository.findByOznaka("OznakaStanice2");
+		Stanica stanica3 = stanicaRepository.findByOznaka("OznakaStanice3");
+		Stanica stanica4 = stanicaRepository.findByOznaka("OznakaStanice4");
+		Stanica stanica5 = stanicaRepository.findByOznaka("OznakaStanice5");
+		Stanica stanica6 = stanicaRepository.findByOznaka("OznakaStanice6");
+		Stanica stanica7 = stanicaRepository.findByOznaka("OznakaStanice7");
+		Stanica stanica8 = stanicaRepository.findByOznaka("OznakaStanice8");
+		Stanica stanica9 = stanicaRepository.findByOznaka("OznakaStanice9");
+		Stanica stanica10 = stanicaRepository.findByOznaka("OznakaStanice10");
+		Stanica stanica11 = stanicaRepository.findByOznaka("OznakaStanice11");
+		Stanica stanica12 = stanicaRepository.findByOznaka("OznakaStanice12");
+		
+		stanica1.getLinije().add(linija1);
+		stanica1.getLinije().add(linija2);
+		stanicaRepository.save(stanica1);
+		
+		stanica2.getLinije().add(linija1);
+		stanica2.getLinije().add(linija2);
+		stanicaRepository.save(stanica2);
+		
+		stanica3.getLinije().add(linija1);
+		stanicaRepository.save(stanica3);
+		
+		stanica4.getLinije().add(linija1);
+		stanicaRepository.save(stanica4);
+		
+		stanica5.getLinije().add(linija1);
+		stanicaRepository.save(stanica5);
+		
+		
+		stanica6.getLinije().add(linija2);
+		stanicaRepository.save(stanica6);
+		
+		
+		stanica7.getLinije().add(linija2);
+		stanica7.getLinije().add(linija3);
+		stanica7.getLinije().add(linija4);
+		stanica7.getLinije().add(linija5);
+		stanicaRepository.save(stanica7);
+		
+		
+		stanica8.getLinije().add(linija3);
+		stanica8.getLinije().add(linija5);
+		stanica8.getLinije().add(linija6);
+		stanicaRepository.save(stanica8);
+
+		
+		stanica9.getLinije().add(linija3);
+		stanica9.getLinije().add(linija4);
+		stanica9.getLinije().add(linija5);
+		stanica9.getLinije().add(linija6);
+		stanicaRepository.save(stanica9);
+		
+		
+		stanica10.getLinije().add(linija4);
+		stanica10.getLinije().add(linija5);
+		stanicaRepository.save(stanica10);
+		
+		
+		stanica11.getLinije().add(linija6);
+		stanicaRepository.save(stanica11);
+		
+		stanica12.getLinije().add(linija6);
+		stanicaRepository.save(stanica12);
+		
+		Calendar vreme=Calendar.getInstance();
+		vreme.set(2019, 0, 2, 0, 0);
+		RedVoznje redVoznje1=new RedVoznje(false, vreme.getTime());
+		redVoznjeRepository.save(redVoznje1);
+		
+		vreme.set(2018, 11, 1, 0, 0);
+		redVoznjeRepository.save(new RedVoznje(true, vreme.getTime()));
+		
+		vreme.set(2019, 10, 2, 0, 0);
+		redVoznjeRepository.save(new RedVoznje(false, vreme.getTime()));
+		
+		
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.RADNI, linija1, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.SUBOTA, linija1, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija1, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.RADNI, linija2, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.SUBOTA, linija2, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija2, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.RADNI, linija3, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.SUBOTA, linija3, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija3, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.RADNI, linija4, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.SUBOTA, linija4, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija4, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.RADNI, linija5, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.SUBOTA, linija5, redVoznje1, false));
+		rasporedVoznjeRepository.save(new RasporedVoznje(DanUNedelji.NEDELJA, linija5, redVoznje1, false));
+	
+		seedRasporedVoznjeVremena();
 	}
 
 }

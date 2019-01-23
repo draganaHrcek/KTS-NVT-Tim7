@@ -12,5 +12,6 @@ import tim7.TIM7.model.RedVoznje;
 
 @Repository
 public interface RasporedVoznjeRepository extends JpaRepository<RasporedVoznje, Long>{
-	public RasporedVoznje findByDanUNedeljiAndLinijaAndRedVoznje(DanUNedelji danUNedelji, Linija linija, RedVoznje redVoznje);
+	public RasporedVoznje findByDanUNedeljiAndLinijaAndRedVoznjeAndObrisanFalse(DanUNedelji danUNedelji, Linija linija, RedVoznje redVoznje);
+	public List<RasporedVoznje> findByRedVoznjeAndObrisanFalse(RedVoznje redVoznje);
 }

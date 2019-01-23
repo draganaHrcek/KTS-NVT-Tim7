@@ -33,7 +33,7 @@ public class Stanica {
 	@Column(name="latituda")
 	double latituda;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "stanice_u_liniji",
                joinColumns = @JoinColumn(name="stanica_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="linija_id", referencedColumnName="id"))
@@ -56,6 +56,18 @@ public class Stanica {
 		this.longituda = longituda;
 		this.latituda = latituda;
 		this.linije = linije;
+		this.obrisan = obrisan;
+	}
+
+	
+	
+
+
+	public Stanica(boolean obrisan, String oznaka, double latituda, double longituda) {
+		super();
+		this.oznaka = oznaka;
+		this.longituda = longituda;
+		this.latituda = latituda;
 		this.obrisan = obrisan;
 	}
 

@@ -21,6 +21,7 @@ import tim7.TIM7.model.DanUNedelji;
 import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.RasporedVoznje;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
@@ -71,6 +72,8 @@ public class Seeder {
 	@Autowired
 	VoziloRepository voziloRepository;
 
+	@Autowired
+	KartaRepository kartaRepository;
 	@Autowired
 	OsobaRepository osobaRepository;
 	
@@ -235,14 +238,49 @@ public class Seeder {
 		
 		
 		Administrator adminTest = new Administrator("AdminTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "AdminTest", "AdminTest","a@gmail.com");
-		Korisnik korisnikTest = new Korisnik("KorisnikTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KorisnikTest", "KorisnikTest","e@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
+		Korisnik korisnikTest = new Korisnik("KorisnikTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
+		Korisnik korisnikBezStatusaTest = new Korisnik("KorisnikBezStatusaTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "", null , new ArrayList<>());
 		Verifikator verifikatorTest = new Verifikator("VerifikatorTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "VerifikatorTest", "VerifikatorTest","a@gmail.com");
 		Kondukter kondukterTest = new Kondukter("KondukterTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KondukterTest", "KondukterTest","a@gmail.com");
 		
+		
+		DnevnaKarta karta1= new DnevnaKarta();
+		karta1.setTipPrevoza(TipVozila.valueOf("AUTOBUS"));
+		karta1.setKod("2gm8O0z");
+		karta1.setLinija(linijaRepository.findByNaziv("linija 1"));
+		karta1.setKorisnik(korisnikTest);
+		
+		VisednevnaKarta karta2= new VisednevnaKarta();
+		karta2.setTipPrevoza(TipVozila.valueOf("TRAMVAJ"));
+		karta2.setKod("ap0B45l");
+		karta2.setTip(TipKarte.valueOf("MESECNA"));
+		karta2.setZona(zonaRepository.findByNaziv("prigradska"));
+		karta2.setTipKorisnika(korisnikTest.getStatus());
+		karta2.setKorisnik(korisnikTest);
+		
+		VisednevnaKarta karta3= new VisednevnaKarta();
+		karta3.setTipPrevoza(TipVozila.valueOf("METRO"));
+		karta3.setKod("ecx4m92f");
+		karta3.setTip(TipKarte.valueOf("GODISNJA"));
+		karta3.setTipKorisnika(korisnikTest.getStatus());
+		karta3.setZona(zonaRepository.findByNaziv("veternik"));
+		karta3.setKorisnik(korisnikTest);
+		
+		
+		korisnikTest.getKarte().add(karta1);
+		korisnikTest.getKarte().add(karta2);
+		korisnikTest.getKarte().add(karta3);
+		
+		
+	
 		osobaRepository.save(korisnikTest);
 		osobaRepository.save(adminTest);
 		osobaRepository.save(verifikatorTest);
 		osobaRepository.save(kondukterTest);
+		osobaRepository.save(korisnikBezStatusaTest);
+		kartaRepository.save(karta1);
+		kartaRepository.save(karta2);
+		kartaRepository.save(karta3);
 		
 	}
 	

@@ -1,7 +1,10 @@
 package tim7.TIM7.controllers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -97,7 +100,7 @@ public class KartaController {
 		if (karta.getTipKarte().equals("DNEVNA")) {
 			
 			DnevnaKarta k= new DnevnaKarta ();
-			k.setDatumIsteka(new Date());
+			k.setDatumIsteka(Date.from(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59)).toInstant(ZoneOffset.UTC)));
 			k.setTipPrevoza(TipVozila.valueOf(karta.getTipPrevoza()));
 			k.setLinija(linijaService.findByName(karta.getLinijaZona()));
 			k.setCena(cena);

@@ -74,6 +74,7 @@ public class Seeder {
 
 	@Autowired
 	KartaRepository kartaRepository;
+	
 	@Autowired
 	OsobaRepository osobaRepository;
 	
@@ -85,10 +86,6 @@ public class Seeder {
 	
 	@Autowired
 	RasporedVoznjeRepository rasporedVoznjeRepository;
-	
-	@Autowired
-	KartaRepository kartaRepository;
-
 	public Seeder() {
 	}
 

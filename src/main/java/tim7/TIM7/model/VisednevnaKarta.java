@@ -1,5 +1,7 @@
 package tim7.TIM7.model;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +39,7 @@ public class VisednevnaKarta extends Karta {
 		this.tipKorisnika = tipKorisnika;
 	}
 
-	boolean isOdobrena() {
+	public boolean isOdobrena() {
 		return odobrena;
 	}
 
@@ -66,6 +68,15 @@ public class VisednevnaKarta extends Karta {
 	public void setZona(Zona zona) {
 		this.zona = zona;
 	}
+
+	public VisednevnaKarta(TipKarte tip, Zona zona, boolean odobrena, TipVozila tipVozila, String kod, Date datumIsteka, Double cena, Korisnik korisnik) {
+		super(tipVozila, kod, datumIsteka, cena, korisnik);
+		this.tip = tip;
+		this.zona = zona;
+		this.odobrena = odobrena;
+	}
+
+	
 	
 	
 }

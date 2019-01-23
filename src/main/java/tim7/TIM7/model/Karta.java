@@ -111,6 +111,18 @@ public abstract class Karta {
 	public void setKod(String kod) {
 		this.kod = kod;
 	}
+
+
+
+	public Karta(TipVozila tipPrevoza, String kod, Date datumIsteka, Double cena, Korisnik korisnik) {
+		super();
+		this.tipPrevoza = tipPrevoza;
+		this.kod = kod;
+		this.datumIsteka = datumIsteka;
+		this.cena = cena;
+		this.korisnik = korisnik;
+	}
+	
 	
 	
 

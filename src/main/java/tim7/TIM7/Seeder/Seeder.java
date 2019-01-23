@@ -97,7 +97,7 @@ public class Seeder {
 //		connectZonaLinija();
 //		seedStavka();
 //		seedStavkaCenovnika();
-//		seedOsoba();
+//	seedOsoba();
 //		seedIkija();
 //		seedStanica();
 //		seedZoneLinijeStaniceRedoviRasporediVoznje();
@@ -237,6 +237,8 @@ public class Seeder {
 		Administrator adminTest = new Administrator("AdminTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "AdminTest", "AdminTest","a@gmail.com");
 		Korisnik korisnikTest = new Korisnik("KorisnikTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
 		Korisnik korisnikBezStatusaTest = new Korisnik("KorisnikBezStatusaTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "", null , new ArrayList<>());
+		
+		Korisnik korisnikLoginTest = new Korisnik("KorisnikLoginTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "", null , new ArrayList<>());
 		Verifikator verifikatorTest = new Verifikator("VerifikatorTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "VerifikatorTest", "VerifikatorTest","a@gmail.com");
 		Kondukter kondukterTest = new Kondukter("KondukterTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KondukterTest", "KondukterTest","a@gmail.com");
 		
@@ -269,7 +271,7 @@ public class Seeder {
 		korisnikTest.getKarte().add(karta3);
 		
 		
-	
+		osobaRepository.save(korisnikLoginTest);
 		osobaRepository.save(korisnikTest);
 		osobaRepository.save(adminTest);
 		osobaRepository.save(verifikatorTest);

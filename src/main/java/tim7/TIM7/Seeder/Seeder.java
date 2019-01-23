@@ -3,7 +3,6 @@ package tim7.TIM7.Seeder;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +13,21 @@ import org.springframework.stereotype.Component;
 import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DanUNedelji;
-import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.RasporedVoznje;
-import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.TipKarteCenovnik;
 import tim7.TIM7.model.TipVozila;
+import tim7.TIM7.model.Vozilo;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.LinijaRepository;
 import tim7.TIM7.repositories.OsobaRepository;
 import tim7.TIM7.repositories.RasporedVoznjeRepository;
 import tim7.TIM7.repositories.RedVoznjeRepository;
+import tim7.TIM7.repositories.StanicaRepository;
 import tim7.TIM7.repositories.StavkaCenovnikaRepository;
 import tim7.TIM7.repositories.StavkaRepository;
 import tim7.TIM7.repositories.VoziloRepository;
@@ -58,6 +57,8 @@ public class Seeder {
 	@Autowired
 	OsobaRepository osobaRepository;
 	
+	@Autowired
+	StanicaRepository stanicaRepository;
 	
 	@Autowired
 	RedVoznjeRepository redVoznjeRepository;
@@ -70,14 +71,14 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-		seedCenovnik();
-		seedZona();
-		seedLinija();
-		connectZonaLinija();
-		seedStavka();
-		seedStavkaCenovnika();
-		seedOsoba();
-		seedStanica();
+//		seedCenovnik();
+//		seedZona();
+//		seedLinija();
+//		connectZonaLinija();
+//		seedStavka();
+//		seedStavkaCenovnika();
+//		seedOsoba();
+//		seedIkija();
 	}
 
 	public void seedCenovnik() {
@@ -174,12 +175,29 @@ public class Seeder {
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
 		}
 	}
-
-	public void seedVozilo() {
-
-	}
 	
-	public void seedStanica() {
+	public void seedIkija() {
+		Vozilo vehicle1 = new Vozilo();
+		vehicle1.setObrisan(false);
+		vehicle1.setRegistracija("NS123");
+		vehicle1.setTipVozila(TipVozila.AUTOBUS);
+		vehicle1.setLinija(null);
+		voziloRepository.save(vehicle1);
+		
+		Vozilo vehicle2 = new Vozilo();
+		vehicle2.setObrisan(false);
+		vehicle2.setRegistracija("NS456");
+		vehicle2.setTipVozila(TipVozila.AUTOBUS);
+		Linija line = linijaRepository.findByNaziv("linija 3");
+		vehicle2.setLinija(line);
+		voziloRepository.save(vehicle2);
+		
+		Vozilo vehicle3 = new Vozilo();
+		vehicle3.setObrisan(true);
+		vehicle3.setRegistracija("NS789");
+		vehicle3.setTipVozila(TipVozila.AUTOBUS);
+		vehicle3.setLinija(null);
+		voziloRepository.save(vehicle3);
 		
 	}
 

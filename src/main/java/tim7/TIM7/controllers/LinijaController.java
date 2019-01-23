@@ -62,6 +62,15 @@ public class LinijaController {
 		}
 	}
 	
+	@RequestMapping(path= "/sveJedneZone/{id}" ,method=RequestMethod.GET)
+	public ResponseEntity<List<LinijaDTO>> getLinijeJedneZone(@PathVariable Long id){
+		List<LinijaDTO> retValue = linijaService.getLinesFromOneZone(id);
+		if (retValue==null || retValue.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+		return new ResponseEntity<List<LinijaDTO>>(retValue, HttpStatus.OK);
+	}
+	
 		
 	@RequestMapping(value="/izlistajLinije", produces = "application/json" ,method = RequestMethod.GET)
 	public ResponseEntity<RutaDTO> izlistajKarte(@RequestHeader ("X-Auth-Token") String token ) {

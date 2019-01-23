@@ -16,7 +16,11 @@ public class VoziloDTO {
 	public VoziloDTO(Vozilo vozilo) {
 		id = vozilo.getId();
 		registration = vozilo.getRegistracija();
-		lineId = vozilo.getLinija().getId();
+		if(vozilo.getLinija()!=null) {
+			lineId = vozilo.getLinija().getId();
+		}else {
+			lineId= null;
+		}
 		type = vozilo.getTipVozila();
 	}
 

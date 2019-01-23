@@ -107,11 +107,7 @@ public class VoziloService {
 		}
 		
 		vehicle.setLinija(line);
-		List<Vozilo> vehicles = line.getVozila();
-		vehicles.add(vehicle);
-		line.setVozila(vehicles);
 		save(vehicle);
-		linijaRepository.save(line);
 		return true;
 	}
 	
@@ -120,20 +116,9 @@ public class VoziloService {
 		if(vehicle.getLinija()==null) {
 			return false;
 		}
-		
-		Linija line = null;
-		try {
-			line = linijaRepository.findById(vehicle.getLinija().getId()).get();
-		}catch(Exception e) {
-			return false;
-		}
-		List<Vozilo> vehicles = line.getVozila();
-		vehicles.remove(vehicle);
-		line.setVozila(vehicles);
 		vehicle.setLinija(null);
 		
 		save(vehicle);
-		linijaRepository.save(line);
 		return true;
 	}
 }

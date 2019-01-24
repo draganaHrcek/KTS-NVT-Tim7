@@ -88,8 +88,9 @@ public class Seeder {
 //		seedStavkaCenovnika();
 //		seedOsoba();
 //		seedIkija();
-//	seedOsoba();
+//		seedOsoba();
 //		seedStanica();
+//		seedZoneLinijeStaniceRedoviRasporediVoznje();
 	}
 
 	public void seedCenovnik() {

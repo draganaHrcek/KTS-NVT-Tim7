@@ -130,11 +130,16 @@ public class LinijaService {
 		}
 		List<LinijaDTO> retValue = new ArrayList<LinijaDTO>();
 		for (Linija lin : allLines) {
-			if (lin.isObrisan() || lin.getId()!=id) {
+			if (lin.isObrisan()) {
 				continue;
 			}
-			LinijaDTO linDTO = new LinijaDTO(lin);
-			retValue.add(linDTO);
+			for(Zona zone : lin.getZone()) {
+				if(zone.getId()==id) {
+					LinijaDTO linDTO = new LinijaDTO(lin);
+					retValue.add(linDTO);
+					break;
+				}
+			}
 		}
 		if(retValue.isEmpty()) {
 			return null;

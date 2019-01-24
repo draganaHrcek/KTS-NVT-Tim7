@@ -1,6 +1,5 @@
 package tim7.TIM7.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import tim7.TIM7.dto.StanicaDTO;
+import tim7.TIM7.dto.LinijaDTO;
 import tim7.TIM7.dto.ZonaDTO;
-import tim7.TIM7.model.Zona;
 import tim7.TIM7.services.ZonaService;
 
 @RestController
@@ -47,6 +45,16 @@ public class ZonaController {
 	public ResponseEntity<Void> updateZona(@RequestBody ZonaDTO updatedZone, @RequestHeader ("X-Auth-Token") String token){
 		if(zonaService.updateZone(updatedZone)) {
 			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+	
+	@RequestMapping(path="/ukloniLiniju/{lineId}", method = RequestMethod.PUT, consumes="application/json")
+	public ResponseEntity<List<LinijaDTO>> removeLinijaFromZona(@PathVariable Long lineId, @RequestBody ZonaDTO zone, @RequestHeader ("X-Auth-Token") String token){
+		List<LinijaDTO> retValue = zonaService.removeLineFromZone(zone, lineId);
+		if(retValue!=null) {
+			return new ResponseEntity<List<LinijaDTO>>(HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}

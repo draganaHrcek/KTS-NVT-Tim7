@@ -17,7 +17,8 @@ public class StanicaDTO {
 		super();
 		id = station.getId();
 		name = station.getOznaka();
-		//dodati longitude i latitude
+		longitude = station.getLongituda();
+		latitude = station.getLatituda();
 	}
 
 	public StanicaDTO(Long id, String name, double longitude, double latitude) {

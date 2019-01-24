@@ -60,7 +60,6 @@ public class OsobaController {
 		if(korisnik.getLozinka1().equals(korisnik.getLozinka2())) {
 			
 			osobaService.createNewUser(korisnik);
-			osobaService.save((Korisnik)noviKorisnik);
 			return new ResponseEntity<>( HttpStatus.CREATED);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

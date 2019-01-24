@@ -76,7 +76,7 @@ public class OsobaService {
 		return kor;
 		
 	}
-	public Korisnik createNewUser(KorisnikDTO registracijaForma) {
+	public void createNewUser(KorisnikDTO registracijaForma) {
 		
 		Korisnik noviKorisnik= new Korisnik();
 		
@@ -90,8 +90,7 @@ public class OsobaService {
 		noviKorisnik.setKarte(new ArrayList<Karta> ());
 		noviKorisnik.setLokacijaDokumenta(null);
 		noviKorisnik.setStatus(null);
-		
-		return noviKorisnik;
+		save((Korisnik)noviKorisnik);
 	}
 	
 

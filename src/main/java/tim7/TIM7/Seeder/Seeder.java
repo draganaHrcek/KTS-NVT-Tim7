@@ -3,8 +3,10 @@ package tim7.TIM7.Seeder;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -241,35 +243,94 @@ public class Seeder {
 		Korisnik korisnikLoginTest = new Korisnik("KorisnikLoginTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "", null , new ArrayList<>());
 		Verifikator verifikatorTest = new Verifikator("VerifikatorTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "VerifikatorTest", "VerifikatorTest","a@gmail.com");
 		Kondukter kondukterTest = new Kondukter("KondukterTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KondukterTest", "KondukterTest","a@gmail.com");
-		
+		LocalDate cd = LocalDate.now();
 		
 		DnevnaKarta karta1= new DnevnaKarta();
 		karta1.setTipPrevoza(TipVozila.valueOf("AUTOBUS"));
 		karta1.setKod("2gm8O0z");
+		karta1.setDatumIsteka(Date.from(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59)).toInstant(ZoneOffset.UTC)));
 		karta1.setLinija(linijaRepository.findByNaziv("linija 1"));
 		karta1.setKorisnik(korisnikTest);
 		
+		
+		//mesecne
+		
+		
 		VisednevnaKarta karta2= new VisednevnaKarta();
-		karta2.setTipPrevoza(TipVozila.valueOf("TRAMVAJ"));
+		karta2.setTipPrevoza(TipVozila.valueOf("AUTOBUS"));
 		karta2.setKod("ap0B45l");
 		karta2.setTip(TipKarte.valueOf("MESECNA"));
+		karta2.setDatumIsteka(Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear())).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		karta2.setZona(zonaRepository.findByNaziv("prigradska"));
 		karta2.setTipKorisnika(korisnikTest.getStatus());
 		karta2.setKorisnik(korisnikTest);
+		karta2.setOdobrena(true);
+		
+		
+
+		VisednevnaKarta karta4= new VisednevnaKarta();
+		karta4.setTipPrevoza(TipVozila.valueOf("TRAMVAJ"));
+		karta4.setKod("b9lli23z");
+		karta4.setTip(TipKarte.valueOf("MESECNA"));
+		karta4.setDatumIsteka(Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear())).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		karta4.setZona(zonaRepository.findByNaziv("gradksa"));
+		karta4.setTipKorisnika(korisnikTest.getStatus());
+		karta4.setKorisnik(korisnikTest);
+		karta4.setOdobrena(false);
+		
+		
+		VisednevnaKarta karta5= new VisednevnaKarta();
+		karta5.setTipPrevoza(TipVozila.valueOf("METRO"));
+		karta5.setKod("wi6b1xzo");
+		karta5.setTip(TipKarte.valueOf("MESECNA"));
+		karta5.setDatumIsteka(Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear())).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		karta5.setZona(zonaRepository.findByNaziv("veternik"));
+		karta5.setTipKorisnika(korisnikTest.getStatus());
+		karta5.setKorisnik(korisnikTest);
+	
+		
+		//godisnje
+		
 		
 		VisednevnaKarta karta3= new VisednevnaKarta();
-		karta3.setTipPrevoza(TipVozila.valueOf("METRO"));
+		karta3.setTipPrevoza(TipVozila.valueOf("AUTOBUS"));
 		karta3.setKod("ecx4m92f");
 		karta3.setTip(TipKarte.valueOf("GODISNJA"));
+		karta3.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		karta3.setOdobrena(true);
 		karta3.setTipKorisnika(korisnikTest.getStatus());
-		karta3.setZona(zonaRepository.findByNaziv("veternik"));
+		karta3.setZona(zonaRepository.findByNaziv("prigradska"));
 		karta3.setKorisnik(korisnikTest);
+		
+		
+		VisednevnaKarta karta6= new VisednevnaKarta();
+		karta6.setTipPrevoza(TipVozila.valueOf("TRAMVAJ"));
+		karta6.setKod("4df91m3a");
+		karta6.setTip(TipKarte.valueOf("GODISNJA"));
+		karta6.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		karta6.setOdobrena(false);
+		karta6.setTipKorisnika(korisnikTest.getStatus());
+		karta6.setZona(zonaRepository.findByNaziv("gradksa"));
+		karta6.setKorisnik(korisnikTest);
+		
+		VisednevnaKarta karta7= new VisednevnaKarta();
+		karta7.setTipPrevoza(TipVozila.valueOf("METRO"));
+		karta7.setKod("1xs87n42");
+		karta7.setTip(TipKarte.valueOf("GODISNJA"));
+		karta7.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		karta7.setTipKorisnika(korisnikTest.getStatus());
+		karta7.setZona(zonaRepository.findByNaziv("veternik"));
+		karta7.setKorisnik(korisnikTest);
+		
+		
+		//dodavanje karat i snimanje u bazu
 		
 		
 		korisnikTest.getKarte().add(karta1);
 		korisnikTest.getKarte().add(karta2);
 		korisnikTest.getKarte().add(karta3);
-		
+		korisnikTest.getKarte().add(karta4);
+		korisnikTest.getKarte().add(karta5);
 		
 		osobaRepository.save(korisnikLoginTest);
 		osobaRepository.save(korisnikTest);
@@ -280,6 +341,10 @@ public class Seeder {
 		kartaRepository.save(karta1);
 		kartaRepository.save(karta2);
 		kartaRepository.save(karta3);
+		kartaRepository.save(karta4);
+		kartaRepository.save(karta5);
+		kartaRepository.save(karta6);
+		kartaRepository.save(karta7);
 		
 	}
 	

@@ -15,8 +15,26 @@ public class KartaDTO {
 	String tipPrevoza;
 	String linijaZona;
 	String statusKorisnika;
-	boolean cekiranaDnevnaKarta;
+	Boolean cekiranaDnevnaKarta;
+	//samo za visednevne
+	Boolean odobrenaKupovina;
 	
+	public Boolean getCekiranaDnevnaKarta() {
+		return cekiranaDnevnaKarta;
+	}
+
+	public void setCekiranaDnevnaKarta(Boolean cekiranaDnevnaKarta) {
+		this.cekiranaDnevnaKarta = cekiranaDnevnaKarta;
+	}
+
+	public Boolean getOdobrenaKupovina() {
+		return odobrenaKupovina;
+	}
+
+	public void setOdobrenaKupovina(Boolean odobrenaKupovina) {
+		this.odobrenaKupovina = odobrenaKupovina;
+	}
+
 	public String getKod() {
 		return kod;
 	}
@@ -25,12 +43,6 @@ public class KartaDTO {
 		this.kod = kod;
 	}
 
-	public boolean isCekiranaDnevnaKarta() {
-		return cekiranaDnevnaKarta;
-	}
-	public void setCekiranaDnevnaKarta(boolean cekiranaDnevnaKarta) {
-		this.cekiranaDnevnaKarta = cekiranaDnevnaKarta;
-	}
 	public String getStatusKorisnika() {
 		return statusKorisnika;
 	}

@@ -1,7 +1,10 @@
 package tim7.TIM7.controllers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,80 +64,24 @@ public class KartaController {
 	@RequestMapping(value="/izlistajKarte", produces = "application/json" ,method = RequestMethod.GET)
 	public ResponseEntity<List<KartaDTO>> izlistajKarte(@RequestHeader ("X-Auth-Token") String token ) {
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
-		List<KartaDTO> karteDTO = new ArrayList<>();
-		for (Karta k : kor.getKarte()) {
-			KartaDTO kartaDTO = new KartaDTO();
-			kartaDTO.setCena(k.getCena());
-			kartaDTO.setDatumIsteka(k.getDatumIsteka());
-			kartaDTO.setTipPrevoza(k.getTipPrevoza().toString());
-			kartaDTO.setKod(k.getKod());
-			if(k instanceof DnevnaKarta) {
-				kartaDTO.setTipKarte("DNEVNA");
-				kartaDTO.setLinijaZona(((DnevnaKarta)k).getLinija().getNaziv());
-				kartaDTO.setCekiranaDnevnaKarta(((DnevnaKarta) k).isUpotrebljena());
-			} else {
-				kartaDTO.setLinijaZona(((VisednevnaKarta)k).getZona().getNaziv());
-				kartaDTO.setTipKarte(((VisednevnaKarta)k).getTip().toString());
-				kartaDTO.setStatusKorisnika(((VisednevnaKarta)k).getTipKorisnika().toString());
-			}
-			karteDTO.add(kartaDTO);
-		}
+		ArrayList<KartaDTO> karteDTO=kartaService.findAllUserTickets(kor);
 		return new ResponseEntity<>(karteDTO, HttpStatus.OK);
 	}
+	
+	
+	
 	@RequestMapping(value="/kupovinaKarte", consumes = "application/json" ,method = RequestMethod.POST)
 	public ResponseEntity<List<KartaDTO>> kupovinaKarte(@RequestHeader ("X-Auth-Token") String token, @RequestBody KartaDTO karta )
 	{
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 		
+		if(kartaService.kartaExist(karta, kor)) {
+			
+			return new ResponseEntity<>( HttpStatus.NOT_MODIFIED);
+		};
+		
 		double cena= kartaService.cenaKarte(karta,kor);
-		
-		int length = 10;
-	    boolean useLetters = true;
-	    boolean useNumbers = false;
-	  
-	    
-	    
-		
-		if (karta.getTipKarte().equals("DNEVNA")) {
-			
-			DnevnaKarta k= new DnevnaKarta ();
-			k.setDatumIsteka(new Date());
-			k.setTipPrevoza(TipVozila.valueOf(karta.getTipPrevoza()));
-			k.setLinija(linijaService.findByName(karta.getLinijaZona()));
-			k.setCena(cena);
-			k.setKod((UUID.randomUUID().toString()).substring(0, 7));
-			k.setKorisnik(kor);
-			kor.getKarte().add(k);
-			kartaService.save(k);
-			osobaService.save(kor);			
-		}else {
-			
-			VisednevnaKarta k= new VisednevnaKarta ();
-			LocalDate cd = LocalDate.now();
-			if (karta.getTipKarte().equals("MESECNA")) {
-				k.setDatumIsteka(Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear())).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-				k.setTip(TipKarte.MESECNA);
-			
-			}else {
-				k.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-				k.setTip(TipKarte.GODISNJA);
-				
-			}
-			
-			k.setTipKorisnika(StatusKorisnika.valueOf(karta.getStatusKorisnika()));
-			k.setTipPrevoza(TipVozila.valueOf(karta.getTipPrevoza()));
-			k.setZona(zonaService.findByName(karta.getLinijaZona()));
-			k.setCena(cena);
-			k.setKod((UUID.randomUUID().toString()).substring(0, 7));
-			
-			
-			
-			k.setKorisnik(kor);
-			kor.getKarte().add(k);
-			kartaService.save(k);
-			osobaService.save(kor);
-		}
-		
+		kartaService.createNewTicket(karta, kor, cena);
 		
 		return new ResponseEntity<>( HttpStatus.CREATED);
 	}

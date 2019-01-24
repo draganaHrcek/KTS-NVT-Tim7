@@ -43,13 +43,13 @@ public class VisednevnaKarta extends Karta {
 		return odobrena;
 	}
 
-	public void setOdobrena(boolean odobrena) {
+	public void setOdobrena(Boolean odobrena) {
 		this.odobrena = odobrena;
 	}
 
 	public VisednevnaKarta() {
 		super();
-		this.odobrena= false;
+		this.odobrena=null;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -63,6 +63,10 @@ public class VisednevnaKarta extends Karta {
 
 	public Zona getZona() {
 		return zona;
+	}
+
+	public Boolean getOdobrena() {
+		return odobrena;
 	}
 
 	public void setZona(Zona zona) {

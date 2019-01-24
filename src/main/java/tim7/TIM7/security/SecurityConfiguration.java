@@ -132,6 +132,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/karte/proveriKartu/{tipVozila}/{nazivLinije}/{kod}").
 					hasAuthority("KONDUKTER")
+				.antMatchers(HttpMethod.GET, "/karte/dobaviNeodobreneKarte").
+					hasAuthority("VERIFIKATOR")
+				.antMatchers(HttpMethod.POST, "/karte/odobriKartu/{idKarte}/{statusOdobrenja}").
+					hasAuthority("VERIFIKATOR")
 				.antMatchers(HttpMethod.POST, "/api/**")
 				
 				

@@ -102,6 +102,7 @@ public class Seeder {
 //		seedStanica();
 //		seedZoneLinijeStaniceRedoviRasporediVoznje();
 //		seedKarte();
+		seedOdobreneNeodobreneKarte();
 	}
 
 	public void seedCenovnik() {
@@ -459,11 +460,11 @@ public class Seeder {
 		
 		Zona zona1 = zonaRepository.findByNaziv("NazivZone1");
 		
-		//proci ce za linije 1,2,3
+		//proci ce za linije 1,2
 		VisednevnaKarta mesecna = new VisednevnaKarta(TipKarte.MESECNA, zona1, true, TipVozila.AUTOBUS, "kod1", Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear())).atStartOfDay(ZoneId.systemDefault()).toInstant()),900.0,korisnik);
 		kartaRepository.save(mesecna);
 		
-		//proci ce za linije 1,2,3
+		//proci ce za linije 1,2
 		VisednevnaKarta godisnja1 = new VisednevnaKarta(TipKarte.GODISNJA, zona1, true, TipVozila.METRO, "kod2", Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()), 10000.0,korisnik);
 		kartaRepository.save(godisnja1);
 		
@@ -476,5 +477,43 @@ public class Seeder {
 		
 		DnevnaKarta dnevna2 = new DnevnaKarta(true,linija1,TipVozila.AUTOBUS,"kod5",new Date(),120.0,korisnik);
 		kartaRepository.save(dnevna2);
+	}
+	
+	public void seedOdobreneNeodobreneKarte(){
+		Korisnik korisnik = (Korisnik)osobaRepository.findByKorIme("KorisnikTest");
+		
+		Linija linija2=linijaRepository.findByNaziv("NazivLinije2");
+		
+		Calendar calendar = Calendar.getInstance();
+		
+		Zona zona2 = zonaRepository.findByNaziv("NazivZone2");
+		
+		//odobrena i datum prosao
+		calendar.set(2018, 11, 31);
+		VisednevnaKarta mesecna1 = new VisednevnaKarta(TipKarte.MESECNA, zona2, true, TipVozila.AUTOBUS, "kod6", calendar.getTime(),600.0,korisnik);
+		kartaRepository.save(mesecna1);
+		
+		//neodobrena i datum nije prosao
+		calendar.set(2019, 3, 13);
+		VisednevnaKarta mesecna2 = new VisednevnaKarta(TipKarte.MESECNA, zona2, null, TipVozila.METRO, "kod7", calendar.getTime(),700.0,korisnik);
+		kartaRepository.save(mesecna2);
+		
+		//neodobrena i datum prosao
+		calendar.set(2018, 11, 31);
+		VisednevnaKarta mesecna3 = new VisednevnaKarta(TipKarte.MESECNA, zona2, null, TipVozila.TRAMVAJ, "kod8", calendar.getTime(),800.0,korisnik);
+		kartaRepository.save(mesecna3);
+		
+		
+		//ponistena i datum nije prosao
+		calendar.set(2019, 11, 31);
+		VisednevnaKarta mesecna4 = new VisednevnaKarta(TipKarte.MESECNA, zona2, false, TipVozila.METRO, "kod9", calendar.getTime(),900.0,korisnik);
+		kartaRepository.save(mesecna4);
+		
+		
+		//neodobrena i datum nije prosao
+		calendar.set(2019, 4, 13);
+		VisednevnaKarta mesecna5 = new VisednevnaKarta(TipKarte.MESECNA, zona2, null, TipVozila.TRAMVAJ, "kod10", calendar.getTime(),1000.0,korisnik);
+		kartaRepository.save(mesecna5);
+		
 	}
 }

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tim7.TIM7.dto.KartaDTO;
+import tim7.TIM7.dto.OdobrenjeKarteDTO;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Karta;
@@ -237,6 +239,58 @@ if (karta.getTipKarte().equals("DNEVNA")) {
 					return "NE POSTOJI";
 				}
 			}
+		}
+	}
+	
+	
+	//za odobrenje karata
+	public boolean verifyKarta(Long idKarte, String statusOdobrenja){
+		VisednevnaKarta karta=(VisednevnaKarta)findOne(idKarte);
+		if (karta==null){
+			return false;
+		}else{
+			if (karta.isOdobrena()!=null){
+				return false;
+			}else if ((new Date()).before(karta.getDatumIsteka())){
+				if (statusOdobrenja.equals("ODOBRENA")){
+					karta.setOdobrena(true);
+				}else{
+					karta.setOdobrena(false);
+				}
+				save(karta);
+				return true;
+			}else{
+				return false; //ne moze da je verifikuje ukoliko je karta istekla
+			}
+			
+		}
+	}
+	
+	public List<OdobrenjeKarteDTO> getNeodobreneKarte(){
+		List<Karta> karte = findAll();
+		List<OdobrenjeKarteDTO> karteZaOdobrenje = new ArrayList<OdobrenjeKarteDTO>();
+		for (Karta karta : karte){
+			if (karta instanceof VisednevnaKarta){
+				//ne dobavljaju se karte koje su vec verifikovane, niti one kojima je datum isteka prosao
+				if (((VisednevnaKarta) karta).isOdobrena()!=null || (new Date()).after(karta.getDatumIsteka())){
+					continue;
+				}
+				OdobrenjeKarteDTO odobrenje = new OdobrenjeKarteDTO();
+				odobrenje.setId(karta.getId());
+				odobrenje.setKorisnikUsername(karta.getKorisnik().getKorIme());
+				odobrenje.setStatusKorisnika(karta.getKorisnik().getStatus());
+				odobrenje.setLokacijaDokumenta(karta.getKorisnik().getLokacijaDokumenta());
+				odobrenje.setTipKarte(((VisednevnaKarta)karta).getTip());
+				odobrenje.setNazivZone(((VisednevnaKarta)karta).getZona().getNaziv());				
+				odobrenje.setTipVozila(karta.getTipPrevoza());
+				karteZaOdobrenje.add(odobrenje);
+				
+			}
+		}
+		if (karteZaOdobrenje.size()==0){
+			return null;
+		}else{
+			return karteZaOdobrenje;
 		}
 	}
 

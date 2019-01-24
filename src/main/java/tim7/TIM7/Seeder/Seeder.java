@@ -3,10 +3,8 @@ package tim7.TIM7.Seeder;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,7 +21,6 @@ import tim7.TIM7.model.DanUNedelji;
 import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
-import tim7.TIM7.model.RasporedVoznje;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
@@ -75,9 +72,6 @@ public class Seeder {
 	VoziloRepository voziloRepository;
 
 	@Autowired
-	KartaRepository kartaRepository;
-	
-	@Autowired
 	OsobaRepository osobaRepository;
 	
 	@Autowired
@@ -88,6 +82,10 @@ public class Seeder {
 	
 	@Autowired
 	RasporedVoznjeRepository rasporedVoznjeRepository;
+	
+	@Autowired
+	KartaRepository kartaRepository;
+
 	public Seeder() {
 	}
 
@@ -99,11 +97,12 @@ public class Seeder {
 //		connectZonaLinija();
 //		seedStavka();
 //		seedStavkaCenovnika();
-//	seedOsoba();
+//		seedOsoba();
 //		seedIkija();
 //		seedStanica();
 //		seedZoneLinijeStaniceRedoviRasporediVoznje();
 //		seedKarte();
+		seedOdobreneNeodobreneKarte();
 	}
 
 	public void seedCenovnik() {
@@ -237,13 +236,16 @@ public class Seeder {
 		
 		
 		Administrator adminTest = new Administrator("AdminTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "AdminTest", "AdminTest","a@gmail.com");
-		Korisnik korisnikTest = new Korisnik("KorisnikTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
-		Korisnik korisnikBezStatusaTest = new Korisnik("KorisnikBezStatusaTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "", null , new ArrayList<>());
-		
-		Korisnik korisnikLoginTest = new Korisnik("KorisnikLoginTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "", null , new ArrayList<>());
+		Korisnik korisnikTest = new Korisnik("KorisnikTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KorisnikTest", "KorisnikTest","e@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
 		Verifikator verifikatorTest = new Verifikator("VerifikatorTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "VerifikatorTest", "VerifikatorTest","a@gmail.com");
 		Kondukter kondukterTest = new Kondukter("KondukterTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KondukterTest", "KondukterTest","a@gmail.com");
-		LocalDate cd = LocalDate.now();
+		
+		osobaRepository.save(korisnikTest);
+		osobaRepository.save(adminTest);
+		osobaRepository.save(verifikatorTest);
+		osobaRepository.save(kondukterTest);
+    
+    LocalDate cd = LocalDate.now();
 		
 		DnevnaKarta karta1= new DnevnaKarta();
 		karta1.setTipPrevoza(TipVozila.valueOf("AUTOBUS"));
@@ -561,11 +563,11 @@ public class Seeder {
 		
 		Zona zona1 = zonaRepository.findByNaziv("NazivZone1");
 		
-		//proci ce za linije 1,2,3
+		//proci ce za linije 1,2
 		VisednevnaKarta mesecna = new VisednevnaKarta(TipKarte.MESECNA, zona1, true, TipVozila.AUTOBUS, "kod1", Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear())).atStartOfDay(ZoneId.systemDefault()).toInstant()),900.0,korisnik);
 		kartaRepository.save(mesecna);
 		
-		//proci ce za linije 1,2,3
+		//proci ce za linije 1,2
 		VisednevnaKarta godisnja1 = new VisednevnaKarta(TipKarte.GODISNJA, zona1, true, TipVozila.METRO, "kod2", Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()), 10000.0,korisnik);
 		kartaRepository.save(godisnja1);
 		
@@ -579,4 +581,44 @@ public class Seeder {
 		DnevnaKarta dnevna2 = new DnevnaKarta(true,linija1,TipVozila.AUTOBUS,"kod5",new Date(),120.0,korisnik);
 		kartaRepository.save(dnevna2);
 	}
+	
+	public void seedOdobreneNeodobreneKarte(){
+		Korisnik korisnik = (Korisnik)osobaRepository.findByKorIme("KorisnikTest");
+		
+		Linija linija2=linijaRepository.findByNaziv("NazivLinije2");
+		
+		Calendar calendar = Calendar.getInstance();
+		
+		Zona zona2 = zonaRepository.findByNaziv("NazivZone2");
+		
+		//odobrena i datum prosao
+		calendar.set(2018, 11, 31);
+		VisednevnaKarta mesecna1 = new VisednevnaKarta(TipKarte.MESECNA, zona2, true, TipVozila.AUTOBUS, "kod6", calendar.getTime(),600.0,korisnik);
+		kartaRepository.save(mesecna1);
+		
+		//neodobrena i datum nije prosao
+		calendar.set(2019, 3, 13);
+		VisednevnaKarta mesecna2 = new VisednevnaKarta(TipKarte.MESECNA, zona2, null, TipVozila.METRO, "kod7", calendar.getTime(),700.0,korisnik);
+		kartaRepository.save(mesecna2);
+		
+		//neodobrena i datum prosao
+		calendar.set(2018, 11, 31);
+		VisednevnaKarta mesecna3 = new VisednevnaKarta(TipKarte.MESECNA, zona2, null, TipVozila.TRAMVAJ, "kod8", calendar.getTime(),800.0,korisnik);
+		kartaRepository.save(mesecna3);
+		
+		
+		//ponistena i datum nije prosao
+		calendar.set(2019, 11, 31);
+		VisednevnaKarta mesecna4 = new VisednevnaKarta(TipKarte.MESECNA, zona2, false, TipVozila.METRO, "kod9", calendar.getTime(),900.0,korisnik);
+		kartaRepository.save(mesecna4);
+		
+		
+		//neodobrena i datum nije prosao
+		calendar.set(2019, 4, 13);
+		VisednevnaKarta mesecna5 = new VisednevnaKarta(TipKarte.MESECNA, zona2, null, TipVozila.TRAMVAJ, "kod10", calendar.getTime(),1000.0,korisnik);
+		kartaRepository.save(mesecna5);
+		
+	}
 }
+
+

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import tim7.TIM7.dto.KartaDTO;
+import tim7.TIM7.dto.OdobrenjeKarteDTO;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Karta;
@@ -97,6 +98,27 @@ public class KartaController {
 			return new ResponseEntity<>("Karta sa zadatim kodom je vec cekirana", HttpStatus.IM_USED);
 		}else{
 			return new ResponseEntity<>("Karta je uspesno cekirana", HttpStatus.OK);
+		}
+	}
+	
+	@RequestMapping(value="/odobriKartu/{idKarte}/{statusOdobrenja}", method = RequestMethod.POST)
+	public ResponseEntity<String> verifyKarta(@RequestHeader ("X-Auth-Token") String token, @PathVariable Long idKarte, @PathVariable String statusOdobrenja){
+		boolean izmenjenStatus=kartaService.verifyKarta(idKarte, statusOdobrenja);
+		if (izmenjenStatus){
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else{
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	
+	@RequestMapping(value="/dobaviNeodobreneKarte", method = RequestMethod.GET)
+	public ResponseEntity<List<OdobrenjeKarteDTO>> getNeodobreneKarte(@RequestHeader ("X-Auth-Token") String token){
+		List<OdobrenjeKarteDTO> neodobreneKarte=kartaService.getNeodobreneKarte();
+		if (neodobreneKarte==null){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}else{
+			return new ResponseEntity<>(neodobreneKarte, HttpStatus.OK);
 		}
 	}
 	

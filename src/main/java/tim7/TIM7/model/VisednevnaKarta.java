@@ -73,12 +73,16 @@ public class VisednevnaKarta extends Karta {
 		this.zona = zona;
 	}
 
-	public VisednevnaKarta(TipKarte tip, Zona zona, boolean odobrena, TipVozila tipVozila, String kod, Date datumIsteka, Double cena, Korisnik korisnik) {
+
+
+	public VisednevnaKarta(TipKarte tip, Zona zona, Boolean odobrena, TipVozila tipVozila, String kod, Date datumIsteka, Double cena, Korisnik korisnik) {
 		super(tipVozila, kod, datumIsteka, cena, korisnik);
 		this.tip = tip;
 		this.zona = zona;
 		this.odobrena = odobrena;
 	}
+	
+	
 
 	
 	

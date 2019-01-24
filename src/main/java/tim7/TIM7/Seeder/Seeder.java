@@ -3,8 +3,10 @@ package tim7.TIM7.Seeder;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -239,11 +241,11 @@ public class Seeder {
 		Korisnik korisnikTest = new Korisnik("KorisnikTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KorisnikTest", "KorisnikTest","e@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
 		Verifikator verifikatorTest = new Verifikator("VerifikatorTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "VerifikatorTest", "VerifikatorTest","a@gmail.com");
 		Kondukter kondukterTest = new Kondukter("KondukterTest", "$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "KondukterTest", "KondukterTest","a@gmail.com");
+		Korisnik korisnikBezStatusaTest = new Korisnik("KorisnikBezStatusaTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "", null , new ArrayList<>());
 		
-		osobaRepository.save(korisnikTest);
-		osobaRepository.save(adminTest);
-		osobaRepository.save(verifikatorTest);
-		osobaRepository.save(kondukterTest);
+		Korisnik korisnikLoginTest = new Korisnik("KorisnikLoginTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "ImeTest", "PrezimeTest","test@gmail.com", "", null , new ArrayList<>());
+		
+		
     
     LocalDate cd = LocalDate.now();
 		

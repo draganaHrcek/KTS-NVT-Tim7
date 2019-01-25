@@ -15,7 +15,6 @@ public class CenovnikDTO {
 	
 	public CenovnikDTO(Cenovnik cenovnik) {
 		this.stavkeCenovnika = new ArrayList<StavkaCenovnikaDto>();
-		this.datumIsteka = cenovnik.getDatumIsteka();
 		this.datumObjavljivanja = cenovnik.getDatumObjavljivanja();
 		this.id = cenovnik.getId();
 		for(StavkaCenovnika stavka : cenovnik.getStavke()){

@@ -26,7 +26,7 @@ public class OsobaService {
 	
 	
 	public Osoba findOne(Long id) {
-		return osobaRepository.findById(id).get();
+		return osobaRepository.findById(id).orElse(null);
 	}
 
 	public List<Osoba> findAll() {

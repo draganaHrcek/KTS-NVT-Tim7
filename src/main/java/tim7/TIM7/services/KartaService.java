@@ -100,7 +100,7 @@ public class KartaService {
 	}
 	public double cenaKarte(KartaDTO karta, Korisnik kor) {
 		
-		Cenovnik cenovnik=  cenovnikService.findAll().stream().findFirst().get();
+		Cenovnik cenovnik=  cenovnikService.getTrenutni();
 		double cena= 0;
 		for (StavkaCenovnika i : cenovnik.getStavke()) {
 			if(i.getStavka().getVrstaPrevoza().toString().equals(karta.getTipPrevoza()) && i.getStavka().getTipKarte().toString().equals(karta.getTipKarte()) ) {

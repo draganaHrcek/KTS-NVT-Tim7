@@ -82,8 +82,8 @@ public class LinijaController {
 		}
 		
 		return new ResponseEntity<List<LinijaDTO>>(linijeDTO, HttpStatus.OK);
-	
 	}
+	
 
 }
 

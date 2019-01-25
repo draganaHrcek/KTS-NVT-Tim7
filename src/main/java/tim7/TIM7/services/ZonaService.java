@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tim7.TIM7.dto.LinijaDTO;
+import tim7.TIM7.dto.UpdatedZonaDTO;
 import tim7.TIM7.dto.ZonaDTO;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.Zona;
+import tim7.TIM7.repositories.LinijaRepository;
 import tim7.TIM7.repositories.ZonaRepository;
 
 @Service
@@ -17,6 +19,9 @@ public class ZonaService {
 
 	@Autowired
 	ZonaRepository zonaRepository;
+	
+	@Autowired
+	LinijaRepository linijaRepository;
 
 	
 	public Zona findOne(Long id) {
@@ -39,26 +44,44 @@ public class ZonaService {
 		return zonaRepository.save(zona);
 	}
 	
-	public boolean addNewZone(ZonaDTO newZone) {
+	public boolean addNewZone(UpdatedZonaDTO newZone) {
 		Zona potential = findOne(newZone.getId());
 		if(potential!=null) {
 			return false;
 		}
 		potential = new Zona();
-		potential.setId(newZone.getId());
 		potential.setNaziv(newZone.getName());
+		List<Linija> lines = new ArrayList<Linija>();
+		for(LinijaDTO line : newZone.getLines()) {
+			Linija linija = linijaRepository.findById(line.getId()).get();
+			List<Zona> zones = linija.getZone();
+			zones.add(potential);
+			linija.setZone(zones);
+			lines.add(linija);
+		}
+		potential.setLinije(lines);
 		potential.setObrisan(false);
 		save(potential);
 		return true;
 	}
 	
-	public boolean updateZone(ZonaDTO updatedZone) {
+	public boolean updateZone(UpdatedZonaDTO updatedZone) {
 		Zona potential = findOne(updatedZone.getId());
 		if(potential==null) {
 			return false;
 		}
 		
 		potential.setNaziv(updatedZone.getName());
+		
+		List<Linija> lines = new ArrayList<Linija>();
+		for(LinijaDTO line : updatedZone.getLines()) {
+			Linija linija = linijaRepository.findById(line.getId()).get();
+			List<Zona> zones = linija.getZone();
+			zones.add(potential);
+			linija.setZone(zones);
+			lines.add(linija);
+		}
+		potential.setLinije(lines);
 		save(potential);
 		return true;
 	}
@@ -70,25 +93,11 @@ public class ZonaService {
 			return false;
 		}
 		
+		
+		
 		potential.setObrisan(true);
 		save(potential);
 		return true;
-	}
-	
-	public List<LinijaDTO> removeLineFromZone(ZonaDTO zoneDTO, Long lineId){
-		List<LinijaDTO> retValue = new ArrayList<LinijaDTO>();
-		Zona zone = findOne(zoneDTO.getId());
-		if(zone==null || zone.isObrisan()) {
-			return null;
-		}
-		for(Linija line : zone.getLinije()) {
-			if(line.getId()==lineId) {
-				continue;
-			}
-			LinijaDTO lineDTO = new LinijaDTO(line);
-			retValue.add(lineDTO);
-		}
-		return retValue;
 	}
 	
 	public List<ZonaDTO> getAllZones(){

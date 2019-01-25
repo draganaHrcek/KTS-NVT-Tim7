@@ -91,6 +91,7 @@ public class LinijaService {
 		potential.setZone(getZonesFromDTO(newLine.getZones()));
 		potential.setStanice(getStationsFromDTO(newLine.getStations()));
 		save(potential);
+		saveZonesAndStations(potential);
 		return true;
 	}
 	
@@ -176,5 +177,21 @@ public class LinijaService {
 		return retValue;
 	}
 	
+	
+	public boolean saveZonesAndStations(Linija line) {
+		for(Zona zone : line.getZone()) {
+			List<Linija> linije = zone.getLinije();
+			linije.add(line);
+			zone.setLinije(linije);
+			zonaRepository.save(zone);
+		}
+		for(Stanica station : line.getStanice()) {
+			List<Linija> linije = station.getLinije();
+			linije.add(line);
+			station.setLinije(linije);
+			stanicaRepository.save(station);
+		}
+		return true;
+	}
 	
 }

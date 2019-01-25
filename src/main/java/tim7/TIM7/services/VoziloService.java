@@ -45,10 +45,10 @@ public class VoziloService {
 		}
 		
 		potential = new Vozilo();
-		potential.setId(newVehicle.getId());
 		potential.setObrisan(false);
 		potential.setRegistracija(newVehicle.getRegistration());
 		potential.setTipVozila(newVehicle.getType());
+		potential.setLinija(null);
 		save(potential);
 		return true;
 	}
@@ -106,8 +106,13 @@ public class VoziloService {
 			return false;
 		}
 		
+		List<Vozilo> vehicles = line.getVozila();
 		vehicle.setLinija(line);
+		vehicles.add(vehicle);
+		line.setVozila(vehicles);
 		save(vehicle);
+		linijaRepository.save(line);
+		
 		return true;
 	}
 	
@@ -116,9 +121,21 @@ public class VoziloService {
 		if(vehicle.getLinija()==null) {
 			return false;
 		}
+		
+		Linija line = null;
+		try {
+			line = linijaRepository.findById(vehicle.getLinija().getId()).get();
+		}catch(Exception e) {
+			return false;
+		}
 		vehicle.setLinija(null);
 		
+		List<Vozilo> vehicles = line.getVozila();
+		vehicles.remove(vehicle);
+		line.setVozila(vehicles);
+		
 		save(vehicle);
+		linijaRepository.save(line);
 		return true;
 	}
 }

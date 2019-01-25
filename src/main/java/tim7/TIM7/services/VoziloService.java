@@ -45,10 +45,10 @@ public class VoziloService {
 		}
 		
 		potential = new Vozilo();
-		potential.setId(newVehicle.getId());
 		potential.setObrisan(false);
 		potential.setRegistracija(newVehicle.getRegistration());
 		potential.setTipVozila(newVehicle.getType());
+		potential.setLinija(null);
 		save(potential);
 		return true;
 	}

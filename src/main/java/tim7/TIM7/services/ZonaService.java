@@ -1,6 +1,9 @@
 package tim7.TIM7.services;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +12,12 @@ import org.springframework.stereotype.Service;
 import tim7.TIM7.dto.LinijaDTO;
 import tim7.TIM7.dto.UpdatedZonaDTO;
 import tim7.TIM7.dto.ZonaDTO;
+import tim7.TIM7.helper.SortCenovniciByDate;
+import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.Zona;
+import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.LinijaRepository;
 import tim7.TIM7.repositories.ZonaRepository;
 
@@ -22,6 +29,9 @@ public class ZonaService {
 	
 	@Autowired
 	LinijaRepository linijaRepository;
+	
+	@Autowired 
+	CenovnikRepository cjenovnikRepository;
 
 	
 	public Zona findOne(Long id) {
@@ -76,10 +86,13 @@ public class ZonaService {
 		List<Linija> lines = new ArrayList<Linija>();
 		for(LinijaDTO line : updatedZone.getLines()) {
 			Linija linija = linijaRepository.findById(line.getId()).get();
-			List<Zona> zones = linija.getZone();
-			zones.add(potential);
-			linija.setZone(zones);
 			lines.add(linija);
+			List<Zona> zones = linija.getZone();
+			if(!zones.contains(potential)) {
+				zones.add(potential);
+				linija.setZone(zones);
+			}
+			linijaRepository.save(linija);
 		}
 		potential.setLinije(lines);
 		save(potential);
@@ -92,6 +105,14 @@ public class ZonaService {
 		if(potential==null) {
 			return false;
 		}
+		
+		Cenovnik current = getTrenutni();
+		for(StavkaCenovnika sc : current.getStavke()) {
+			if(sc.getStavka().getZona().getId()==id) {
+				return false;
+			}
+		}
+		
 		
 		
 		
@@ -118,5 +139,37 @@ public class ZonaService {
 			return null;
 		}
 		return retValue;
+	}
+	
+	
+	
+	//za provjere dozvole brisanja 
+	public Cenovnik getTrenutni() {
+		deleteIstekli();
+		try{
+			ArrayList<Cenovnik> cenovnici = (ArrayList<Cenovnik>) cjenovnikRepository.findAllByObrisanFalse();
+			Collections.sort(cenovnici, new SortCenovniciByDate());
+			return cenovnici.get(0);
+		}
+		catch(Exception e){
+			return null;
+		}
+	}
+	
+	public void deleteIstekli(){
+		ArrayList<Cenovnik> cenovnici = (ArrayList<Cenovnik>) cjenovnikRepository.findAllByObrisanFalse();
+		Collections.sort(cenovnici, new SortCenovniciByDate());
+		Date now = Calendar.getInstance().getTime();
+		for(int i = 0; i< cenovnici.size(); i++){
+			if(i!= cenovnici.size()-1 &&
+					cenovnici.get(i).getDatumObjavljivanja().before(now) &&
+					cenovnici.get(i+1).getDatumObjavljivanja().before(now)){
+				cenovnici.get(i).setObrisan(true);
+				cjenovnikRepository.save(cenovnici.get(i));
+			}
+			else{
+				break;
+			}
+		}
 	}
 }

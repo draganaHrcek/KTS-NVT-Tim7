@@ -21,9 +21,6 @@ import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DanUNedelji;
 import tim7.TIM7.model.DnevnaKarta;
-import tim7.TIM7.model.Korisnik;
-import tim7.TIM7.model.Linija;
-import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
@@ -36,9 +33,9 @@ import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.TipKarte;
 import tim7.TIM7.model.TipKarteCenovnik;
 import tim7.TIM7.model.TipVozila;
-import tim7.TIM7.model.Vozilo;
 import tim7.TIM7.model.Verifikator;
 import tim7.TIM7.model.VisednevnaKarta;
+import tim7.TIM7.model.Vozilo;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.KartaRepository;
@@ -93,17 +90,16 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-//		seedCenovnik();
-//		seedZona();
-//		seedLinija();
-//		connectZonaLinija();
-//		seedStavka();
-//		seedStavkaCenovnika();
-//		seedOsoba();
-//		seedIkija();
-//		seedStanica();
-//		seedZoneLinijeStaniceRedoviRasporediVoznje();
-//		seedKarte();
+		seedCenovnik();
+		seedZona();
+		seedLinija();
+		connectZonaLinija();
+		seedStavka();
+		seedStavkaCenovnika();
+		seedOsoba();
+		seedIkija();
+		seedZoneLinijeStaniceRedoviRasporediVoznje();
+		seedKarte();
 		seedOdobreneNeodobreneKarte();
 	}
 
@@ -169,9 +165,9 @@ public class Seeder {
 	}
 
 	public void seedStavkaCenovnika() {
-		Cenovnik cenovnik = cenovnikRepository.findAll().get(0);
 		int i = 0;
 		for (Stavka stavka : stavkaRepository.findAll()) {
+			Cenovnik cenovnik = cenovnikRepository.findAll().get(i%3);
 			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik, false));
 			i++;
 		}

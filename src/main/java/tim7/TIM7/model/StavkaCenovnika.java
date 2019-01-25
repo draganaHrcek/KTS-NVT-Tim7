@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import tim7.TIM7.dto.StavkaCenovnikaDto;
 @Entity
 public class StavkaCenovnika {
 	
@@ -46,6 +48,12 @@ public class StavkaCenovnika {
 		this.obrisan= false;
 		// TODO Auto-generated constructor stub
 	}
+
+	public StavkaCenovnika(Double cena2, Linija linija, Zona zona, TipKarteCenovnik tipKarte, TipVozila vrstaPrevoza) {
+		super();
+		this.obrisan = false;
+		this.stavka = new Stavka(tipKarte, vrstaPrevoza, zona, linija, false);
+		this.cena = cena2;	}
 
 	public boolean isObrisan() {
 		return obrisan;

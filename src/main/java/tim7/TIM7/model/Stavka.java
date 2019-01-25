@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import tim7.TIM7.dto.StavkaCenovnikaDto;
+
 @Entity
 public class Stavka {
 	@Id
@@ -59,6 +61,7 @@ public class Stavka {
 		this.obrisan = false;
 		// TODO Auto-generated constructor stub
 	}
+
 
 	public boolean isObrisan() {
 		return obrisan;

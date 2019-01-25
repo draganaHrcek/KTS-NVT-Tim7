@@ -1,5 +1,6 @@
 package tim7.TIM7.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -89,6 +90,7 @@ public class Cenovnik {
 	public Cenovnik() {
 		super();
 		this.obrisan= false;
+		this.stavke = new ArrayList<StavkaCenovnika>();
 		// TODO Auto-generated constructor stub
 	}
 

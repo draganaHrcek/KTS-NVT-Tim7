@@ -68,7 +68,7 @@ public class Seeder {
 	public Seeder() {
 	}
 
-	@EventListener
+	//@EventListener
 	public void seed(ContextRefreshedEvent event) {
 		seedCenovnik();
 		seedZona();

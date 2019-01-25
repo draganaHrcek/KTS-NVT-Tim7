@@ -93,7 +93,7 @@ public class OsobaController {
 	}
 	
 	@RequestMapping(value="/izmenaPodataka", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity<List<KartaDTO>> izmenaPodataka(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
+	public ResponseEntity izmenaPodataka(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
 		
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 		
@@ -109,7 +109,7 @@ public class OsobaController {
 	
 	
 	@RequestMapping(value="/izmenaLozinke", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity<List<KartaDTO>> izmenaLozinke(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
+	public ResponseEntity izmenaLozinke(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		
 		Osoba kor = osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));

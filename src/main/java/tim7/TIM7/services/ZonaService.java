@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tim7.TIM7.dto.LinijaDTO;
 import tim7.TIM7.dto.ZonaDTO;
+import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.ZonaRepository;
 
@@ -71,6 +73,22 @@ public class ZonaService {
 		potential.setObrisan(true);
 		save(potential);
 		return true;
+	}
+	
+	public List<LinijaDTO> removeLineFromZone(ZonaDTO zoneDTO, Long lineId){
+		List<LinijaDTO> retValue = new ArrayList<LinijaDTO>();
+		Zona zone = findOne(zoneDTO.getId());
+		if(zone==null || zone.isObrisan()) {
+			return null;
+		}
+		for(Linija line : zone.getLinije()) {
+			if(line.getId()==lineId) {
+				continue;
+			}
+			LinijaDTO lineDTO = new LinijaDTO(line);
+			retValue.add(lineDTO);
+		}
+		return retValue;
 	}
 	
 	public List<ZonaDTO> getAllZones(){

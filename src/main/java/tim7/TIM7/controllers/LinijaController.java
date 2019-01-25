@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import tim7.TIM7.dto.LinijaDTO;
-import tim7.TIM7.dto.RutaDTO;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.services.LinijaService;
 
@@ -62,18 +61,28 @@ public class LinijaController {
 		}
 	}
 	
-		
-	@RequestMapping(value="/izlistajLinije", produces = "application/json" ,method = RequestMethod.GET)
-	public ResponseEntity<RutaDTO> izlistajKarte(@RequestHeader ("X-Auth-Token") String token ) {
-		RutaDTO rute= new RutaDTO();
-		rute.setLinijeZone(new ArrayList<>());
-		List<Linija> linije = linijaService.findAll();
-		for (Linija linija : linije) {
-			rute.getLinijeZone().add(linija.getNaziv());
+	@RequestMapping(path= "/sveJedneZone/{id}" ,method=RequestMethod.GET)
+	public ResponseEntity<List<LinijaDTO>> getLinijeJedneZone(@PathVariable Long id){
+		List<LinijaDTO> retValue = linijaService.getLinesFromOneZone(id);
+		if (retValue==null || retValue.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
-		return new ResponseEntity<>(rute, HttpStatus.OK);
+		return new ResponseEntity<List<LinijaDTO>>(retValue, HttpStatus.OK);
 	}
 	
+
+	@RequestMapping(value="/zaCenovnik", produces = "application/json" ,method = RequestMethod.GET)
+	public ResponseEntity<List<LinijaDTO>> getLinije(@RequestHeader ("X-Auth-Token") String token ) {
+		
+		List<Linija> linije = linijaService.findAll();
+		List<LinijaDTO> linijeDTO = new ArrayList<LinijaDTO>();
+		
+		for (Linija linija : linije) {
+			linijeDTO.add(new LinijaDTO(linija));
+		}
+		
+		return new ResponseEntity<List<LinijaDTO>>(linijeDTO, HttpStatus.OK);
+	}
 	
 
 }

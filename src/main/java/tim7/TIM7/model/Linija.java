@@ -14,8 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 
 @Entity
@@ -41,7 +41,8 @@ public class Linija {
                inverseJoinColumns = @JoinColumn(name="zona_id", referencedColumnName="id"))
 	List<Zona> zone;
 	
-	@ManyToMany(mappedBy="linije")
+	@ManyToMany(mappedBy="linije", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	List<Stanica> stanice;
 
 	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)

@@ -59,29 +59,13 @@ public class OsobaController {
 		
 		if(korisnik.getLozinka1().equals(korisnik.getLozinka2())) {
 			
-			noviKorisnik = new Korisnik();
-			kreirajKorisnika(korisnik, (Korisnik)noviKorisnik);
-			osobaService.save((Korisnik)noviKorisnik);
+			osobaService.createNewUser(korisnik);
 			return new ResponseEntity<>( HttpStatus.CREATED);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	
 	}
 
-	private void kreirajKorisnika(KorisnikDTO registracija, Korisnik noviKorisnik) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-		noviKorisnik.setEmail(registracija.getEmail());
-		noviKorisnik.setIme(registracija.getIme());
-		noviKorisnik.setPrezime(registracija.getPrezime());
-		noviKorisnik.setLozinka(encoder.encode(registracija.getLozinka1()));
-		noviKorisnik.setKorIme(registracija.getKorIme());
-		noviKorisnik.setKarte(new ArrayList<Karta> ());
-		noviKorisnik.setLokacijaDokumenta(null);
-		noviKorisnik.setStatus(null);
-
-	
-	}
 	
 
 	
@@ -121,52 +105,36 @@ public class OsobaController {
 		
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
+	
+	
+	
 	@RequestMapping(value="/izmenaLozinke", consumes = "application/json" ,method = RequestMethod.POST)
 	public ResponseEntity<List<KartaDTO>> izmenaLozinke(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		
-		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
-				
+		Osoba kor = osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
+		
+		if (!encoder.matches(korisnik.getTrenutnaLozinka(), kor.getLozinka())) {
+			
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+			
+		}
 		if(korisnik.getLozinka1().equals(korisnik.getLozinka2())) {
-			kor.setLozinka(korisnik.getLozinka1());
+			kor.setLozinka(encoder.encode(korisnik.getLozinka1()));
 			osobaService.save(kor);
 			return new ResponseEntity<>( HttpStatus.OK);
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
 	
 	}
+	
 	@RequestMapping(value="/prijavljenKorisnik", produces = "application/json",method = RequestMethod.GET)
 	public ResponseEntity<KorisnikTokenDTO> prijavljenKorisnik(@RequestHeader ("X-Auth-Token") String token ) {
 		
-
-		KorisnikTokenDTO kor= new KorisnikTokenDTO();
-		Osoba o= osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
-		
-		kor.setKorIme(o.getKorIme());
-		kor.setEmail(o.getEmail());
-		kor.setIme(o.getIme());
-		kor.setPrezime(o.getPrezime());
-		kor.setLozinka(o.getLozinka());
-		if (o instanceof Korisnik) {
-			kor.setUloga("KORISNIK");
-			if(((Korisnik) o).getStatus()!=null) {
-				kor.setStatus(((Korisnik) o).getStatus().toString());
-			}
-		}else if(o instanceof Administrator) {
-			
-			kor.setUloga("ADMINISTRATOR");
-			
-		}else if (o instanceof Kondukter) {
-			kor.setUloga("KONDUKTER");
-			
-			
-		}else {
-			
-			
-			kor.setUloga("VERIFIKATOR");
-		}
-		
-		return new ResponseEntity<KorisnikTokenDTO>( kor,HttpStatus.OK);
+		Osoba osoba= osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
+		KorisnikTokenDTO korisnik= osobaService.findUlogovanog(osoba);
+		return new ResponseEntity<KorisnikTokenDTO>( korisnik,HttpStatus.OK);
 		
 		}
 		

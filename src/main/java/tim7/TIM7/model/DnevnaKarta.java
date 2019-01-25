@@ -1,5 +1,7 @@
 package tim7.TIM7.model;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,6 +44,14 @@ public class DnevnaKarta extends Karta {
 	}
 
 	public void setLinija(Linija linija) {
+		this.linija = linija;
+	}
+
+
+
+	public DnevnaKarta(boolean upotrebljena, Linija linija, TipVozila tipVozila, String kod, Date datumIsteka, Double cena, Korisnik korisnik) {
+		super(tipVozila, kod, datumIsteka, cena, korisnik);
+		this.upotrebljena = upotrebljena;
 		this.linija = linija;
 	}
 	

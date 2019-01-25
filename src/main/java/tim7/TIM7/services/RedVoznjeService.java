@@ -1,5 +1,6 @@
 package tim7.TIM7.services;
 
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -89,16 +90,7 @@ public class RedVoznjeService {
 	}
 	
 	//dobavljanje buduceg reda voznje
-	public RedVoznjeDTO getBuduciRedVoznje() {
-		//ne mora da postoji trenutni da bi postojao buduci
-		/*RedVoznjeDTO trenutniRedVoznjeDto = getTrenutniRedVoznje();
-		RedVoznje buduciRedVoznje=redVoznjeRepository.findByIdNotAndObrisanFalse(trenutniRedVoznjeDto.getId());
-		if (buduciRedVoznje==null){
-			return null;
-		}else{
-			return new RedVoznjeDTO(buduciRedVoznje);
-		}*/
-		
+	public RedVoznjeDTO getBuduciRedVoznje() {		
 		RedVoznjeDTO trenutniRedVoznjeDto = getTrenutniRedVoznje();
 		RedVoznjeDTO buduciRedVodnje=null;
 		if (trenutniRedVoznjeDto==null){
@@ -121,7 +113,7 @@ public class RedVoznjeService {
 
 	}
 	
-	
+	/*
 	//za dobijanje zeljenog rasporeda
 	public RasporedVoznjeDTO getSpecificRasporedVoznje(DanUNedelji danUNedelji, String nazivLinije){
 		RedVoznjeDTO trenutniRedVoznje = getTrenutniRedVoznje();
@@ -131,7 +123,7 @@ public class RedVoznjeService {
 		Long idTrenutnogRedaVoznje=trenutniRedVoznje.getId();
 		RedVoznje redVoznje = findById(idTrenutnogRedaVoznje);
 		Linija linija = linijaRepository.findByNaziv(nazivLinije);
-		RasporedVoznje rasporedVoznje = rasporedVoznjeRepository.findByDanUNedeljiAndLinijaAndRedVoznje(danUNedelji, linija, redVoznje);
+		RasporedVoznje rasporedVoznje = rasporedVoznjeRepository.findByDanUNedeljiAndLinijaAndRedVoznjeAndObrisanFalse(danUNedelji, linija, redVoznje);
 		if (rasporedVoznje==null){
 			return null;
 		}else{
@@ -139,15 +131,15 @@ public class RedVoznjeService {
 		}
 		
 	}
-	
+	*/
 	
 	//za kreiranje novog reda voznje, postavljace se samo godina, mesec i dan, ne znam da li vreme da bude 00:00 ili 01:00, za sad 0
 	public String createRedVoznje(Date datumObjavljivanja){
 		RedVoznjeDTO buduciRedVoznje=getBuduciRedVoznje();
 		Calendar sutrasnjiDatum=Calendar.getInstance();
-		sutrasnjiDatum.add(Calendar.DAY_OF_MONTH, 1);
-		sutrasnjiDatum.getTime().setHours(0);
-		sutrasnjiDatum.getTime().setMinutes(0);
+		sutrasnjiDatum.add(Calendar.DATE, 1);
+		sutrasnjiDatum.set(Calendar.HOUR_OF_DAY, 1);
+		sutrasnjiDatum.set(Calendar.MINUTE, 0);
 		if (buduciRedVoznje!=null){
 			return "POSTOJI";
 		}else if(datumObjavljivanja.before(sutrasnjiDatum.getTime())){
@@ -162,8 +154,7 @@ public class RedVoznjeService {
 	
 	//za brisanje buduceg reda voznje, moze da se obrise samo ako nije prosao datum objavljivanja
 	//iako postavljanje trenutnog reda voznje postavlja i status da li je obrisan, za svaki slucaj
-	//pisem proveru
-	
+	//pisem proveru	
 	public String deleteBuduciRedVoznje(){
 		RedVoznjeDTO buduciRedVoznje = getBuduciRedVoznje();
 		if (buduciRedVoznje==null){
@@ -173,6 +164,33 @@ public class RedVoznjeService {
 			return "OBRISAN";
 		}
 	}
+	
+	//za izmenu datuma objavljivanja
+	public String changeBuduciRedVoznje(Date datumObjavljivanja){
+		RedVoznjeDTO buduciRedVoznje=getBuduciRedVoznje();
+		Calendar sutrasnjiDatum=Calendar.getInstance();
+		sutrasnjiDatum.add(Calendar.DATE, 1);
+		sutrasnjiDatum.set(Calendar.HOUR_OF_DAY, 0);
+		sutrasnjiDatum.set(Calendar.MINUTE, 0);
+		if (buduciRedVoznje==null){
+			return "NE POSTOJI";
+		}else if(datumObjavljivanja.before(sutrasnjiDatum.getTime())){
+			return "LOS DATUM";
+		}else{
+			RedVoznje buduci=findById(buduciRedVoznje.getId());
+			buduci.setDatumObjavljivanja(datumObjavljivanja);
+			save(buduci);
+			return "IZMENJEN";
+			
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	
 }

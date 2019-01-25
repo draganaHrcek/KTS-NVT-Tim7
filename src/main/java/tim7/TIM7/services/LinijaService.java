@@ -123,6 +123,30 @@ public class LinijaService {
 		return retValue;
 	}
 	
+	public List<LinijaDTO> getLinesFromOneZone(Long id){
+		List<Linija> allLines = findAll();
+		if (allLines==null) {
+			return null;
+		}
+		List<LinijaDTO> retValue = new ArrayList<LinijaDTO>();
+		for (Linija lin : allLines) {
+			if (lin.isObrisan()) {
+				continue;
+			}
+			for(Zona zone : lin.getZone()) {
+				if(zone.getId()==id) {
+					LinijaDTO linDTO = new LinijaDTO(lin);
+					retValue.add(linDTO);
+					break;
+				}
+			}
+		}
+		if(retValue.isEmpty()) {
+			return null;
+		}
+		return retValue;		
+	}
+	
 	public Cenovnik getTrenutniCenovnik() {
 		Calendar now = Calendar.getInstance();
 		for(Cenovnik cenovnik : cenovnikRepository.findAll()){

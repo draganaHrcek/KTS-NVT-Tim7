@@ -35,6 +35,7 @@ public abstract class Osoba {
 	@Column(name="obrisan")
 	boolean obrisan;
 	
+	
 	public Osoba() {
 		super();
 		this.obrisan= false;

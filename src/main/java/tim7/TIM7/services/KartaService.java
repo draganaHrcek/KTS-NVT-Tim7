@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tim7.TIM7.dto.KartaDTO;
+import tim7.TIM7.dto.OdgovorDTO;
 import tim7.TIM7.dto.OdobrenjeKarteDTO;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DnevnaKarta;
@@ -208,10 +209,11 @@ if (karta.getTipKarte().equals("DNEVNA")) {
 	}
 	
 	//za proveru postojanja karte i cekiranje ukoliko je dnevna
-	public String checkKarta(TipVozila tipVozila, String nazivLinije, String kod){
+	public OdgovorDTO checkKarta(TipVozila tipVozila, String nazivLinije, String kod){
 		Karta karta=kartaRepository.findByKod(kod);
+		OdgovorDTO odgovor=new OdgovorDTO();
 		if (karta==null){
-			return "NE POSTOJI";
+			return null;
 		}else{
 			if (karta instanceof VisednevnaKarta){
 				Zona zonaKarte=((VisednevnaKarta)karta).getZona();
@@ -222,45 +224,49 @@ if (karta.getTipKarte().equals("DNEVNA")) {
 					}
 				}
 				if (prosao && karta.getTipPrevoza().equals(tipVozila) && (new Date()).before(karta.getDatumIsteka()) && ((VisednevnaKarta)karta).isOdobrena()){
-					return "POSTOJI";
+					odgovor.setOdgovor("Karta je vazeca");;
 				}else{
-					return "NE POSTOJI";
+					return null;
 				}
 			}else{
 				if (karta.getTipPrevoza().equals(tipVozila) && ((DnevnaKarta)karta).getLinija().getNaziv().equals(nazivLinije)){
 					if (((DnevnaKarta)karta).isUpotrebljena()){
-						return "UPOTREBLJENA";
+						return null;
 					}else{
 						((DnevnaKarta)karta).setUpotrebljena(true);
 						save((DnevnaKarta)karta);
-						return "CEKIRANA";
+						odgovor.setOdgovor("Karta uspesno cekirana");;
 					}				
 				}else{
-					return "NE POSTOJI";
+					return null;
 				}
 			}
+			return odgovor;
 		}
 	}
 	
 	
 	//za odobrenje karata
-	public boolean verifyKarta(Long idKarte, String statusOdobrenja){
+	public OdgovorDTO verifyKarta(Long idKarte, String statusOdobrenja){
 		VisednevnaKarta karta=(VisednevnaKarta)findOne(idKarte);
 		if (karta==null){
-			return false;
+			return null;
 		}else{
 			if (karta.isOdobrena()!=null){
-				return false;
+				return null;
 			}else if ((new Date()).before(karta.getDatumIsteka())){
+				String status=null;
 				if (statusOdobrenja.equals("ODOBRENA")){
 					karta.setOdobrena(true);
+					status="odobrena";
 				}else{
 					karta.setOdobrena(false);
+					status="ponistena";
 				}
 				save(karta);
-				return true;
+				return new OdgovorDTO("Karta je uspesno "+status);
 			}else{
-				return false; //ne moze da je verifikuje ukoliko je karta istekla
+				return null; //ne moze da je verifikuje ukoliko je karta istekla
 			}
 			
 		}

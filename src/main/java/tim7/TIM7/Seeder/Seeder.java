@@ -90,17 +90,17 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-//		seedCenovnik();
-//		seedZona();
-//		seedLinija();
-//		connectZonaLinija();
-//		seedStavka();
-//		seedStavkaCenovnika();
-//		seedOsoba();
-//		seedIkija();
-//		seedZoneLinijeStaniceRedoviRasporediVoznje();
-//		seedKarte();
-//		seedOdobreneNeodobreneKarte();
+/*		seedCenovnik();
+		seedZona();
+		seedLinija();
+		connectZonaLinija();
+		seedStavka();
+		seedStavkaCenovnika();
+		seedOsoba();
+		seedIkija();
+		seedZoneLinijeStaniceRedoviRasporediVoznje();
+		seedKarte();
+		seedOdobreneNeodobreneKarte();*/
 	}
 
 	public void seedCenovnik() {
@@ -615,6 +615,23 @@ public class Seeder {
 		calendar.set(2019, 4, 13);
 		VisednevnaKarta mesecna5 = new VisednevnaKarta(TipKarte.MESECNA, zona2, null, TipVozila.TRAMVAJ, "kod10", calendar.getTime(),1000.0,korisnik);
 		kartaRepository.save(mesecna5);
+		
+		//odobrena i datum nije prosao
+		calendar.set(2019, 3, 13);
+		VisednevnaKarta mesecna6 = new VisednevnaKarta(TipKarte.MESECNA, zona2, true, TipVozila.AUTOBUS, "kod11", calendar.getTime(),700.0,korisnik);
+		kartaRepository.save(mesecna6);
+		
+		//odobrena i datum nije prosao
+		calendar.set(2019, 3, 13);
+		VisednevnaKarta mesecna7 = new VisednevnaKarta(TipKarte.MESECNA, zona2, true, TipVozila.METRO, "kod12", calendar.getTime(),700.0,korisnik);
+		kartaRepository.save(mesecna7);
+		
+		
+		//odobrena i datum nije prosao
+		calendar.set(2019, 3, 13);
+		VisednevnaKarta mesecna8 = new VisednevnaKarta(TipKarte.MESECNA, zona2, true, TipVozila.TRAMVAJ, "kod13", calendar.getTime(),700.0,korisnik);
+		kartaRepository.save(mesecna8);
+		
 		
 	}
 }

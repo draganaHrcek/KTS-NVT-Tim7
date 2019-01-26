@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import tim7.TIM7.dto.LinijaDTO;
 import tim7.TIM7.dto.StanicaDTO;
+import tim7.TIM7.dto.UpdatedLinijaDTO;
+import tim7.TIM7.dto.VoziloDTO;
 import tim7.TIM7.dto.ZonaDTO;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.Linija;
@@ -37,6 +39,9 @@ public class LinijaService {
 	@Autowired
 	StanicaRepository stanicaRepository;
 
+	@Autowired
+	VoziloRepository voziloRepository;
+	
 	public Linija findOne(Long id) {
 		try {
 			Linija line = linijaRepository.findById(id).get();
@@ -60,7 +65,7 @@ public class LinijaService {
 	//check if exists; if it is currently in cjenovnik; if it is currently in redvoznje
 	public Linija deleteOneLine(Long id) {
 		Linija linija=findOne(id);
-		if(linija==null) {
+		if(linija==null || linija.isObrisan()) {
 			return null;
 		}
 		Cenovnik current = getTrenutniCenovnik();
@@ -79,28 +84,34 @@ public class LinijaService {
 	}
 	
 	//checks if already exists
-	public boolean addNewLine(LinijaDTO newLine) {
+	public boolean addNewLine(UpdatedLinijaDTO newLine) {
 		Linija potential = findOne(newLine.getId());
 		if(potential!=null) {
 			return false;
 		}
 		potential = new Linija();
-		potential.setId(newLine.getId());
 		potential.setNaziv(newLine.getName());
 		potential.setObrisan(false);
 		potential.setZone(getZonesFromDTO(newLine.getZones()));
+		potential.setVozila(getVehiclesFromDTO(newLine.getVehicles()));
 		potential.setStanice(getStationsFromDTO(newLine.getStations()));
 		save(potential);
-		saveZonesAndStations(potential);
+		saveZonesAndStationsAndVehicles(potential);
 		return true;
 	}
 	
-	public boolean updateLine(LinijaDTO updatedLine){
+	public boolean updateLine(UpdatedLinijaDTO updatedLine){
 		Linija potential = findOne(updatedLine.getId());
-		if(potential==null) {
+		if(potential==null || potential.isObrisan()) {
 			return false;
 		}
 		potential.setNaziv(updatedLine.getName());
+		
+//		potential.setZone(getZones(updatedLine));
+//		potential.setVozila((getVehicles(updatedLine));
+//		potential.setStanice(getStation(updatedLine));
+		
+		
 		save(potential);
 		return true;
 	}
@@ -117,9 +128,6 @@ public class LinijaService {
 			}
 			LinijaDTO linDTO = new LinijaDTO(lin);
 			retValue.add(linDTO);
-		}
-		if(retValue.isEmpty()) {
-			return null;
 		}
 		return retValue;
 	}
@@ -142,9 +150,6 @@ public class LinijaService {
 				}
 			}
 		}
-		if(retValue.isEmpty()) {
-			return null;
-		}
 		return retValue;		
 	}
 	
@@ -164,6 +169,7 @@ public class LinijaService {
 		for(ZonaDTO zoneDTO : list) {
 			Zona zone = zonaRepository.findById(zoneDTO.getId()).get();
 			retValue.add(zone);
+			List<Linija> linije = zone.getLinije();
 		}
 		return retValue;
 	}
@@ -177,8 +183,28 @@ public class LinijaService {
 		return retValue;
 	}
 	
+	public List<Vozilo> getVehiclesFromDTO(List<VoziloDTO> vehicles){
+		List<Vozilo> retValue = new ArrayList<Vozilo>();
+		for(VoziloDTO vehicleDTO : vehicles) {
+			Vozilo vehicle = voziloRepository.findById(vehicleDTO.getId()).get();
+			retValue.add(vehicle);
+		}
+		return retValue;
+	}
 	
-	public boolean saveZonesAndStations(Linija line) {
+//	public List<Zona> getZones(UpdatedLinijaDTO updatedLine) {
+//
+//	}
+//	
+//	public List<Vozilo> getVehicles(UpdatedLinijaDTO updatedLine){
+//		
+//	}
+//	
+//	public List<Stanica> getStations(UpdatedLinijaDTO updatedLine){
+//		
+//	}
+	
+	public boolean saveZonesAndStationsAndVehicles(Linija line) {
 		for(Zona zone : line.getZone()) {
 			List<Linija> linije = zone.getLinije();
 			linije.add(line);
@@ -190,6 +216,11 @@ public class LinijaService {
 			linije.add(line);
 			station.setLinije(linije);
 			stanicaRepository.save(station);
+		}
+		for(Vozilo vehicle : line.getVozila()) {
+			Linija linija = vehicle.getLinija();
+			vehicle.setLinija(linija);
+			voziloRepository.save(vehicle);
 		}
 		return true;
 	}

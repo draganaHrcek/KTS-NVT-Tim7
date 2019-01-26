@@ -54,6 +54,15 @@ public class ZonaService {
 		return zonaRepository.save(zona);
 	}
 	
+	public Linija getLineById(Long id) {
+		try {
+			Linija line = linijaRepository.findById(id).get();
+			return line;
+		}catch(Exception e) {
+			return null;
+		}
+	}
+	
 	public boolean addNewZone(UpdatedZonaDTO newZone) {
 		Zona potential = findOne(newZone.getId());
 		if(potential!=null) {
@@ -62,16 +71,20 @@ public class ZonaService {
 		potential = new Zona();
 		potential.setNaziv(newZone.getName());
 		List<Linija> lines = new ArrayList<Linija>();
+		potential.setLinije(lines);
+		potential.setObrisan(false);
+		save(potential);
 		for(LinijaDTO line : newZone.getLines()) {
-			Linija linija = linijaRepository.findById(line.getId()).get();
+			Linija linija = getLineById(line.getId());
+			if(linija==null || linija.isObrisan()) {
+				return false;
+			}
 			List<Zona> zones = linija.getZone();
 			zones.add(potential);
 			linija.setZone(zones);
 			lines.add(linija);
+			linijaRepository.save(linija);
 		}
-		potential.setLinije(lines);
-		potential.setObrisan(false);
-		save(potential);
 		return true;
 	}
 	
@@ -85,13 +98,27 @@ public class ZonaService {
 		
 		List<Linija> lines = new ArrayList<Linija>();
 		for(LinijaDTO line : updatedZone.getLines()) {
-			Linija linija = linijaRepository.findById(line.getId()).get();
+			Linija linija = getLineById(line.getId());
+			if(linija==null || linija.isObrisan()) {
+				return true;
+			}
 			lines.add(linija);
 			List<Zona> zones = linija.getZone();
 			if(!zones.contains(potential)) {
 				zones.add(potential);
 				linija.setZone(zones);
+				linijaRepository.save(linija);
 			}
+		}
+		
+		for(Long lineId : updatedZone.getRemovedLinesIds()) {
+			Linija linija = getLineById(lineId);
+			if(linija==null || linija.isObrisan()) {
+				return true;
+			}
+			List<Zona> zones = linija.getZone();
+			zones.remove(potential);
+			linija.setZone(zones);
 			linijaRepository.save(linija);
 		}
 		potential.setLinije(lines);
@@ -123,7 +150,7 @@ public class ZonaService {
 	
 	public List<ZonaDTO> getAllZones(){
 		List<Zona> allZones = findAll();
-		if(allZones==null || allZones.isEmpty()) {
+		if(allZones==null) {
 			return null;
 		}
 		
@@ -134,9 +161,6 @@ public class ZonaService {
 			}
 			ZonaDTO zdto = new ZonaDTO(zone);
 			retValue.add(zdto);
-		}
-		if(retValue.isEmpty()) {
-			return null;
 		}
 		return retValue;
 	}

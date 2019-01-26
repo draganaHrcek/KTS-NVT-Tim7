@@ -48,6 +48,7 @@ import tim7.TIM7.repositories.StavkaCenovnikaRepository;
 import tim7.TIM7.repositories.StavkaRepository;
 import tim7.TIM7.repositories.VoziloRepository;
 import tim7.TIM7.repositories.ZonaRepository;
+import tim7.TIM7.services.OsobaService;
 
 @Component
 public class Seeder {
@@ -90,17 +91,17 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-//		seedCenovnik();
-//		seedZona();
-//		seedLinija();
-//		connectZonaLinija();
-//		seedStavka();
-//		seedStavkaCenovnika();
-//		seedOsoba();
-//		seedIkija();
-//		seedZoneLinijeStaniceRedoviRasporediVoznje();
-//		seedKarte();
-//		seedOdobreneNeodobreneKarte();
+		//seedCenovnik();
+		//seedZona();
+		//seedLinija();
+		//connectZonaLinija();
+		//seedStavka();
+		//seedStavkaCenovnika();
+		//seedOsoba();
+		//seedIkija();
+		//seedZoneLinijeStaniceRedoviRasporediVoznje();
+		//seedKarte();
+	seedOdobreneNeodobreneKarte();
 	}
 
 	public void seedCenovnik() {
@@ -183,18 +184,52 @@ public class Seeder {
 		for (TipKarteCenovnik tip : TipKarteCenovnik.values()) {
 			linija = linijaRepository.findByNaziv("linija 1");
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
 
 			linija = linijaRepository.findByNaziv("linija 2");
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
 
 			linija = linijaRepository.findByNaziv("linija 3");
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
 
 			linija = linijaRepository.findByNaziv("linija 4");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
 			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+			
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
+			
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
 		}
 	}
 	
@@ -554,7 +589,9 @@ public class Seeder {
 	}
 
 	public void seedKarte(){
-		Korisnik korisnik = (Korisnik)osobaRepository.findByKorIme("KorisnikTest");
+		Korisnik korisnik = new Korisnik("MarinaTest","$2a$10$Vc0ucRlZKZwApbjZNZUmduCL2dZ.T1152UQuEpglLAkpYmLt6vxK6", "Marina", "Jerkovic","e@gmail.com", "",StatusKorisnika.valueOf("STUDENT") , new ArrayList<>());
+		 korisnik= osobaRepository.save(korisnik);
+		
 		
 		LocalDate cd = LocalDate.now();
 		Linija linija1=linijaRepository.findByNaziv("NazivLinije1");
@@ -581,7 +618,7 @@ public class Seeder {
 	}
 	
 	public void seedOdobreneNeodobreneKarte(){
-		Korisnik korisnik = (Korisnik)osobaRepository.findByKorIme("KorisnikTest");
+		Korisnik korisnik = (Korisnik)osobaRepository.findByKorIme("MarinaTest");
 		
 		Linija linija2=linijaRepository.findByNaziv("NazivLinije2");
 		

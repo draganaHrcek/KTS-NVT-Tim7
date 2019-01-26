@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import tim7.TIM7.dto.LinijaDTO;
+import tim7.TIM7.dto.UpdatedLinijaDTO;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.services.LinijaService;
 
@@ -27,35 +28,38 @@ public class LinijaController {
 	@RequestMapping(path= "/sve" ,method=RequestMethod.GET)
 	public ResponseEntity<List<LinijaDTO>> getSveLinije(){
 		List<LinijaDTO> retValue = linijaService.getAllLines();
-		if (retValue==null || retValue.isEmpty()) {
+		if (retValue==null) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 		return new ResponseEntity<List<LinijaDTO>>(retValue, HttpStatus.OK);
 	}
 	
 	@RequestMapping(path="/brisi/{id}", method=RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteJednaLinija(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<LinijaDTO>> deleteJednaLinija(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
 		Linija line = linijaService.deleteOneLine(id);
 		if (line==null) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}else {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<LinijaDTO> retValue = linijaService.getAllLines();
+			return new ResponseEntity<List<LinijaDTO>>(retValue, HttpStatus.OK);
 		}
 	}
 	
 	@RequestMapping(path="/dodaj", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<Void> addNovaLinija(@RequestBody LinijaDTO newLine, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<LinijaDTO>> addNovaLinija(@RequestBody UpdatedLinijaDTO newLine, @RequestHeader ("X-Auth-Token") String token){
 		if(!linijaService.addNewLine(newLine)) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}else {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<LinijaDTO> retValue = linijaService.getAllLines();
+			return new ResponseEntity<List<LinijaDTO>>(retValue, HttpStatus.OK);
 		}
 	}
 	
 	@RequestMapping(path="/mijenjaj", method=RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<Void> updateLinije(@RequestBody LinijaDTO updatedLine, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<LinijaDTO>> updateLinije(@RequestBody UpdatedLinijaDTO updatedLine, @RequestHeader ("X-Auth-Token") String token){
 		if(linijaService.updateLine(updatedLine)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<LinijaDTO> retValue = linijaService.getAllLines();
+			return new ResponseEntity<List<LinijaDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
@@ -64,7 +68,7 @@ public class LinijaController {
 	@RequestMapping(path= "/sveJedneZone/{id}" ,method=RequestMethod.GET)
 	public ResponseEntity<List<LinijaDTO>> getLinijeJedneZone(@PathVariable Long id){
 		List<LinijaDTO> retValue = linijaService.getLinesFromOneZone(id);
-		if (retValue==null || retValue.isEmpty()) {
+		if (retValue==null) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 		return new ResponseEntity<List<LinijaDTO>>(retValue, HttpStatus.OK);

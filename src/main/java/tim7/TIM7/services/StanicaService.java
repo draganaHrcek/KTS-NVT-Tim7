@@ -95,9 +95,6 @@ public class StanicaService {
 			StanicaDTO stationDTO = new StanicaDTO(station);
 			retValue.add(stationDTO);
 		}
-		if(retValue.isEmpty()) {
-			return null;
-		}
 		return retValue;
 	}
 	

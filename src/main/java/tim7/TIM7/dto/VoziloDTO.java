@@ -7,7 +7,8 @@ public class VoziloDTO {
 	private Long id;
 	private String registration;
 	private Long lineId;
-	private TipVozila type;
+	private String lineName;
+	private String type;
 
 	public VoziloDTO() {
 		super();
@@ -18,18 +19,20 @@ public class VoziloDTO {
 		registration = vozilo.getRegistracija();
 		if(vozilo.getLinija()!=null) {
 			lineId = vozilo.getLinija().getId();
+			lineName = vozilo.getLinija().getNaziv();
 		}else {
 			lineId= null;
 		}
-		type = vozilo.getTipVozila();
+		type = vozilo.getTipVozila().toString();
 	}
 
-	public VoziloDTO(Long id, String registration, Long lineId, TipVozila type) {
+	public VoziloDTO(Long id, String registration, Long lineId, String type, String lineName) {
 		super();
 		this.id = id;
 		this.registration = registration;
 		this.lineId = lineId;
 		this.type = type;
+		this.lineName = lineName;
 	}
 
 	public Long getId() {
@@ -56,12 +59,20 @@ public class VoziloDTO {
 		this.lineId = lineId;
 	}
 
-	public TipVozila getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(TipVozila type) {
+	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getLineName() {
+		return lineName;
+	}
+
+	public void setLineName(String lineName) {
+		this.lineName = lineName;
 	}
 	
 	

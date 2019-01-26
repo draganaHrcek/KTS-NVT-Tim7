@@ -170,7 +170,8 @@ public class OsobaServiceTest {
 		
 		osobaServ.save(korisnik);
 		
-		verify(osobaRep, times(1)).save(korisnik);		
+		verify(osobaRep, times(1)).save(korisnik);
+		
 		
 	}
 	@Test

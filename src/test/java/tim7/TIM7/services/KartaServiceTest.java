@@ -97,6 +97,8 @@ public class KartaServiceTest {
 		karta2.setZona(zona);
 
 		when(kartaRep.findById(2000l)).thenReturn(Optional.ofNullable(null));
+		when(kartaRep.findByKod("1se45nx4")).thenReturn(Optional.of(karta1));
+		when(kartaRep.findByKod("11111111")).thenReturn(Optional.ofNullable(null));
 
 	}
 
@@ -114,6 +116,30 @@ public class KartaServiceTest {
 		verify(kartaRep, times(1)).findById(1l);
 	}
 
+	@Test
+	public void findByKod() {
+
+		DnevnaKarta karta = (DnevnaKarta) kartaServ.findByKod("1se45nx4");
+		assertThat(karta).isNotNull();
+
+		assertEquals(karta.getCena(), new Double(60.0));
+		assertEquals(karta.getKod(), "1se45nx4");
+		assertEquals(karta.getTipPrevoza(), TipVozila.valueOf("AUTOBUS"));
+		assertEquals(karta.getLinija().getNaziv(), "linija1");
+
+		verify(kartaRep, times(1)).findByKod("1se45nx4");
+	}
+	
+	
+	@Test
+	public void findByKodNotExist() {
+
+		DnevnaKarta karta = (DnevnaKarta) kartaServ.findByKod("11111111");
+		assertThat(karta).isNull();
+
+
+		verify(kartaRep, times(1)).findByKod("11111111");
+	}
 	@Test
 	public void findAll() {
 

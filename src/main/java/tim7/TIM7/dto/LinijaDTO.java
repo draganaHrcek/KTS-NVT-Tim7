@@ -5,6 +5,7 @@ import java.util.List;
 
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.Stanica;
+import tim7.TIM7.model.Vozilo;
 import tim7.TIM7.model.Zona;
 
 public class LinijaDTO {

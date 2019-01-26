@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import tim7.TIM7.dto.LinijaDTO;
+import tim7.TIM7.dto.UpdatedZonaDTO;
 import tim7.TIM7.dto.ZonaDTO;
 import tim7.TIM7.services.ZonaService;
 
@@ -24,37 +25,30 @@ public class ZonaController {
 	ZonaService zonaService;
 	
 	@RequestMapping(path="/dodaj", method = RequestMethod.POST, consumes="application/json")
-	public ResponseEntity<Void> addNovaZona(@RequestBody ZonaDTO newZone, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<ZonaDTO>> addNovaZona(@RequestBody UpdatedZonaDTO newZone, @RequestHeader ("X-Auth-Token") String token){
 		if(zonaService.addNewZone(newZone)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<ZonaDTO> retValue = zonaService.getAllZones();
+			return new ResponseEntity<List<ZonaDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 	
 	@RequestMapping(path="/brisi/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteZona(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<ZonaDTO>> deleteZona(@RequestHeader ("X-Auth-Token") String token, @PathVariable Long id){
 		if(zonaService.deleteZone(id)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<ZonaDTO> retValue = zonaService.getAllZones();
+			return new ResponseEntity<List<ZonaDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 	
 	@RequestMapping(path="/mijenjaj", method = RequestMethod.PUT, consumes="application/json")
-	public ResponseEntity<Void> updateZona(@RequestBody ZonaDTO updatedZone, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<ZonaDTO>> updateZona(@RequestHeader ("X-Auth-Token") String token, @RequestBody UpdatedZonaDTO updatedZone){
 		if(zonaService.updateZone(updatedZone)) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-		}
-	}
-	
-	@RequestMapping(path="/ukloniLiniju/{lineId}", method = RequestMethod.PUT, consumes="application/json")
-	public ResponseEntity<List<LinijaDTO>> removeLinijaFromZona(@PathVariable Long lineId, @RequestBody ZonaDTO zone, @RequestHeader ("X-Auth-Token") String token){
-		List<LinijaDTO> retValue = zonaService.removeLineFromZone(zone, lineId);
-		if(retValue!=null) {
-			return new ResponseEntity<List<LinijaDTO>>(HttpStatus.OK);
+			List<ZonaDTO> retValue = zonaService.getAllZones();
+			return new ResponseEntity<List<ZonaDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}

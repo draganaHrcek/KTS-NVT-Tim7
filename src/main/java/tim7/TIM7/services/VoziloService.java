@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import tim7.TIM7.dto.VoziloDTO;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.TipVozila;
 import tim7.TIM7.model.Vozilo;
 import tim7.TIM7.repositories.LinijaRepository;
 import tim7.TIM7.repositories.VoziloRepository;
@@ -37,6 +38,15 @@ public class VoziloService {
 	public Vozilo save(Vozilo vehicle) {
 		return voziloRepository.save(vehicle);
 	}
+	
+	public Linija getLineById(Long id) {
+		try {
+			Linija line = linijaRepository.findById(id).get();
+			return line;
+		}catch(Exception e) {
+			return null;
+		}
+	}
 
 	public boolean addNewVehicle(VoziloDTO newVehicle) {
 		Vozilo potential = findOne(newVehicle.getId());
@@ -45,10 +55,19 @@ public class VoziloService {
 		}
 		
 		potential = new Vozilo();
-		potential.setId(newVehicle.getId());
 		potential.setObrisan(false);
 		potential.setRegistracija(newVehicle.getRegistration());
-		potential.setTipVozila(newVehicle.getType());
+		potential.setTipVozila(TipVozila.valueOf(newVehicle.getType()));
+		if(newVehicle.getLineId()!=null) {
+			Linija line = getLineById(newVehicle.getLineId());
+			if (line==null || line.isObrisan()) {
+				return false;
+			}else {
+				potential.setLinija(line);
+			}
+		}else {
+			potential.setLinija(null);
+		}
 		save(potential);
 		return true;
 	}
@@ -59,6 +78,50 @@ public class VoziloService {
 			return false;
 		}
 		potential.setRegistracija(updatedVehicle.getRegistration());
+		
+		if(!potential.getTipVozila().equals(TipVozila.valueOf(updatedVehicle.getType()))) {
+			potential.setTipVozila(TipVozila.valueOf(updatedVehicle.getType()));
+		}
+		
+		if(potential.getLinija()!=null) {
+			if(potential.getLinija().getId()!=updatedVehicle.getLineId()) {
+				//remove vehicle from old line
+				Linija line = potential.getLinija();
+				List<Vozilo> lineVehicle = line.getVozila();
+				lineVehicle.remove(potential);
+				line.setVozila(lineVehicle);
+				linijaRepository.save(line);
+				
+				//add vehicle to new line
+				if(updatedVehicle.getLineId()==null) {
+					potential.setLinija(null);
+				}else {
+					line = getLineById(updatedVehicle.getLineId());
+					if (line==null || line.isObrisan()) {
+						return false;
+					}else {
+						potential.setLinija(line);
+						lineVehicle = line.getVozila();
+						lineVehicle.add(potential);
+						line.setVozila(lineVehicle);
+						linijaRepository.save(line);
+					}
+				}
+			}
+		}else {
+			if(updatedVehicle.getLineId()!=null) {
+				Linija line = getLineById(updatedVehicle.getLineId());
+				if (line==null || line.isObrisan()) {
+					return false;
+				}else {
+					potential.setLinija(line);
+					List<Vozilo> lineVehicles = line.getVozila();
+					lineVehicles.add(potential);
+					line.setVozila(lineVehicles);
+					linijaRepository.save(line);
+				}
+			}
+		}
 		save(potential);
 		return true;
 	}
@@ -75,7 +138,7 @@ public class VoziloService {
 	
 	public List<VoziloDTO> getAllVehicles(){
 		List<Vozilo> allVehicles = findAll();
-		if(allVehicles==null || allVehicles.isEmpty()) {
+		if(allVehicles==null) {
 			return null;
 		}
 		
@@ -87,13 +150,9 @@ public class VoziloService {
 			VoziloDTO vehicleDTO = new VoziloDTO(vehicle);
 			retValue.add(vehicleDTO);
 		}
-		
-		if(retValue.isEmpty()) {
-			return null;
-		}
 		return retValue;
 	}
-	
+	/*
 	public boolean addVehicleToLine(Long lineId, Long vehicleId) {
 		Vozilo vehicle = findOne(vehicleId);
 		if(vehicle.getLinija()!=null) {
@@ -106,8 +165,13 @@ public class VoziloService {
 			return false;
 		}
 		
+		List<Vozilo> vehicles = line.getVozila();
 		vehicle.setLinija(line);
+		vehicles.add(vehicle);
+		line.setVozila(vehicles);
 		save(vehicle);
+		linijaRepository.save(line);
+		
 		return true;
 	}
 	
@@ -116,9 +180,21 @@ public class VoziloService {
 		if(vehicle.getLinija()==null) {
 			return false;
 		}
+		
+		Linija line = null;
+		try {
+			line = linijaRepository.findById(vehicle.getLinija().getId()).get();
+		}catch(Exception e) {
+			return false;
+		}
 		vehicle.setLinija(null);
 		
+		List<Vozilo> vehicles = line.getVozila();
+		vehicles.remove(vehicle);
+		line.setVozila(vehicles);
+		
 		save(vehicle);
+		linijaRepository.save(line);
 		return true;
-	}
+	}*/
 }

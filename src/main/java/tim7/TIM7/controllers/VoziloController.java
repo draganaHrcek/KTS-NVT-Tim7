@@ -23,27 +23,30 @@ public class VoziloController {
 	VoziloService voziloService;
 	
 	@RequestMapping(path="/dodaj", method = RequestMethod.POST, consumes="application/json")
-	public ResponseEntity<Void> addNovoVozilo(@RequestBody VoziloDTO newVehicle, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<VoziloDTO>> addNovoVozilo(@RequestBody VoziloDTO newVehicle, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.addNewVehicle(newVehicle)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<VoziloDTO> retValue = voziloService.getAllVehicles();
+			return new ResponseEntity<List<VoziloDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 	
 	@RequestMapping(path="/brisi/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteVozilo(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<VoziloDTO>> deleteVozilo(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.deleteVehicle(id)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<VoziloDTO> retValue = voziloService.getAllVehicles();
+			return new ResponseEntity<List<VoziloDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 	
 	@RequestMapping(path="/mijenjaj", method = RequestMethod.PUT, consumes="application/json")
-	public ResponseEntity<Void> updateVozilo(@RequestBody VoziloDTO updatedVehicle, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<VoziloDTO>> updateVozilo(@RequestBody VoziloDTO updatedVehicle, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.updateVehicle(updatedVehicle)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<VoziloDTO> retValue = voziloService.getAllVehicles();
+			return new ResponseEntity<List<VoziloDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
@@ -59,7 +62,7 @@ public class VoziloController {
 			return new ResponseEntity<List<VoziloDTO>>(retValue, HttpStatus.OK);
 		}
 	}
-	
+	/*
 	@RequestMapping(path="/dodajULiniju/{lineId}/{vehicleId}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> dodajVoziloULiniju(@PathVariable Long lineId, @PathVariable Long vehicleId, @RequestHeader ("X-Auth-Token") String token){
 		if(voziloService.addVehicleToLine(lineId, vehicleId)) {
@@ -77,5 +80,5 @@ public class VoziloController {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 		
-	}
+	}*/
 }

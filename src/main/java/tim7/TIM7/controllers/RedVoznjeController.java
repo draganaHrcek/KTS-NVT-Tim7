@@ -150,6 +150,7 @@ public class RedVoznjeController {
 		}
 	}
 	
+	//za popunjavanje postojecig rasporeda trenutnih
 	@RequestMapping(path="/dobaviTrenutneRasporede", method=RequestMethod.GET)
 	public ResponseEntity<List<RasporedVoznjeDTO>> getTrenutniNeobrisaniRasporedi(){
 		RedVoznjeDTO trenutniRedVoznje=redVoznjeService.getTrenutniRedVoznje();

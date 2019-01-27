@@ -145,7 +145,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				
 				//ZA SADA NAM NE TREBAJU PRAVA PRISTUPA SVI MOGU SVE ZAHTEVE(POST, GET, PUT,....)
 				// 	.hasAuthority("ROLE_ADMIN") //only administrator can add and edit data
-				//.anyRequest()
+				//.anyRequest()  
 				.authenticated();
 				//if we use AngularJS on client side
 				//.and().csrf().csrfTokenRepository(csrfTokenRepository()); 

@@ -21,10 +21,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import tim7.TIM7.dto.KartaDTO;
-import tim7.TIM7.dto.KorisnikDTO;
-import tim7.TIM7.dto.KorisnikTokenDTO;
+
 import tim7.TIM7.dto.LoginDTO;
-import tim7.TIM7.dto.TokenDTO;
+import tim7.TIM7.dto.RegistracijaDTO;
+
+import tim7.TIM7.dto.UlogovanDTO;
 import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Kondukter;
@@ -49,7 +50,7 @@ public class OsobaController {
 	TokenUtils tokenUtils;
 
 	@RequestMapping(path= "/registracija" ,method=RequestMethod.POST,  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> registracija(@RequestBody KorisnikDTO korisnik) {
+	public ResponseEntity<?> registracija(@RequestBody RegistracijaDTO korisnik) {
 		
 		Osoba noviKorisnik  = osobaService.findByUsername(korisnik.getKorIme());
 		
@@ -70,7 +71,7 @@ public class OsobaController {
 
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
+	public ResponseEntity<UlogovanDTO> login(@RequestBody LoginDTO loginDTO) {
         try {
         	// Perform the authentication
         	UsernamePasswordAuthenticationToken token = 
@@ -83,9 +84,13 @@ public class OsobaController {
             // Reload user details so we can generate token
             UserDetails details = userDetailsService.
             		loadUserByUsername(loginDTO.getUsername());
-            TokenDTO tokenDTO = new TokenDTO();
-            tokenDTO.setToken(tokenUtils.generateToken(details));
-            return new ResponseEntity<TokenDTO>(tokenDTO, HttpStatus.OK);
+          
+            
+            
+            Osoba osoba= osobaService.findByUsername(loginDTO.getUsername());
+    		UlogovanDTO korisnik= osobaService.findUlogovanog(osoba);
+    		korisnik.setToken(tokenUtils.generateToken(details));
+            return new ResponseEntity<UlogovanDTO>(korisnik, HttpStatus.OK);
             
         } catch (Exception ex) {
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
@@ -93,7 +98,7 @@ public class OsobaController {
 	}
 	
 	@RequestMapping(value="/izmenaPodataka", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity izmenaPodataka(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
+	public ResponseEntity izmenaPodataka(@RequestHeader ("X-Auth-Token") String token,@RequestBody UlogovanDTO korisnik ) {
 		
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 		
@@ -109,7 +114,7 @@ public class OsobaController {
 	
 	
 	@RequestMapping(value="/izmenaLozinke", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity izmenaLozinke(@RequestHeader ("X-Auth-Token") String token,@RequestBody KorisnikDTO korisnik ) {
+	public ResponseEntity izmenaLozinke(@RequestHeader ("X-Auth-Token") String token,@RequestBody RegistracijaDTO korisnik ) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		
 		Osoba kor = osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
@@ -128,15 +133,7 @@ public class OsobaController {
 		
 	
 	}
-	
-	@RequestMapping(value="/prijavljenKorisnik", produces = "application/json",method = RequestMethod.GET)
-	public ResponseEntity<KorisnikTokenDTO> prijavljenKorisnik(@RequestHeader ("X-Auth-Token") String token ) {
-		
-		Osoba osoba= osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
-		KorisnikTokenDTO korisnik= osobaService.findUlogovanog(osoba);
-		return new ResponseEntity<KorisnikTokenDTO>( korisnik,HttpStatus.OK);
-		
-		}
+
 		
 
 	

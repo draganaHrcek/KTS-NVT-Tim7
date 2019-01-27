@@ -56,7 +56,10 @@ public class KartaService {
 	public Karta findOne(Long id) {
 		return kartaRepository.findById(id).orElse(null);
 	}
-
+	public Karta findByKod(String kod) {
+		return kartaRepository.findByKod(kod).orElse(null);
+		
+	}
 	public List<Karta> findAll() {
 		return kartaRepository.findAll();
 	}
@@ -214,7 +217,7 @@ public class KartaService {
 	
 	//za proveru postojanja karte i cekiranje ukoliko je dnevna
 	public OdgovorDTO checkKarta(TipVozila tipVozila, String nazivLinije, String kod){
-		Karta karta=kartaRepository.findByKod(kod);
+		Karta karta=findByKod(kod);
 		OdgovorDTO odgovor=new OdgovorDTO();
 		if (karta==null){
 			return null;

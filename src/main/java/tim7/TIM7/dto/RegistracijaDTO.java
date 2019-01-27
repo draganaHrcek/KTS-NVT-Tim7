@@ -1,7 +1,7 @@
 package tim7.TIM7.dto;
 
 
-public class KorisnikDTO {
+public class RegistracijaDTO {
 	
 	private String korIme;
 	private String trenutnaLozinka;
@@ -69,7 +69,7 @@ public class KorisnikDTO {
 		this.trenutnaLozinka = trenutnaLozinka;
 	}
 
-	public KorisnikDTO() {
+	public RegistracijaDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

@@ -91,17 +91,17 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-/*		seedCenovnik();
-		seedZona();
-		seedLinija();
-		connectZonaLinija();
-		seedStavka();
-		seedStavkaCenovnika();
-		seedOsoba();
-		seedIkija();
-		seedZoneLinijeStaniceRedoviRasporediVoznje();
-		seedKarte();
-		seedOdobreneNeodobreneKarte();*/
+//	seedCenovnik();
+//		seedZona();
+//		seedLinija();
+//		connectZonaLinija();
+//		seedStavka();
+//		seedStavkaCenovnika();
+//		seedOsoba();
+//		seedIkija();
+//		seedZoneLinijeStaniceRedoviRasporediVoznje();
+//		seedKarte();
+//		seedOdobreneNeodobreneKarte();
 		
 	}
 

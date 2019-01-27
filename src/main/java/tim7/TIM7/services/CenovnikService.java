@@ -16,6 +16,7 @@ import tim7.TIM7.dto.StavkaCenovnikaDto;
 import tim7.TIM7.helper.SortCenovniciByDate;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.TipKarteCenovnik;
@@ -71,11 +72,19 @@ public class CenovnikService {
 		for (Linija linija : linije) {
 			linijeDTO.add(new LinijaDTO(linija));
 		}
+		
+		ArrayList<StatusKorisnika> statusi = new ArrayList<StatusKorisnika>();
+		for(StatusKorisnika status : StatusKorisnika.values()){
+			if(!status.equals(StatusKorisnika.RADNIK)){
+				statusi.add(status);
+			}
+		}
+		
 		return new LinijeZoneTipovi((ArrayList<LinijaDTO>) linijeDTO, 
-				TipKarteCenovnik.values(), TipVozila.values());
+				TipKarteCenovnik.values(), TipVozila.values(), statusi);
 	}
 
-	public boolean addCenovnik(CenovnikDTO cenovnikDto) {
+	public String addCenovnik(CenovnikDTO cenovnikDto) {
 		Cenovnik cenovnik = new Cenovnik();
 		
 		for(StavkaCenovnikaDto stavkaDTO : cenovnikDto.getStavkeCenovnika()){
@@ -84,26 +93,53 @@ public class CenovnikService {
 				System.out.println("pravim novu");
 				stavka = newStavka(stavkaDTO);
 				if(stavka == null){
-					return false;
+					return "Greska! Nije moguce dodati ove stavke";
 				}				
 			}
-			System.out.println(stavka.getLinija().getNaziv());
+			//System.out.println(stavka.getLinija().getNaziv());
 			StavkaCenovnika stavkaCenovnika = new StavkaCenovnika(stavkaDTO.getCena(),
 					stavka,cenovnik, false);
 			cenovnik.getStavke().add(stavkaCenovnika);
 		}
+		if(!checkWithFutureDates(cenovnikDto.getDatumObjavljivanja())){
+			return "Greska! Postoji vec cenovnik sa tim datumom objavljivanja";
+		}
 		if(!setAndCheckDate(cenovnik, cenovnikDto.getDatumObjavljivanja())){
-			return false;
+			return "Greska! Datum objavljivanja mora biti bar dva dana od sad";
+
+		}
+		if(!setAndCheckPopusti(cenovnik, cenovnikDto)){
+			return "Greska! Popusti moraju biti izmedju 0 i 100";
 		}
 		saveCenovnik(cenovnik);
-		return true;
+		return "Cenovnik je uspesno kreiran";
 		
 	}
 	
+	private boolean setAndCheckPopusti(Cenovnik cenovnik, CenovnikDTO cenovnikDto) {
+		if(isProcent(cenovnikDto.getPopustDjak()) && 
+				isProcent(cenovnikDto.getPopustNezaposlen()) && 
+				isProcent(cenovnikDto.getPopustPenzioner()) &&
+				isProcent(cenovnikDto.getPopustStudent())){
+			cenovnik.setPopustDjak(cenovnikDto.getPopustDjak());
+			cenovnik.setPopustNezaposlen(cenovnikDto.getPopustNezaposlen());
+			cenovnik.setPopustPenzioner(cenovnikDto.getPopustPenzioner());
+			cenovnik.setPopustStudent(cenovnikDto.getPopustStudent());
+			return true;
+		}
+		return false;
+	}
+
 	public Stavka newStavka(StavkaCenovnikaDto stavkaDTO){
 		try{
-			Linija linija = linijaService.findByName(stavkaDTO.getNazivLinije());
-			Zona zona = zonaService.findByName(stavkaDTO.getNazivZone());
+			Linija linija = null;
+			Zona zona = null;
+			if(stavkaDTO.getNazivLinije()!= null){
+				linija = linijaService.findByName(stavkaDTO.getNazivLinije());
+			}
+			if(stavkaDTO.getNazivZone()!= null){
+				zona = zonaService.findByName(stavkaDTO.getNazivZone());
+			}
 			Stavka stavka = new Stavka( stavkaDTO.getTipKarte(),
 					stavkaDTO.getVrstaPrevoza(),zona, linija,false);
 			return stavka;
@@ -121,8 +157,26 @@ public class CenovnikService {
 			cenovnik.setDatumObjavljivanja(date);
 			return true;
 		};
-		return false;
-		
+		return false;		
+	}
+	
+	public boolean checkWithFutureDates(Date date){
+		Calendar day = Calendar.getInstance();
+		Calendar future = Calendar.getInstance();
+		day.setTime(date);
+		day.set(Calendar.HOUR_OF_DAY, 0);
+		day.set(Calendar.MINUTE, 0);
+		day.set(Calendar.SECOND, 0);
+		for(Cenovnik cenovnik : cenovnikRepository.findAllByObrisanFalse()){
+			future.setTime(cenovnik.getDatumObjavljivanja());
+			future.set(Calendar.HOUR_OF_DAY, 0);
+			future.set(Calendar.MINUTE, 0);
+			future.set(Calendar.SECOND, 0);
+			if(day.equals(future)){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public void saveCenovnik(Cenovnik cenovnik){
@@ -158,6 +212,10 @@ public class CenovnikService {
 				break;
 			}
 		}
+	}
+	
+	public boolean isProcent(Integer number){
+		return number!=null && number >=0 && number <= 100;
 	}
 	
 	

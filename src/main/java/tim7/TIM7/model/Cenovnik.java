@@ -55,6 +55,22 @@ public class Cenovnik {
 	
 	
 	
+	public void setPopustStudent(Integer popustStudent) {
+		this.popustStudent = popustStudent;
+	}
+
+	public void setPopustPenzioner(Integer popustPenzioner) {
+		this.popustPenzioner = popustPenzioner;
+	}
+
+	public void setPopustDjak(Integer popustDjak) {
+		this.popustDjak = popustDjak;
+	}
+
+	public void setPopustNezaposlen(Integer popustNezaposlen) {
+		this.popustNezaposlen = popustNezaposlen;
+	}
+
 	public int getPopustStudent() {
 		return popustStudent;
 	}

@@ -149,4 +149,15 @@ public class RedVoznjeController {
 			return new ResponseEntity<>(buduciRasporedi,HttpStatus.OK);
 		}
 	}
+	
+	@RequestMapping(path="/dobaviTrenutneRasporede", method=RequestMethod.GET)
+	public ResponseEntity<List<RasporedVoznjeDTO>> getTrenutniNeobrisaniRasporedi(){
+		RedVoznjeDTO trenutniRedVoznje=redVoznjeService.getTrenutniRedVoznje();
+		List<RasporedVoznjeDTO> trenutniRasporedi=rasporedVoznjeService.getNeobrisaniRasporedi(trenutniRedVoznje);
+		if (trenutniRasporedi==null){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}else{
+			return new ResponseEntity<>(trenutniRasporedi,HttpStatus.OK);
+		}
+	}
 }

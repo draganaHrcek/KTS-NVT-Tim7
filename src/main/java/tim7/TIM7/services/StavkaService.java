@@ -15,8 +15,10 @@ public class StavkaService {
 	
 	public Stavka findByDto(StavkaCenovnikaDto stavkaDTO) {
 		for(Stavka stavka : stavkaRepository.findAll()){
-			if(stavka.getLinija().getNaziv().equals(stavkaDTO.getNazivLinije())&&
-					stavka.getZona().getNaziv().equals(stavkaDTO.getNazivZone())&&
+			if((stavka.getLinija() == null && stavkaDTO.getNazivLinije() == null ||
+					stavka.getLinija().getNaziv().equals(stavkaDTO.getNazivLinije()))&&(
+					stavka.getZona() == null && stavkaDTO.getNazivZone() == null ||
+					stavka.getZona().getNaziv().equals(stavkaDTO.getNazivZone()))&&
 					stavka.getTipKarte().ordinal() == (stavkaDTO.getTipKarte().ordinal())&&
 					stavka.getVrstaPrevoza().ordinal() == stavkaDTO.getVrstaPrevoza().ordinal()){
 				return stavka;

@@ -36,17 +36,17 @@ public class CenovnikController {
 	
 	}
 	
-	@RequestMapping(path="", method=RequestMethod.POST, consumes = "application/json")
+	@RequestMapping(path="", method=RequestMethod.POST, consumes = "application/json", produces = "text/plain")
 	public ResponseEntity<String> addCenovnik(
 			@RequestBody CenovnikDTO cenovnikDto,
 			@RequestHeader ("X-Auth-Token") String token){
 		
-		boolean success = cenovnikService.addCenovnik(cenovnikDto);
-		if(success){
-			return new ResponseEntity<String>("Cenovnik je uspesno kreiran", HttpStatus.OK);	
+		String success = cenovnikService.addCenovnik(cenovnikDto);
+		if(!success.contains("Greska!")){
+			return new ResponseEntity<String>(success, HttpStatus.OK);	
 		}
 		else{
-			return new ResponseEntity<String>("Nije moguce kreirati neke od stavki cenovnika",
+			return new ResponseEntity<String>(success,
 					HttpStatus.EXPECTATION_FAILED);
 		}
 	}

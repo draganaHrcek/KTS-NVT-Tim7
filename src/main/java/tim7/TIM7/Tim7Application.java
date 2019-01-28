@@ -5,13 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 
 import tim7.TIM7.storage.StorageProperties;
 import tim7.TIM7.storage.StorageService;
 
-@SpringBootApplication(scanBasePackages={"tim7.TIM7", "tim7.TIM7.storage"})
-@ComponentScan("tim7.TIM7.storage")
+@SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
 public class Tim7Application {
 

@@ -132,6 +132,8 @@ public class CenovnikService {
 
 	public Stavka newStavka(StavkaCenovnikaDto stavkaDTO){
 		try{
+			if(stavkaDTO.getTipKarte() ==null || stavkaDTO.getVrstaPrevoza() == null)
+				return null;
 			Linija linija = null;
 			Zona zona = null;
 			if(stavkaDTO.getNazivLinije()!= null){

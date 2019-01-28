@@ -79,7 +79,12 @@ public class LinijaService {
 		return linijaRepository.findAll();
 	}
 	public Linija findByName(String name) {
-		return linijaRepository.findByNaziv( name);
+		try {
+			Linija line = linijaRepository.findByNaziv(name);
+			return line;
+		}catch(Exception e) {
+			return null;
+		}
 	}
 
 	public Linija save(Linija linija) {
@@ -135,6 +140,11 @@ public class LinijaService {
 			luz.setObrisan(true);
 			luzRepository.save(luz);
 		}
+		
+		for(Vozilo vehicle : linija.getVozila()) {
+			vehicle.setLinija(null);
+			voziloRepository.save(vehicle);
+		}
 		Linija deletedLine = save(linija);
 		return deletedLine;
 	}
@@ -145,41 +155,55 @@ public class LinijaService {
 		if(potential!=null) {
 			return false;
 		}
+		
+		potential = findByName(newLine.getName());
+		if(potential!=null) {
+			return false;
+		}
+
 		potential = new Linija();
 		potential.setNaziv(newLine.getName());
 		potential.setObrisan(false);
 		
 		save(potential);
-
 		//dodaj vozila
 		for(VoziloDTO vehicleDTO : newLine.getVehicles()) {
 			try {
 				Vozilo vehicle = voziloRepository.findById(vehicleDTO.getId()).get();
+				if(vehicle.isObrisan() || vehicle.getLinija()!=null) {
+					continue;
+				}
+				vehicle.setLinija(potential);
+				voziloRepository.save(vehicle);
 				potential.getVozila().add(vehicle);
 			}catch(Exception e) {
 				continue;
 			}			
 		}
 		
+		
 		//dodaj stanice
 		for(StanicaDTO stationDTO : newLine.getStations()) {
 			Stanica station=null;
-			try {
-				station = stanicaRepository.findById(stationDTO.getId()).get();
-
-			}catch(Exception e) {
+			if(stationDTO.getId()==null) {
 				station = new Stanica();
 				station.setObrisan(false);
 				station.setOznaka(stationDTO.getName());
 				station.setLongituda(stationDTO.getLongitude());
-				station.setLatituda(stationDTO.getLatitude());
+				station.setLatituda(stationDTO.getLatitude());	
+				stanicaRepository.save(station);
+			}else {
+				try {
+					station = stanicaRepository.findById(stationDTO.getId()).get();
 
-			}finally {
-				StanicaULiniji sul = new StanicaULiniji();
-				sul.setLinija(potential);
-				sul.setStanica(station);
-				sulRepository.save(sul);	
+				}catch(Exception e) {
+					continue;
+				}
 			}
+			StanicaULiniji sul = new StanicaULiniji();
+			sul.setLinija(potential);
+			sul.setStanica(station);
+			sulRepository.save(sul);	
 		}
 		
 		//dodaj zone
@@ -189,16 +213,13 @@ public class LinijaService {
 				zone = zonaRepository.findById(zoneDTO.getId()).get();
 
 			}catch(Exception e) {
-				zone = new Zona();
-				zone.setObrisan(false);
-				zone.setNaziv(zoneDTO.getName());
+				continue;
 
-			}finally {
-				LinijaUZoni luz = new LinijaUZoni();
-				luz.setLinija(potential);
-				luz.setZona(zone);
-				luzRepository.save(luz);	
-			}	
+			}
+			LinijaUZoni luz = new LinijaUZoni();
+			luz.setLinija(potential);
+			luz.setZona(zone);
+			luzRepository.save(luz);	
 		}
 		return true;
 	}
@@ -209,20 +230,32 @@ public class LinijaService {
 			return false;
 		}
 		potential.setNaziv(updatedLine.getName());
+		save(potential);
 
 		//vozila
-		List<Vozilo> vehicles = new ArrayList<Vozilo>();
-		for(VoziloDTO vehicleDTO : updatedLine.getVehicles()) {
-			try {
-				Vozilo vehicle = voziloRepository.findById(vehicleDTO.getId()).get();
-				vehicles.add(vehicle);
-			}catch(Exception e) {
-				continue;
+		List<Vozilo> beforeVehicles = potential.getVozila();
+		List<VoziloDTO> currentVehicles = new ArrayList<VoziloDTO>();
+		for(Vozilo veh : beforeVehicles) {
+			VoziloDTO vehDTO = new VoziloDTO(veh);
+			if(updatedLine.getVehicles().contains(vehDTO)) {
+				currentVehicles.add(vehDTO);
+			}else {
+				veh.setLinija(null);
+				voziloRepository.save(veh);
 			}
 		}
-		potential.setVozila(vehicles);
+		for(VoziloDTO vehicleDTO : updatedLine.getVehicles()) {
+			if(currentVehicles.contains(vehicleDTO)) {
+				continue;
+			}
+			Vozilo veh = voziloRepository.findById(vehicleDTO.getId()).get();
+			if(veh.isObrisan() || veh.getLinija()!=null) {
+				continue;
+			}
+			veh.setLinija(potential);
+			voziloRepository.save(veh);
+		}
 		
-		save(potential);
 		
 		//zone
 		List<LinijaUZoni> before = luzRepository.findByLinijaAndObrisanFalse(potential);
@@ -264,7 +297,25 @@ public class LinijaService {
 			}else {
 				StanicaULiniji sul = new StanicaULiniji();
 				sul.setLinija(potential);
-				sul.setStanica(stanicaRepository.findById(stationDTO.getId()).get());
+				
+				Stanica station=null;
+				if(stationDTO.getId()==null) {
+					station = new Stanica();
+					station.setObrisan(false);
+					station.setOznaka(stationDTO.getName());
+					station.setLongituda(stationDTO.getLongitude());
+					station.setLatituda(stationDTO.getLatitude());		
+					stanicaRepository.save(station);
+				}else {
+					try {
+						station = stanicaRepository.findById(stationDTO.getId()).get();
+
+					}catch(Exception e) {
+						continue;
+					}					
+				}
+				sul.setStanica(station);
+				
 				sulRepository.save(sul);
 			}
 		}

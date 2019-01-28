@@ -1,5 +1,6 @@
 package tim7.TIM7.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -10,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 
 @Entity
@@ -44,12 +44,18 @@ public class Linija {
 	public Linija() {
 		super();
 		this.obrisan= false;
+		this.stanice = new ArrayList<StanicaULiniji>();
+		this.zone = new ArrayList<LinijaUZoni>();
+		this.vozila = new ArrayList<Vozilo>();
 		// TODO Auto-generated constructor stub
 	}
 	
 	public Linija(String naziv, boolean obrisan) {
 		this.obrisan= obrisan;
 		this.naziv = naziv;
+		this.stanice = new ArrayList<StanicaULiniji>();
+		this.zone = new ArrayList<LinijaUZoni>();
+		this.vozila = new ArrayList<Vozilo>();
 		// TODO Auto-generated constructor stub
 	}
 	

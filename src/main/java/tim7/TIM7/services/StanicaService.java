@@ -39,11 +39,26 @@ public class StanicaService {
 		}
 	}
 	
+	public Stanica findByName(String name){
+		try {
+			Stanica station = stanicaRepository.findByOznaka(name);
+			return station;
+		}catch(Exception e) {
+			return null;
+		}
+	}
+	
 	public boolean addNewStation(StanicaDTO newStationDTO) {
 		Stanica potential = findOne(newStationDTO.getId());
 		if (potential!=null) {
 			return false;
 		}
+		
+		potential = findByName(newStationDTO.getName());
+		if(potential!=null) {
+			return false;
+		}
+		
 		potential = new Stanica();
 		potential.setId(newStationDTO.getId());
 		potential.setLatituda(newStationDTO.getLatitude());

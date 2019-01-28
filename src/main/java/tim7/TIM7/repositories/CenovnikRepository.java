@@ -11,6 +11,6 @@ public interface CenovnikRepository extends JpaRepository<Cenovnik, Long> {
 
 	List<Cenovnik> findAllByObrisanFalse();
 
-	Cenovnik getById(Long id);
+	public Cenovnik getById(Long id);
 
 }

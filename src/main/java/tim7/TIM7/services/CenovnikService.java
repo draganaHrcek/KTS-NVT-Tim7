@@ -88,18 +88,22 @@ public class CenovnikService {
 		Cenovnik cenovnik = new Cenovnik();
 		
 		for(StavkaCenovnikaDto stavkaDTO : cenovnikDto.getStavkeCenovnika()){
+			if(stavkaDTO.getCena() == null){
+				return "Greska! Nije moguce dodati ove stavke";
+			}
 			Stavka stavka = stavkaService.findByDto(stavkaDTO);
 			if (stavka == null){
-				System.out.println("pravim novu");
 				stavka = newStavka(stavkaDTO);
 				if(stavka == null){
 					return "Greska! Nije moguce dodati ove stavke";
 				}				
 			}
-			//System.out.println(stavka.getLinija().getNaziv());
 			StavkaCenovnika stavkaCenovnika = new StavkaCenovnika(stavkaDTO.getCena(),
 					stavka,cenovnik, false);
 			cenovnik.getStavke().add(stavkaCenovnika);
+		}
+		if(cenovnik.getStavke().size() <= 0){
+			return "Greska! Mora imati bar jednu stavku";
 		}
 		if(!checkWithFutureDates(cenovnikDto.getDatumObjavljivanja(),null)){
 			return "Greska! Postoji vec cenovnik sa tim datumom objavljivanja";
@@ -132,7 +136,8 @@ public class CenovnikService {
 
 	public Stavka newStavka(StavkaCenovnikaDto stavkaDTO){
 		try{
-			if(stavkaDTO.getTipKarte() ==null || stavkaDTO.getVrstaPrevoza() == null)
+			if(stavkaDTO.getTipKarte() ==null || stavkaDTO.getVrstaPrevoza() == null ||
+					stavkaDTO.getCena() ==null || (stavkaDTO.getNazivLinije()==null && stavkaDTO.getNazivZone() ==null))
 				return null;
 			Linija linija = null;
 			Zona zona = null;
@@ -154,7 +159,6 @@ public class CenovnikService {
 		Calendar now = Calendar.getInstance();
 		now.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DATE), 0, 0, 0);
 		now.add(Calendar.DATE, 2);
-		System.out.println(now);
 		if(date.after(now.getTime())){
 			cenovnik.setDatumObjavljivanja(date);
 			return true;
@@ -235,7 +239,6 @@ public class CenovnikService {
 		Cenovnik cenovnik = findOne(cenovnikDto.getId());
 		
 		if(cenovnik == null ){
-			System.out.println("null");
 			return null;
 		}
 		
@@ -253,7 +256,6 @@ public class CenovnikService {
 		}
 		cenovnik = cenovnikRepository.save(cenovnik);
 		for(StavkaCenovnika s : cenovnik.getStavke()){
-			System.out.println("printam: " + s.getCena());
 		}
 		CenovnikDTO res =  new CenovnikDTO(cenovnik);
 		//for(S)

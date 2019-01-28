@@ -2,19 +2,14 @@ package tim7.TIM7.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Stanica {
@@ -24,7 +19,7 @@ public class Stanica {
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 	
-	@Column(name="oznka")
+	@Column(name="oznaka")
 	String oznaka;
 	
 	@Column(name="longituda")
@@ -33,11 +28,8 @@ public class Stanica {
 	@Column(name="latituda")
 	double latituda;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "stanice_u_liniji",
-               joinColumns = @JoinColumn(name="stanica_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="linija_id", referencedColumnName="id"))
-	List<Linija> linije;
+	@OneToMany(mappedBy = "stanica", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	List<StanicaULiniji> linije; 
 	
 	@Column(name="obrisan")
 	boolean obrisan;
@@ -49,18 +41,21 @@ public class Stanica {
 	
 	
 
-	public Stanica(Long id, String oznaka, double longituda, double latituda, List<Linija> linije, boolean obrisan) {
+
+
+	public Stanica(Long id, String oznaka, double longituda, double latituda, List<StanicaULiniji> linijeStanice,
+			boolean obrisan) {
 		super();
 		this.id = id;
 		this.oznaka = oznaka;
 		this.longituda = longituda;
 		this.latituda = latituda;
-		this.linije = linije;
+		this.linije = linijeStanice;
 		this.obrisan = obrisan;
 	}
 
-	
-	
+
+
 
 
 	public Stanica(boolean obrisan, String oznaka, double latituda, double longituda) {
@@ -95,13 +90,24 @@ public class Stanica {
 		this.oznaka = oznaka;
 	}
 
-	public List<Linija> getLinije() {
+
+
+
+	public List<StanicaULiniji> getLinije() {
 		return linije;
 	}
 
-	public void setLinije(List<Linija> linije) {
-		this.linije = linije;
+
+
+
+
+	public void setLinije(List<StanicaULiniji> linijeStanice) {
+		this.linije = linijeStanice;
 	}
+
+
+
+
 
 	public double getLongituda() {
 		return longituda;

@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -26,8 +27,8 @@ public class Zona {
 	@Column(name="naziv")
 	String naziv;
 	
-	@ManyToMany(mappedBy="zone")
-	List<Linija> linije;
+	@OneToMany(mappedBy = "zona", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	List<LinijaUZoni> linije;
 	
 	@OneToMany(mappedBy = "zona", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<Stavka> stavkeCenovnika;
@@ -72,14 +73,6 @@ public class Zona {
 		this.naziv = naziv;
 	}
 
-	public List<Linija> getLinije() {
-		return linije;
-	}
-
-	public void setLinije(List<Linija> linije) {
-		this.linije = linije;
-	}
-
 	public List<Stavka> getStavkeCenovnika() {
 		return stavkeCenovnika;
 	}
@@ -98,6 +91,14 @@ public class Zona {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public List<LinijaUZoni> getLinije() {
+		return linije;
+	}
+
+	public void setLinije(List<LinijaUZoni> linijeZone) {
+		this.linije = linijeZone;
 	}
 	
 	

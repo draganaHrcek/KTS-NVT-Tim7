@@ -9,13 +9,18 @@ import org.springframework.stereotype.Service;
 import tim7.TIM7.dto.StanicaDTO;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.Stanica;
+import tim7.TIM7.model.StanicaULiniji;
 import tim7.TIM7.repositories.StanicaRepository;
+import tim7.TIM7.repositories.StanicaULinijiRepository;
 
 @Service
 public class StanicaService {
 
 	@Autowired
 	StanicaRepository stanicaRepository;
+	
+	@Autowired 
+	StanicaULinijiRepository sulRepository;
 	
 	public List<Stanica> findAll() {
 		return stanicaRepository.findAll();
@@ -45,7 +50,6 @@ public class StanicaService {
 		potential.setLongituda(newStationDTO.getLongitude());
 		potential.setObrisan(false);
 		potential.setOznaka(newStationDTO.getName());
-		potential.setLinije(new ArrayList<Linija>());
 		save(potential);
 		return true;
 	}
@@ -56,17 +60,12 @@ public class StanicaService {
 			return false;
 		}
 		
-		boolean delete = true;
-		for(Linija line : potential.getLinije()) {
-			if (!line.isObrisan()) {
-				delete=false;
-				break;
-			}
-		}
-		if(delete) {
-			potential.setObrisan(true);
-			save(potential);
-			return true;
+		potential.setObrisan(true);
+		save(potential);
+		List<StanicaULiniji> list = sulRepository.findByStanicaAndObrisanFalse(potential);
+		for(StanicaULiniji sul : list) {
+			sul.setObrisan(true);
+			sulRepository.save(sul);
 		}
 		return false;
 	}
@@ -96,7 +95,6 @@ public class StanicaService {
 			retValue.add(stationDTO);
 		}
 		return retValue;
-	}
-	
+	}	
 
 }

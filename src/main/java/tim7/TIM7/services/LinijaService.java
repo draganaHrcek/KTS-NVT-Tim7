@@ -9,18 +9,21 @@ import org.springframework.stereotype.Service;
 
 import tim7.TIM7.dto.LinijaDTO;
 import tim7.TIM7.dto.StanicaDTO;
-import tim7.TIM7.dto.UpdatedLinijaDTO;
 import tim7.TIM7.dto.VoziloDTO;
 import tim7.TIM7.dto.ZonaDTO;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.LinijaUZoni;
 import tim7.TIM7.model.Stanica;
+import tim7.TIM7.model.StanicaULiniji;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.Vozilo;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.LinijaRepository;
+import tim7.TIM7.repositories.LinijaUZoniRepository;
 import tim7.TIM7.repositories.StanicaRepository;
+import tim7.TIM7.repositories.StanicaULinijiRepository;
 import tim7.TIM7.repositories.VoziloRepository;
 import tim7.TIM7.repositories.ZonaRepository;
 
@@ -41,6 +44,12 @@ public class LinijaService {
 
 	@Autowired
 	VoziloRepository voziloRepository;
+	
+	@Autowired
+	LinijaUZoniRepository luzRepository;
+	
+	@Autowired
+	StanicaULinijiRepository sulRepository;
 	
 	public Linija findOne(Long id) {
 		try {
@@ -79,12 +88,28 @@ public class LinijaService {
 		}
 		
 		linija.setObrisan(true);
+		
+		for(StanicaULiniji sul : linija.getStanice()) {
+			if(sul.isObrisan()) {
+				continue;
+			}
+			sul.setObrisan(true);
+			sulRepository.save(sul);
+		}
+		
+		for(LinijaUZoni luz : linija.getZone()) {
+			if(luz.isObrisan()) {
+				continue;
+			}
+			luz.setObrisan(true);
+			luzRepository.save(luz);
+		}
 		Linija deletedLine = save(linija);
 		return deletedLine;
 	}
 	
 	//checks if already exists
-	public boolean addNewLine(UpdatedLinijaDTO newLine) {
+	public boolean addNewLine(LinijaDTO newLine) {
 		Linija potential = findOne(newLine.getId());
 		if(potential!=null) {
 			return false;
@@ -92,27 +117,126 @@ public class LinijaService {
 		potential = new Linija();
 		potential.setNaziv(newLine.getName());
 		potential.setObrisan(false);
-		potential.setZone(getZonesFromDTO(newLine.getZones()));
-		potential.setVozila(getVehiclesFromDTO(newLine.getVehicles()));
-		potential.setStanice(getStationsFromDTO(newLine.getStations()));
+		
 		save(potential);
-		saveZonesAndStationsAndVehicles(potential);
+
+		//dodaj vozila
+		for(VoziloDTO vehicleDTO : newLine.getVehicles()) {
+			try {
+				Vozilo vehicle = voziloRepository.findById(vehicleDTO.getId()).get();
+				potential.getVozila().add(vehicle);
+			}catch(Exception e) {
+				continue;
+			}			
+		}
+		
+		//dodaj stanice
+		for(StanicaDTO stationDTO : newLine.getStations()) {
+			Stanica station=null;
+			try {
+				station = stanicaRepository.findById(stationDTO.getId()).get();
+
+			}catch(Exception e) {
+				station = new Stanica();
+				station.setObrisan(false);
+				station.setOznaka(stationDTO.getName());
+				station.setLongituda(stationDTO.getLongitude());
+				station.setLatituda(stationDTO.getLatitude());
+
+			}finally {
+				StanicaULiniji sul = new StanicaULiniji();
+				sul.setLinija(potential);
+				sul.setStanica(station);
+				sulRepository.save(sul);	
+			}
+		}
+		
+		//dodaj zone
+		for(ZonaDTO zoneDTO : newLine.getZones()) {
+			Zona zone=null;
+			try {
+				zone = zonaRepository.findById(zoneDTO.getId()).get();
+
+			}catch(Exception e) {
+				zone = new Zona();
+				zone.setObrisan(false);
+				zone.setNaziv(zoneDTO.getName());
+
+			}finally {
+				LinijaUZoni luz = new LinijaUZoni();
+				luz.setLinija(potential);
+				luz.setZona(zone);
+				luzRepository.save(luz);	
+			}	
+		}
 		return true;
 	}
 	
-	public boolean updateLine(UpdatedLinijaDTO updatedLine){
+	public boolean updateLine(LinijaDTO updatedLine){
 		Linija potential = findOne(updatedLine.getId());
 		if(potential==null || potential.isObrisan()) {
 			return false;
 		}
 		potential.setNaziv(updatedLine.getName());
-		
-//		potential.setZone(getZones(updatedLine));
-//		potential.setVozila((getVehicles(updatedLine));
-//		potential.setStanice(getStation(updatedLine));
-		
+
+		//vozila
+		List<Vozilo> vehicles = new ArrayList<Vozilo>();
+		for(VoziloDTO vehicleDTO : updatedLine.getVehicles()) {
+			try {
+				Vozilo vehicle = voziloRepository.findById(vehicleDTO.getId()).get();
+				vehicles.add(vehicle);
+			}catch(Exception e) {
+				continue;
+			}
+		}
+		potential.setVozila(vehicles);
 		
 		save(potential);
+		
+		//zone
+		List<LinijaUZoni> before = luzRepository.findByLinijaAndObrisanFalse(potential);
+		List<ZonaDTO> currentZones = new ArrayList<ZonaDTO>();
+		for(LinijaUZoni luz : before) {
+			ZonaDTO tempZone = new ZonaDTO(luz.getZona());
+			if(!updatedLine.getZones().contains(tempZone)) {
+				luz.setObrisan(true);
+				luzRepository.save(luz);
+			}else {
+				currentZones.add(tempZone);
+			}
+		}
+		for(ZonaDTO zoneDTO : updatedLine.getZones()) {
+			if(currentZones.contains(zoneDTO)) {
+				continue;
+			}else {
+				LinijaUZoni luz = new LinijaUZoni();
+				luz.setLinija(potential);
+				luz.setZona(zonaRepository.findById(zoneDTO.getId()).get());
+				luzRepository.save(luz);
+			}
+		}
+		//stanice
+		List<StanicaULiniji> stationsBefore = sulRepository.findByLinijaAndObrisanFalse(potential);
+		List<StanicaDTO> currentStations = new ArrayList<StanicaDTO>();
+		for(StanicaULiniji sul : stationsBefore) {
+			StanicaDTO tempStation = new StanicaDTO(sul.getStanica());
+			if(!updatedLine.getStations().contains(tempStation)) {
+				sul.setObrisan(true);
+				sulRepository.save(sul);
+			}else {
+				currentStations.add(tempStation);
+			}
+		}
+		for(StanicaDTO stationDTO : updatedLine.getStations()) {
+			if(currentStations.contains(stationDTO)) {
+				continue;
+			}else {
+				StanicaULiniji sul = new StanicaULiniji();
+				sul.setLinija(potential);
+				sul.setStanica(stanicaRepository.findById(stationDTO.getId()).get());
+				sulRepository.save(sul);
+			}
+		}
 		return true;
 	}
 	
@@ -133,24 +257,19 @@ public class LinijaService {
 	}
 	
 	public List<LinijaDTO> getLinesFromOneZone(Long id){
-		List<Linija> allLines = findAll();
-		if (allLines==null) {
+		Zona zone = null;
+		try{
+			zone = zonaRepository.findById(id).get();
+		}catch(Exception e) {
 			return null;
 		}
+		List<LinijaUZoni> all = luzRepository.findByZonaAndObrisanFalse(zone);
 		List<LinijaDTO> retValue = new ArrayList<LinijaDTO>();
-		for (Linija lin : allLines) {
-			if (lin.isObrisan()) {
-				continue;
-			}
-			for(Zona zone : lin.getZone()) {
-				if(zone.getId()==id) {
-					LinijaDTO linDTO = new LinijaDTO(lin);
-					retValue.add(linDTO);
-					break;
-				}
-			}
+		for(LinijaUZoni zul : all) {
+			LinijaDTO lin = new LinijaDTO(zul.getLinija());
+			retValue.add(lin);
 		}
-		return retValue;		
+		return retValue;	
 	}
 	
 	public Cenovnik getTrenutniCenovnik() {
@@ -163,66 +282,42 @@ public class LinijaService {
 		}
 		return null;
 	}
-	
-	public List<Zona> getZonesFromDTO(List<ZonaDTO> list){
-		List<Zona> retValue = new ArrayList<Zona>();
-		for(ZonaDTO zoneDTO : list) {
-			Zona zone = zonaRepository.findById(zoneDTO.getId()).get();
-			retValue.add(zone);
-			List<Linija> linije = zone.getLinije();
+	/*
+	public List<ZonaDTO> getZonesOfLine(Linija line) {
+		List<ZonaDTO> retValue = new ArrayList<ZonaDTO>();
+		for(LinijeJedneZone ljz : ljzRepository.findAll()) {
+			if(ljz.getLinije().contains(line) && !ljz.getZona().isObrisan()) {
+				retValue.add(new ZonaDTO(ljz.getZona()));
+			}
 		}
 		return retValue;
 	}
 	
-	public List<Stanica> getStationsFromDTO(List<StanicaDTO> stations){
+	//dobavlja zone iz baze na osnovu zonaDTO objekata; vraca listu
+	//parametri: newLine - dto objekat iz kojeg izvlacimo podatke, currentLine - objekat linije u koji dodajemo podatke
+	public List<Zona> getZonesFromDTO(UpdatedLinijaDTO newLine, Linija currentLine){
+		List<Zona> retValue = new ArrayList<Zona>();
+		
+		for(ZonaDTO zoneDTO : newLine.getZones()) {
+			Zona zone = zonaRepository.findById(zoneDTO.getId()).get();
+			retValue.add(zone);
+			
+			//dodaje se trenutna linija u svaku zonu
+			List<Linija> linesOfThisZone = zone.getLinije();
+			linesOfThisZone.add(currentLine);
+			zone.setLinije(linesOfThisZone);
+			zonaRepository.save(zone);
+		}
+		return retValue;
+	}
+	
+	public List<Stanica> getStationsFromDTO(UpdatedLinijaDTO newLine){
 		List<Stanica> retValue = new ArrayList<Stanica>();
-		for(StanicaDTO stationDTO : stations) {
+		for(StanicaDTO stationDTO : newLine.getStations()) {
 			Stanica station = stanicaRepository.findById(stationDTO.getId()).get();
 			retValue.add(station);
 		}
 		return retValue;
 	}
-	
-	public List<Vozilo> getVehiclesFromDTO(List<VoziloDTO> vehicles){
-		List<Vozilo> retValue = new ArrayList<Vozilo>();
-		for(VoziloDTO vehicleDTO : vehicles) {
-			Vozilo vehicle = voziloRepository.findById(vehicleDTO.getId()).get();
-			retValue.add(vehicle);
-		}
-		return retValue;
-	}
-	
-//	public List<Zona> getZones(UpdatedLinijaDTO updatedLine) {
-//
-//	}
-//	
-//	public List<Vozilo> getVehicles(UpdatedLinijaDTO updatedLine){
-//		
-//	}
-//	
-//	public List<Stanica> getStations(UpdatedLinijaDTO updatedLine){
-//		
-//	}
-	
-	public boolean saveZonesAndStationsAndVehicles(Linija line) {
-		for(Zona zone : line.getZone()) {
-			List<Linija> linije = zone.getLinije();
-			linije.add(line);
-			zone.setLinije(linije);
-			zonaRepository.save(zone);
-		}
-		for(Stanica station : line.getStanice()) {
-			List<Linija> linije = station.getLinije();
-			linije.add(line);
-			station.setLinije(linije);
-			stanicaRepository.save(station);
-		}
-		for(Vozilo vehicle : line.getVozila()) {
-			Linija linija = vehicle.getLinija();
-			vehicle.setLinija(linija);
-			voziloRepository.save(vehicle);
-		}
-		return true;
-	}
-	
+	*/
 }

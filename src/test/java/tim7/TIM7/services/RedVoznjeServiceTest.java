@@ -111,7 +111,7 @@ public class RedVoznjeServiceTest {
 	
 	
 	@Test
-	public void findById() {
+	public void findById() { //
 
 		RedVoznje redVoznje = (RedVoznje) redVoznjeService.findById(1L);
 		assertThat(redVoznje).isNotNull();

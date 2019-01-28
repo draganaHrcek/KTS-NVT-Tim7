@@ -47,12 +47,18 @@ public class ZonaService {
 			return null;
 		}
 	}
+	
+	public Zona findByName(String name) {
+		try {
+			Zona zone = zonaRepository.findByNaziv(name);
+			return zone;
+		}catch(Exception e) {
+			return null;
+		}
+	}
 
 	public List<Zona> findAll() {
 		return zonaRepository.findAll();
-	}
-	public Zona findByName(String name) {
-		return zonaRepository.findByNaziv( name);
 	}
 
 	public Zona save(Zona zona) {
@@ -73,6 +79,12 @@ public class ZonaService {
 		if(potential!=null) {
 			return false;
 		}
+		
+		potential = findByName(newZone.getName());
+		if(potential!=null) {
+			return false;
+		}
+		
 		potential = new Zona();
 		potential.setNaziv(newZone.getName());
 		potential.setObrisan(false);
@@ -97,7 +109,7 @@ public class ZonaService {
 	
 	public boolean updateZone(UpdatedZonaDTO updatedZone) {
 		Zona potential = findOne(updatedZone.getId());
-		if(potential==null) {
+		if(potential==null || potential.isObrisan()) {
 			return false;
 		}
 		

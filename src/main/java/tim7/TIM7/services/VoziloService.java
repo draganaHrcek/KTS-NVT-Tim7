@@ -31,6 +31,15 @@ public class VoziloService {
 		}
 	}
 	
+	public Vozilo findByName(String name) {
+		try {
+			Vozilo vehicle = voziloRepository.findByRegistracija(name);
+			return vehicle;
+		}catch(Exception e) {
+			return null;
+		}
+	}
+	
 	public List<Vozilo> findAll(){
 		return voziloRepository.findAll();
 	}
@@ -50,6 +59,11 @@ public class VoziloService {
 
 	public boolean addNewVehicle(VoziloDTO newVehicle) {
 		Vozilo potential = findOne(newVehicle.getId());
+		if(potential!=null) {
+			return false;
+		}
+		
+		potential = findByName(newVehicle.getRegistration());
 		if(potential!=null) {
 			return false;
 		}
@@ -77,6 +91,7 @@ public class VoziloService {
 		if(potential==null) {
 			return false;
 		}
+		
 		potential.setRegistracija(updatedVehicle.getRegistration());
 		
 		if(!potential.getTipVozila().equals(TipVozila.valueOf(updatedVehicle.getType()))) {

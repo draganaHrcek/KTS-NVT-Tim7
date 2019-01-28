@@ -1,5 +1,6 @@
 package tim7.TIM7.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -36,6 +37,7 @@ public class Stanica {
 	public Stanica() {
 		super();
 		this.obrisan= false;
+		this.linije = new ArrayList<StanicaULiniji>();
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -64,6 +66,7 @@ public class Stanica {
 		this.longituda = longituda;
 		this.latituda = latituda;
 		this.obrisan = obrisan;
+		this.linije = new ArrayList<StanicaULiniji>();
 	}
 
 

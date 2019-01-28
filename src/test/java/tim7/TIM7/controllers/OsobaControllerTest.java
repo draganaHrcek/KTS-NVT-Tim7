@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,9 +37,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import tim7.TIM7.dto.KorisnikDTO;
-import tim7.TIM7.dto.KorisnikTokenDTO;
+
 import tim7.TIM7.dto.LoginDTO;
+import tim7.TIM7.dto.RegistracijaDTO;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.security.TokenUtils;
@@ -47,7 +48,7 @@ import tim7.TIM7.TestUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-
+@Transactional
 public class OsobaControllerTest {
 	private static final String URL_PREFIX = "/osoba";
 
@@ -103,7 +104,7 @@ public class OsobaControllerTest {
     @Test
     public void registracijaPostojecegKorisnika() throws Exception {
     	
-    	KorisnikDTO korDTO = new KorisnikDTO();
+    	RegistracijaDTO korDTO = new RegistracijaDTO();
     	korDTO.setKorIme("KorisnikTest");
 		
 		Korisnik postojeci = new Korisnik();
@@ -116,7 +117,7 @@ public class OsobaControllerTest {
     @Test
     public void registracijaNeispravnoPotvrdjenaLozinka() throws Exception {
 		
-		KorisnikDTO korDTO = new KorisnikDTO();
+		RegistracijaDTO korDTO = new RegistracijaDTO();
 		korDTO.setLozinka1("12345678");
 		korDTO.setLozinka2("87654321");
 		
@@ -127,7 +128,7 @@ public class OsobaControllerTest {
     public void regsitracijaUspesna() throws Exception {
     	
 
-		KorisnikDTO korDTO = new KorisnikDTO();
+		RegistracijaDTO korDTO = new RegistracijaDTO();
 		korDTO.setIme("Dragana");
 		korDTO.setEmail("dragana.hrcek@gmail.com");
 		korDTO.setPrezime("Hrcek");
@@ -142,7 +143,7 @@ public class OsobaControllerTest {
     @Test
     public void izmenaLicnihPodataka() throws Exception {
 		
-		KorisnikDTO korDTO = new KorisnikDTO();
+		RegistracijaDTO korDTO = new RegistracijaDTO();
 		korDTO.setIme("NovoIme");
 		korDTO.setEmail("novEmail@gmail.com");
 		korDTO.setPrezime("NovoPrezime");
@@ -159,7 +160,7 @@ public class OsobaControllerTest {
     @Test
     public void izmenaLozinkeNeispravnaTrenutna() throws Exception {
     	
-    	KorisnikDTO korDTO = new KorisnikDTO();
+    	RegistracijaDTO korDTO = new RegistracijaDTO();
     	korDTO.setTrenutnaLozinka("pogresnaTrenutnaLozinka");
 		
     	String token = TestUtil.generateToken(korisnik1.getKorIme());
@@ -169,7 +170,7 @@ public class OsobaControllerTest {
     @Test
     public void izmenaLozinkeNijePotvrdjenaNovaLozinka() throws Exception {
 	
-		KorisnikDTO korDTO = new KorisnikDTO();
+		RegistracijaDTO korDTO = new RegistracijaDTO();
 		korDTO.setTrenutnaLozinka("11111111");
 		korDTO.setLozinka1("87654321");
 		korDTO.setLozinka2("blabla");
@@ -181,7 +182,7 @@ public class OsobaControllerTest {
     @Test
     public void uspesnaIzmenaLozinke() throws Exception {
 		
-		KorisnikDTO korDTO = new KorisnikDTO();
+    	RegistracijaDTO korDTO = new RegistracijaDTO();
 		korDTO.setTrenutnaLozinka("12345678");
 		korDTO.setLozinka1("87654321");
 		korDTO.setLozinka2("87654321");
@@ -199,7 +200,14 @@ public class OsobaControllerTest {
 		loginDTO.setUsername("KorIme2");
 		loginDTO.setPassword("11111111");
 
-      	mockMvc.perform(post(URL_PREFIX + "/login").contentType(MediaType.APPLICATION_JSON_VALUE).content(TestUtil.json(loginDTO))).andExpect(status().isOk()).andExpect(jsonPath("$.token").value(notNullValue(String.class)));
+      	mockMvc.perform(post(URL_PREFIX + "/login").contentType(MediaType.APPLICATION_JSON_VALUE).content(TestUtil.json(loginDTO))).andExpect(status().isOk())
+      	.andExpect(jsonPath("$.ime").value("Dragana"))
+        .andExpect(jsonPath("$.prezime").value("Hrcek"))
+        .andExpect(jsonPath("$.email").value("dragana.hrcek@gmail.com"))
+        .andExpect(jsonPath("$.korIme").value("KorIme2"))
+        .andExpect(jsonPath("$.status").value("STUDENT"))
+        .andExpect(jsonPath("$.uloga").value("KORISNIK"))
+      	.andExpect(jsonPath("$.token").value(notNullValue(String.class)));
    
     }
 
@@ -212,24 +220,6 @@ public class OsobaControllerTest {
 
     }
 	
-	@Test
-	 public void uzmiPrijavljenogKorisnika() throws Exception {
-		
-		String token = TestUtil.generateToken(korisnik2.getKorIme());
-		
-		mockMvc.perform(get(URL_PREFIX + "/prijavljenKorisnik").header("X-Auth-Token", token))
-    	.andExpect(status().isOk())
-    	.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-    	.andExpect(jsonPath("$.ime").value("Dragana"))
-        .andExpect(jsonPath("$.prezime").value("Hrcek"))
-        .andExpect(jsonPath("$.email").value("dragana.hrcek@gmail.com"))
-        .andExpect(jsonPath("$.korIme").value("KorIme2"))
-        .andExpect(jsonPath("$.status").value("STUDENT"))
-        .andExpect(jsonPath("$.uloga").value("KORISNIK"));
-   
-   
-
-    }
 	
 	
 

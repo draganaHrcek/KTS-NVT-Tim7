@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tim7.TIM7.dto.KartaDTO;
+import tim7.TIM7.dto.OdgovorDTO;
 import tim7.TIM7.dto.OdobrenjeKarteDTO;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DnevnaKarta;
@@ -35,43 +36,41 @@ public class KartaService {
 
 	@Autowired
 	KartaRepository kartaRepository;
-	
-	
+
 	@Autowired
 	CenovnikService cenovnikService;
-	
-	@Autowired
-	KartaService kartaService;
-	
+
 	@Autowired
 	OsobaService osobaService;
-	
+
 	@Autowired
 	ZonaService zonaService;
-	
+
 	@Autowired
 	LinijaService linijaService;
-	
-	public Karta findOne(Long id) {
-		return kartaRepository.findById(id).get();
-	}
 
+	public Karta findOne(Long id) {
+		return kartaRepository.findById(id).orElse(null);
+	}
+	public Karta findByKod(String kod) {
+		return kartaRepository.findByKod(kod).orElse(null);
+		
+	}
 	public List<Karta> findAll() {
 		return kartaRepository.findAll();
 	}
-
 
 	public Karta save(Karta karta) {
 		return kartaRepository.save(karta);
 	}
 
 	public void delete(Long id) {
-		Karta karta=findOne(id);
+		Karta karta = findOne(id);
 		karta.setObrisan(true);
 		save(karta);
 	}
-	
-	public ArrayList<KartaDTO> findAllUserTickets(Korisnik kor){
+
+	public ArrayList<KartaDTO> findAllUserTickets(Korisnik kor) {
 		List<KartaDTO> karteDTO = new ArrayList<>();
 		for (Karta k : kor.getKarte()) {
 			KartaDTO kartaDTO = new KartaDTO();
@@ -79,135 +78,145 @@ public class KartaService {
 			kartaDTO.setDatumIsteka(k.getDatumIsteka());
 			kartaDTO.setTipPrevoza(k.getTipPrevoza().toString());
 			kartaDTO.setKod(k.getKod());
-			if(k instanceof DnevnaKarta) {
+			if (k instanceof DnevnaKarta) {
 				kartaDTO.setTipKarte("DNEVNA");
-				kartaDTO.setLinijaZona(((DnevnaKarta)k).getLinija().getNaziv());
+				kartaDTO.setLinijaZona(((DnevnaKarta) k).getLinija().getNaziv());
 				kartaDTO.setCekiranaDnevnaKarta(((DnevnaKarta) k).isUpotrebljena());
 			} else {
-				kartaDTO.setLinijaZona(((VisednevnaKarta)k).getZona().getNaziv());
-				kartaDTO.setTipKarte(((VisednevnaKarta)k).getTip().toString());
-				kartaDTO.setStatusKorisnika(((VisednevnaKarta)k).getTipKorisnika().toString());
-				kartaDTO.setOdobrenaKupovina(((VisednevnaKarta)k).isOdobrena());
+				kartaDTO.setLinijaZona(((VisednevnaKarta) k).getZona().getNaziv());
+				kartaDTO.setTipKarte(((VisednevnaKarta) k).getTip().toString());
+				kartaDTO.setStatusKorisnika(((VisednevnaKarta) k).getTipKorisnika().toString());
+				kartaDTO.setOdobrenaKupovina(((VisednevnaKarta) k).isOdobrena());
 			}
 			karteDTO.add(kartaDTO);
 		}
-		
+
 		return (ArrayList<KartaDTO>) karteDTO;
 	}
+
 	public double cenaKarte(KartaDTO karta, Korisnik kor) {
-		
-		Cenovnik cenovnik=  cenovnikService.getTrenutni();
-		double cena= 0;
+
+		Cenovnik cenovnik = cenovnikService.getTrenutni();
+		double cena = 0;
 		for (StavkaCenovnika i : cenovnik.getStavke()) {
-			if(i.getStavka().getVrstaPrevoza().toString().equals(karta.getTipPrevoza()) && i.getStavka().getTipKarte().toString().equals(karta.getTipKarte()) ) {
-				if ( i.getStavka().getLinija().getNaziv().equals(karta.getLinijaZona()) || i.getStavka().getZona().getNaziv().equals(karta.getLinijaZona())) {
-					cena=i.getCena();
+			if (i.getStavka().getVrstaPrevoza().toString().equals(karta.getTipPrevoza())
+					&& i.getStavka().getTipKarte().toString().equals(karta.getTipKarte())) {
+				if (i.getStavka().getLinija().getNaziv().equals(karta.getLinijaZona())
+						|| i.getStavka().getZona().getNaziv().equals(karta.getLinijaZona())) {
+					cena = i.getCena();
 					break;
-					
+
 				}
-				
+
 			}
 		}
-		
-		if(karta.getTipKarte().equals("DNEVNA")) {
-			cena=cena;
-			
-		}else {
-		
+
+		if (karta.getTipKarte().equals("DNEVNA")) {
+			cena = cena;
+
+		} else {
+
 			if (StatusKorisnika.STUDENT.equals(kor.getStatus())) {
-				cena=cena*(100-cenovnik.getPopustStudent())/100;
+				cena = cena * (100 - cenovnik.getPopustStudent()) / 100;
 				
-			}else if(StatusKorisnika.PENZIONER.equals(kor.getStatus())){
-				cena=cena*(100-cenovnik.getPopustPenzioner())/100;	
-				
-			}else if(StatusKorisnika.DJAK.equals(kor.getStatus())){
-				cena=cena*(100-cenovnik.getPopustDjak())/100;
-				
-				
-			}else if(StatusKorisnika.NEZAPOSLEN.equals(kor.getStatus())){
-				
-				cena=cena*(100-cenovnik.getPopustNezaposlen())/100;
-				
-				
+
+			} else if (StatusKorisnika.PENZIONER.equals(kor.getStatus())) {
+				cena = cena * (100 - cenovnik.getPopustPenzioner()) / 100;
+
+			} else if (StatusKorisnika.DJAK.equals(kor.getStatus())) {
+				cena = cena * (100 - cenovnik.getPopustDjak()) / 100;
+
+			} else if (StatusKorisnika.NEZAPOSLEN.equals(kor.getStatus())) {
+
+				cena = cena * (100 - cenovnik.getPopustNezaposlen()) / 100;
+
 			}
 		}
 		return cena;
 	}
-	public void createNewTicket(KartaDTO karta, Korisnik kor, double cena ) {
-		
-if (karta.getTipKarte().equals("DNEVNA")) {
-			
-			DnevnaKarta k= new DnevnaKarta ();
-			k.setDatumIsteka(Date.from(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59)).toInstant(ZoneOffset.UTC)));
+
+	public void createNewTicket(KartaDTO karta, Korisnik kor, double cena) {
+
+		if (karta.getTipKarte().equals("DNEVNA")) {
+
+			DnevnaKarta k = new DnevnaKarta();
+			k.setDatumIsteka(
+					Date.from(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59)).toInstant(ZoneOffset.UTC)));
 			k.setTipPrevoza(TipVozila.valueOf(karta.getTipPrevoza()));
 			k.setLinija(linijaService.findByName(karta.getLinijaZona()));
 			k.setCena(cena);
 			k.setKod((UUID.randomUUID().toString()).substring(0, 7));
 			k.setKorisnik(kor);
 			kor.getKarte().add(k);
-			kartaService.save(k);
-			osobaService.save(kor);			
-		}else {
-			
-			VisednevnaKarta k= new VisednevnaKarta ();
+			save(k);
+			osobaService.save(kor);
+		} else {
+
+			VisednevnaKarta k = new VisednevnaKarta();
 			LocalDate cd = LocalDate.now();
 			if (karta.getTipKarte().equals("MESECNA")) {
-				k.setDatumIsteka(Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear())).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+				k.setDatumIsteka(Date.from(cd.withDayOfMonth(cd.getMonth().length(cd.isLeapYear()))
+						.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 				k.setTip(TipKarte.MESECNA);
-			
-			}else {
+
+			} else {
 				k.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 				k.setTip(TipKarte.GODISNJA);
-				
+
 			}
-			
+
 			k.setTipKorisnika(StatusKorisnika.valueOf(karta.getStatusKorisnika()));
 			k.setTipPrevoza(TipVozila.valueOf(karta.getTipPrevoza()));
 			k.setZona(zonaService.findByName(karta.getLinijaZona()));
 			k.setCena(cena);
 			k.setKod((UUID.randomUUID().toString()).substring(0, 7));
-			
-			
-			
+
 			k.setKorisnik(kor);
 			kor.getKarte().add(k);
-			kartaService.save(k);
+			save(k);
 			osobaService.save(kor);
 		}
-		
+
 	}
-	
+
 	public boolean kartaExist(KartaDTO karta, Korisnik kor) {
-		
-		List<Karta> karte= kor.getKarte();
-		boolean kupljena= false;
-		
+
+		List<Karta> karte = kor.getKarte();
+		boolean kupljena = false;
+
 		for (Karta k : karte) {
-			
-			
+
 			if ((k instanceof VisednevnaKarta)) {
-				if (karta.getTipKarte().equals(((VisednevnaKarta) k).getTip().toString())   &&  karta.getTipPrevoza().equals(((VisednevnaKarta) k).getTipPrevoza().toString())  && ((VisednevnaKarta)k).getZona().getNaziv().equals(karta.getLinijaZona())&& (((VisednevnaKarta)k).isOdobrena() == null || ((VisednevnaKarta)k).isOdobrena() != false)) {
-		
-					if (LocalDateTime.now().isBefore(LocalDateTime.ofInstant(k.getDatumIsteka().toInstant(), ZoneId.systemDefault()))) {
-						
-						System.out.println(LocalDateTime.now().isBefore(LocalDateTime.ofInstant(k.getDatumIsteka().toInstant(), ZoneId.systemDefault())));
-						kupljena=true;
+				if (karta.getTipKarte().equals(((VisednevnaKarta) k).getTip().toString())
+						&& karta.getTipPrevoza().equals(((VisednevnaKarta) k).getTipPrevoza().toString())
+						&& ((VisednevnaKarta) k).getZona().getNaziv().equals(karta.getLinijaZona())
+						&& (((VisednevnaKarta) k).isOdobrena() == null
+								|| ((VisednevnaKarta) k).isOdobrena() != false)) {
+
+					if (LocalDateTime.now().isBefore(
+							LocalDateTime.ofInstant(k.getDatumIsteka().toInstant(), ZoneId.systemDefault()))) {
+
+						System.out.println(LocalDateTime.now().isBefore(
+								LocalDateTime.ofInstant(k.getDatumIsteka().toInstant(), ZoneId.systemDefault())));
+						kupljena = true;
 						break;
-						
+
 					}
-					
-				}	
-			}	
+
+				}
+			}
 		}
 		return kupljena;
-		
+
 	}
+
 	
 	//za proveru postojanja karte i cekiranje ukoliko je dnevna
-	public String checkKarta(TipVozila tipVozila, String nazivLinije, String kod){
-		Karta karta=kartaRepository.findByKod(kod);
+	public OdgovorDTO checkKarta(TipVozila tipVozila, String nazivLinije, String kod){
+		Karta karta=findByKod(kod);
+		OdgovorDTO odgovor=new OdgovorDTO();
 		if (karta==null){
-			return "NE POSTOJI";
+			return null;
 		}else{
 			if (karta instanceof VisednevnaKarta){
 				Zona zonaKarte=((VisednevnaKarta)karta).getZona();
@@ -218,57 +227,62 @@ if (karta.getTipKarte().equals("DNEVNA")) {
 					}
 				}
 				if (prosao && karta.getTipPrevoza().equals(tipVozila) && (new Date()).before(karta.getDatumIsteka()) && ((VisednevnaKarta)karta).isOdobrena()){
-					return "POSTOJI";
+					odgovor.setOdgovor("Karta je vazeca");;
 				}else{
-					return "NE POSTOJI";
+					return null;
 				}
 			}else{
 				if (karta.getTipPrevoza().equals(tipVozila) && ((DnevnaKarta)karta).getLinija().getNaziv().equals(nazivLinije)){
 					if (((DnevnaKarta)karta).isUpotrebljena()){
-						return "UPOTREBLJENA";
+						return null;
 					}else{
 						((DnevnaKarta)karta).setUpotrebljena(true);
 						save((DnevnaKarta)karta);
-						return "CEKIRANA";
+						odgovor.setOdgovor("Karta uspesno cekirana");;
 					}				
 				}else{
-					return "NE POSTOJI";
+					return null;
 				}
 			}
+			return odgovor;
 		}
-	}
-	
-	
+}
+
+
+		
 	//za odobrenje karata
-	public boolean verifyKarta(Long idKarte, String statusOdobrenja){
+	public OdgovorDTO verifyKarta(Long idKarte, String statusOdobrenja){
 		VisednevnaKarta karta=(VisednevnaKarta)findOne(idKarte);
 		if (karta==null){
-			return false;
+			return null;
 		}else{
 			if (karta.isOdobrena()!=null){
-				return false;
+				return null;
 			}else if ((new Date()).before(karta.getDatumIsteka())){
+				String status=null;
 				if (statusOdobrenja.equals("ODOBRENA")){
 					karta.setOdobrena(true);
+					status="odobrena";
 				}else{
 					karta.setOdobrena(false);
+					status="ponistena";
 				}
 				save(karta);
-				return true;
+				return new OdgovorDTO("Karta je uspesno "+status);
 			}else{
-				return false; //ne moze da je verifikuje ukoliko je karta istekla
+				return null; //ne moze da je verifikuje ukoliko je karta istekla
 			}
-			
 		}
 	}
-	
-	public List<OdobrenjeKarteDTO> getNeodobreneKarte(){
+
+	public List<OdobrenjeKarteDTO> getNeodobreneKarte() {
 		List<Karta> karte = findAll();
 		List<OdobrenjeKarteDTO> karteZaOdobrenje = new ArrayList<OdobrenjeKarteDTO>();
-		for (Karta karta : karte){
-			if (karta instanceof VisednevnaKarta){
-				//ne dobavljaju se karte koje su vec verifikovane, niti one kojima je datum isteka prosao
-				if (((VisednevnaKarta) karta).isOdobrena()!=null || (new Date()).after(karta.getDatumIsteka())){
+		for (Karta karta : karte) {
+			if (karta instanceof VisednevnaKarta) {
+				// ne dobavljaju se karte koje su vec verifikovane, niti one kojima je datum
+				// isteka prosao
+				if (((VisednevnaKarta) karta).isOdobrena() != null || (new Date()).after(karta.getDatumIsteka())) {
 					continue;
 				}
 				OdobrenjeKarteDTO odobrenje = new OdobrenjeKarteDTO();
@@ -276,16 +290,16 @@ if (karta.getTipKarte().equals("DNEVNA")) {
 				odobrenje.setKorisnikUsername(karta.getKorisnik().getKorIme());
 				odobrenje.setStatusKorisnika(karta.getKorisnik().getStatus());
 				odobrenje.setLokacijaDokumenta(karta.getKorisnik().getLokacijaDokumenta());
-				odobrenje.setTipKarte(((VisednevnaKarta)karta).getTip());
-				odobrenje.setNazivZone(((VisednevnaKarta)karta).getZona().getNaziv());				
+				odobrenje.setTipKarte(((VisednevnaKarta) karta).getTip());
+				odobrenje.setNazivZone(((VisednevnaKarta) karta).getZona().getNaziv());
 				odobrenje.setTipVozila(karta.getTipPrevoza());
 				karteZaOdobrenje.add(odobrenje);
-				
+
 			}
 		}
-		if (karteZaOdobrenje.size()==0){
+		if (karteZaOdobrenje.size() == 0) {
 			return null;
-		}else{
+		} else {
 			return karteZaOdobrenje;
 		}
 	}

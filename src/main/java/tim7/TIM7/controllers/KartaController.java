@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import tim7.TIM7.dto.KartaDTO;
+import tim7.TIM7.dto.OdgovorDTO;
 import tim7.TIM7.dto.OdobrenjeKarteDTO;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DnevnaKarta;
@@ -71,7 +72,7 @@ public class KartaController {
 	
 	
 	@RequestMapping(value="/kupovinaKarte", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity<List<KartaDTO>> kupovinaKarte(@RequestHeader ("X-Auth-Token") String token, @RequestBody KartaDTO karta )
+	public ResponseEntity kupovinaKarte(@RequestHeader ("X-Auth-Token") String token, @RequestBody KartaDTO karta )
 	{
 		Korisnik kor = (Korisnik)osobaService.findByUsername(tokenUtils.getUsernameFromToken(token));
 		
@@ -87,25 +88,22 @@ public class KartaController {
 	}
 	
 	
-	@RequestMapping(value="/proveriKartu/{tipVozila}/{nazivLinije}/{kod}", consumes = "application/json" ,method = RequestMethod.POST)
-	public ResponseEntity<String> checkKarta(@RequestHeader ("X-Auth-Token") String token, @PathVariable String tipVozila, @PathVariable String nazivLinije, @PathVariable String kod){
-		String statusProvere = kartaService.checkKarta(TipVozila.valueOf(tipVozila), nazivLinije, kod);
-		if (statusProvere.equals("NE POSTOJI")){
-			return new ResponseEntity<>("Ne postoji vazeca karta", HttpStatus.BAD_REQUEST);
-		}else if (statusProvere.equals("POSTOJI")){
-			return new ResponseEntity<>("Karta sa zadatim kodom je vazeca", HttpStatus.OK);
-		}else if (statusProvere.equals("UPOTREBLJENA")){
-			return new ResponseEntity<>("Karta sa zadatim kodom je vec cekirana", HttpStatus.IM_USED);
+	@RequestMapping(value="/proveriKartu/{tipVozila}/{nazivLinije}/{kod}" ,method = RequestMethod.POST)
+	public ResponseEntity<OdgovorDTO> checkKarta(@RequestHeader ("X-Auth-Token") String token, @PathVariable String tipVozila, @PathVariable String nazivLinije, @PathVariable String kod){
+		OdgovorDTO odgovor = kartaService.checkKarta(TipVozila.valueOf(tipVozila), nazivLinije, kod);
+		//System.out.println(statusProvere+" "+ tipVozila+" "+ nazivLinije+" "+ kod);
+		if (odgovor==null){
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else{
-			return new ResponseEntity<>("Karta je uspesno cekirana", HttpStatus.OK);
+			return new ResponseEntity<>(odgovor, HttpStatus.OK);
 		}
 	}
 	
 	@RequestMapping(value="/odobriKartu/{idKarte}/{statusOdobrenja}", method = RequestMethod.POST)
-	public ResponseEntity<String> verifyKarta(@RequestHeader ("X-Auth-Token") String token, @PathVariable Long idKarte, @PathVariable String statusOdobrenja){
-		boolean izmenjenStatus=kartaService.verifyKarta(idKarte, statusOdobrenja);
-		if (izmenjenStatus){
-			return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<OdgovorDTO> verifyKarta(@RequestHeader ("X-Auth-Token") String token, @PathVariable Long idKarte, @PathVariable String statusOdobrenja){
+		OdgovorDTO odgovor=kartaService.verifyKarta(idKarte, statusOdobrenja);
+		if (odgovor!=null){
+			return new ResponseEntity<>(odgovor, HttpStatus.OK);
 		}else{
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

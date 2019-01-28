@@ -136,12 +136,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					hasAuthority("VERIFIKATOR")
 				.antMatchers(HttpMethod.POST, "/karte/odobriKartu/{idKarte}/{statusOdobrenja}").
 					hasAuthority("VERIFIKATOR")
+				.antMatchers(HttpMethod.GET, "/redVoznje/dobaviTrenutneRasporede").
+					permitAll()
+				.antMatchers(HttpMethod.GET, "/redVoznje/dobaviBuduceRasporede").
+					hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/**")
 				
 				
 				//ZA SADA NAM NE TREBAJU PRAVA PRISTUPA SVI MOGU SVE ZAHTEVE(POST, GET, PUT,....)
 				// 	.hasAuthority("ROLE_ADMIN") //only administrator can add and edit data
-				//.anyRequest()
+				//.anyRequest()  
 				.authenticated();
 				//if we use AngularJS on client side
 				//.and().csrf().csrfTokenRepository(csrfTokenRepository()); 

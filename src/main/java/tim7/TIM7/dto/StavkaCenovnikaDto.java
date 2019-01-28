@@ -23,7 +23,6 @@ public class StavkaCenovnikaDto {
 			this.nazivLinije = stavka.getStavka().getLinija().getNaziv();
 		}
 		this.id = stavka.getId();
-		System.out.println("printam u dubokom konstruktory " + this.id);
 
 	}
 

@@ -98,7 +98,6 @@ public class CenovnikService {
 					return "Greska! Nije moguce dodati ove stavke";
 				}				
 			}
-			//System.out.println(stavka.getLinija().getNaziv());
 			StavkaCenovnika stavkaCenovnika = new StavkaCenovnika(stavkaDTO.getCena(),
 					stavka,cenovnik, false);
 			cenovnik.getStavke().add(stavkaCenovnika);
@@ -160,7 +159,6 @@ public class CenovnikService {
 		Calendar now = Calendar.getInstance();
 		now.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DATE), 0, 0, 0);
 		now.add(Calendar.DATE, 2);
-		System.out.println(now);
 		if(date.after(now.getTime())){
 			cenovnik.setDatumObjavljivanja(date);
 			return true;
@@ -241,7 +239,6 @@ public class CenovnikService {
 		Cenovnik cenovnik = findOne(cenovnikDto.getId());
 		
 		if(cenovnik == null ){
-			System.out.println("null");
 			return null;
 		}
 		
@@ -259,7 +256,6 @@ public class CenovnikService {
 		}
 		cenovnik = cenovnikRepository.save(cenovnik);
 		for(StavkaCenovnika s : cenovnik.getStavke()){
-			System.out.println("printam: " + s.getCena());
 		}
 		CenovnikDTO res =  new CenovnikDTO(cenovnik);
 		//for(S)

@@ -89,7 +89,7 @@ public class RasporedVoznjeService {
 		if (buduciRedVoznje==null){
 			return "NE POSTOJI";
 		}else{
-			delete(buduciRedVoznje.getId());
+			delete(id);
 			return "OBRISAN";
 		}
 	}

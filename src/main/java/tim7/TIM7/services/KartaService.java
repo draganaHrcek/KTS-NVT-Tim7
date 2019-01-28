@@ -7,13 +7,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import javax.net.ssl.CertPathTrustManagerParameters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +22,7 @@ import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Korisnik;
-import tim7.TIM7.model.Linija;
-import tim7.TIM7.model.Osoba;
+import tim7.TIM7.model.LinijaUZoni;
 import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.TipKarte;
@@ -105,24 +101,25 @@ public class KartaService {
 		for (StavkaCenovnika i : cenovnik.getStavke()) {
 			if (i.getStavka().getVrstaPrevoza().toString().equals(karta.getTipPrevoza())
 					&& i.getStavka().getTipKarte().toString().equals(karta.getTipKarte())) {
-				if (i.getStavka().getLinija().getNaziv().equals(karta.getLinijaZona())
-						|| i.getStavka().getZona().getNaziv().equals(karta.getLinijaZona())) {
-					cena = i.getCena();
-					break;
+				
+				if(karta.getTipKarte().equals("DNEVNA")) {
+					if (i.getStavka().getLinija().getNaziv().equals(karta.getLinijaZona())) {
+						cena = i.getCena();
+						break;
+					}
+				}else {
+					if (i.getStavka().getZona().getNaziv().equals(karta.getLinijaZona())) {
+						cena = i.getCena();
+						break;
 
+					}
 				}
-
 			}
 		}
 
-		if (karta.getTipKarte().equals("DNEVNA")) {
-			cena = cena;
-
-		} else {
-
+		if (!karta.getTipKarte().equals("DNEVNA")) {
 			if (StatusKorisnika.STUDENT.equals(kor.getStatus())) {
 				cena = cena * (100 - cenovnik.getPopustStudent()) / 100;
-				
 
 			} else if (StatusKorisnika.PENZIONER.equals(kor.getStatus())) {
 				cena = cena * (100 - cenovnik.getPopustPenzioner()) / 100;
@@ -131,9 +128,7 @@ public class KartaService {
 				cena = cena * (100 - cenovnik.getPopustDjak()) / 100;
 
 			} else if (StatusKorisnika.NEZAPOSLEN.equals(kor.getStatus())) {
-
 				cena = cena * (100 - cenovnik.getPopustNezaposlen()) / 100;
-
 			}
 		}
 		return cena;
@@ -225,8 +220,8 @@ public class KartaService {
 			if (karta instanceof VisednevnaKarta){
 				Zona zonaKarte=((VisednevnaKarta)karta).getZona();
 				boolean prosao=false;
-				for (Linija linija:zonaKarte.getLinije()){
-					if (linija.getNaziv().equals(nazivLinije)){
+				for (LinijaUZoni luz:zonaKarte.getLinije()){
+					if (luz.getLinija().getNaziv().equals(nazivLinije)){
 						prosao=true;
 					}
 				}

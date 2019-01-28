@@ -29,6 +29,7 @@ public class CenovnikDTO {
 		this.popustStudent = cenovnik.getPopustStudent();
 		for(StavkaCenovnika stavka : cenovnik.getStavke()){
 			StavkaCenovnikaDto stavkaDto = new StavkaCenovnikaDto(stavka);
+			System.out.println("u konstruktoru " + stavkaDto.getTipKarte());
 			this.stavkeCenovnika.add(stavkaDto);
 		}
 	}

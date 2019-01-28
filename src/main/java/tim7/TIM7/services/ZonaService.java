@@ -15,10 +15,12 @@ import tim7.TIM7.dto.ZonaDTO;
 import tim7.TIM7.helper.SortCenovniciByDate;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.LinijaUZoni;
 import tim7.TIM7.model.StavkaCenovnika;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.LinijaRepository;
+import tim7.TIM7.repositories.LinijaUZoniRepository;
 import tim7.TIM7.repositories.ZonaRepository;
 
 @Service
@@ -32,6 +34,9 @@ public class ZonaService {
 	
 	@Autowired 
 	CenovnikRepository cjenovnikRepository;
+	
+	@Autowired 
+	LinijaUZoniRepository luzRepository;
 
 	
 	public Zona findOne(Long id) {
@@ -70,20 +75,22 @@ public class ZonaService {
 		}
 		potential = new Zona();
 		potential.setNaziv(newZone.getName());
-		List<Linija> lines = new ArrayList<Linija>();
-		potential.setLinije(lines);
 		potential.setObrisan(false);
+		
 		save(potential);
-		for(LinijaDTO line : newZone.getLines()) {
-			Linija linija = getLineById(line.getId());
-			if(linija==null || linija.isObrisan()) {
+		
+		
+		
+		for (LinijaDTO linDTO : newZone.getLines()) {
+			try {
+				Linija line = linijaRepository.findById(linDTO.getId()).get();
+				LinijaUZoni luz = new LinijaUZoni();
+				luz.setLinija(line);
+				luz.setZona(potential);
+				luzRepository.save(luz);
+			}catch(Exception e) {
 				return false;
 			}
-			List<Zona> zones = linija.getZone();
-			zones.add(potential);
-			linija.setZone(zones);
-			lines.add(linija);
-			linijaRepository.save(linija);
 		}
 		return true;
 	}
@@ -95,56 +102,58 @@ public class ZonaService {
 		}
 		
 		potential.setNaziv(updatedZone.getName());
-		
-		List<Linija> lines = new ArrayList<Linija>();
-		for(LinijaDTO line : updatedZone.getLines()) {
-			Linija linija = getLineById(line.getId());
-			if(linija==null || linija.isObrisan()) {
-				return true;
-			}
-			lines.add(linija);
-			List<Zona> zones = linija.getZone();
-			if(!zones.contains(potential)) {
-				zones.add(potential);
-				linija.setZone(zones);
-				linijaRepository.save(linija);
-			}
-		}
-		
-		for(Long lineId : updatedZone.getRemovedLinesIds()) {
-			Linija linija = getLineById(lineId);
-			if(linija==null || linija.isObrisan()) {
-				return true;
-			}
-			List<Zona> zones = linija.getZone();
-			zones.remove(potential);
-			linija.setZone(zones);
-			linijaRepository.save(linija);
-		}
-		potential.setLinije(lines);
 		save(potential);
+		
+		List<LinijaUZoni> before = luzRepository.findByZonaAndObrisanFalse(potential);
+		List<LinijaDTO> current = new ArrayList<LinijaDTO>();
+		for(LinijaUZoni luz : before) {
+			LinijaDTO lin = new LinijaDTO(luz.getLinija());
+			if(updatedZone.getLines().contains(lin)) {
+				current.add(lin);
+			}else {
+				luz.setObrisan(true);
+				luzRepository.save(luz);
+			}
+		}
+		for(LinijaDTO linDTO : updatedZone.getLines()) {
+			if(current.contains(linDTO)) {
+				continue;
+			}else {
+				LinijaUZoni luz = new LinijaUZoni();
+				luz.setLinija(linijaRepository.findById(linDTO.getId()).get());
+				luz.setZona(potential);
+				luzRepository.save(luz);
+			}
+		}
+		
+
 		return true;
 	}
 	
-	//kad moze da se obrise zona?
 	public boolean deleteZone(Long id) {
 		Zona potential = findOne(id);
 		if(potential==null) {
 			return false;
-		}
+		}	
 		
-		Cenovnik current = getTrenutni();
+		
+		Cenovnik current = getTrenutniCjenovnik();
 		for(StavkaCenovnika sc : current.getStavke()) {
 			if(sc.getStavka().getZona().getId()==id) {
 				return false;
 			}
 		}
 		
-		
-		
-		
 		potential.setObrisan(true);
 		save(potential);
+		
+		for(LinijaUZoni luz : potential.getLinije()) {
+			if(luz.isObrisan()) {
+				continue;
+			}
+			luz.setObrisan(true);
+			luzRepository.save(luz);
+		}
 		return true;
 	}
 	
@@ -167,8 +176,9 @@ public class ZonaService {
 	
 	
 	
-	//za provjere dozvole brisanja 
-	public Cenovnik getTrenutni() {
+	// funkcije za dobavljanje trenutnog cjenovnika i reda voznje, koji
+	// su potrebni za provjere dozvole brisanja
+	public Cenovnik getTrenutniCjenovnik() {
 		deleteIstekli();
 		try{
 			ArrayList<Cenovnik> cenovnici = (ArrayList<Cenovnik>) cjenovnikRepository.findAllByObrisanFalse();
@@ -188,12 +198,17 @@ public class ZonaService {
 			if(i!= cenovnici.size()-1 &&
 					cenovnici.get(i).getDatumObjavljivanja().before(now) &&
 					cenovnici.get(i+1).getDatumObjavljivanja().before(now)){
-				cenovnici.get(i).setObrisan(true);
-				cjenovnikRepository.save(cenovnici.get(i));
+				deleteCjenovnik(cenovnici.get(i).getId());
 			}
 			else{
 				break;
 			}
 		}
+	}
+	
+	public void deleteCjenovnik(Long id) {
+		Cenovnik cenovnik=cjenovnikRepository.findById(id).get();
+		cenovnik.setObrisan(true);
+		cjenovnikRepository.save(cenovnik);
 	}
 }

@@ -16,9 +16,15 @@ public class StavkaCenovnikaDto {
 		this.cena = stavka.getCena();
 		this.tipKarte = stavka.getStavka().getTipKarte();
 		this.vrstaPrevoza = stavka.getStavka().getVrstaPrevoza();
-		this.nazivZone = stavka.getStavka().getZona().getNaziv();
-		this.nazivLinije = stavka.getStavka().getLinija().getNaziv();
+		if( stavka.getStavka().getZona() != null){
+			this.nazivZone = stavka.getStavka().getZona().getNaziv();
+		}
+		if(stavka.getStavka().getLinija() != null){
+			this.nazivLinije = stavka.getStavka().getLinija().getNaziv();
+		}
 		this.id = stavka.getId();
+		System.out.println("printam u dubokom konstruktory " + this.id);
+
 	}
 
 	public StavkaCenovnikaDto(){};

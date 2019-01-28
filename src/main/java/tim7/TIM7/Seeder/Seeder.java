@@ -24,9 +24,11 @@ import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.LinijaUZoni;
 import tim7.TIM7.model.RasporedVoznje;
 import tim7.TIM7.model.RedVoznje;
 import tim7.TIM7.model.Stanica;
+import tim7.TIM7.model.StanicaULiniji;
 import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
 import tim7.TIM7.model.StavkaCenovnika;
@@ -40,15 +42,16 @@ import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.KartaRepository;
 import tim7.TIM7.repositories.LinijaRepository;
+import tim7.TIM7.repositories.LinijaUZoniRepository;
 import tim7.TIM7.repositories.OsobaRepository;
 import tim7.TIM7.repositories.RasporedVoznjeRepository;
 import tim7.TIM7.repositories.RedVoznjeRepository;
 import tim7.TIM7.repositories.StanicaRepository;
+import tim7.TIM7.repositories.StanicaULinijiRepository;
 import tim7.TIM7.repositories.StavkaCenovnikaRepository;
 import tim7.TIM7.repositories.StavkaRepository;
 import tim7.TIM7.repositories.VoziloRepository;
 import tim7.TIM7.repositories.ZonaRepository;
-import tim7.TIM7.services.OsobaService;
 
 @Component
 public class Seeder {
@@ -85,13 +88,19 @@ public class Seeder {
 	
 	@Autowired
 	KartaRepository kartaRepository;
+	
+	@Autowired
+	LinijaUZoniRepository luzRepository;
+	
+	@Autowired
+	StanicaULinijiRepository sulRepository;
 
 	public Seeder() {
 	}
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-//	seedCenovnik();
+//		seedCenovnik();
 //		seedZona();
 //		seedLinija();
 //		connectZonaLinija();
@@ -130,7 +139,8 @@ public class Seeder {
 
 	public void seedLinija() {
 		for (int i = 1; i < 5; i++) {
-			linijaRepository.save(new Linija("linija " + i, false));
+			Linija line = new Linija("linija " + i, false);
+			linijaRepository.save(line);
 		}
 	}
 
@@ -142,35 +152,75 @@ public class Seeder {
 	}
 
 	public void connectZonaLinija() {
-		Zona gradska = zonaRepository.findByNaziv("graksa");
+		Zona gradska = zonaRepository.findByNaziv("gradksa");
 		Zona prigradska = zonaRepository.findByNaziv("prigradska");
 		Zona veternik = zonaRepository.findByNaziv("veternik");
+		
 
-		Linija linija = linijaRepository.findByNaziv("linija 1");
-		linija.getZone().add(gradska);
-		linijaRepository.save(linija);
 
-		linija = linijaRepository.findByNaziv("linija 2");
-		linija.getZone().add(gradska);
-		linija.getZone().add(prigradska);
-		linijaRepository.save(linija);
+		Linija linija1 = linijaRepository.findByNaziv("linija 1");
+		LinijaUZoni luz1 = new LinijaUZoni();
+		luz1.setLinija(linija1);
+		luz1.setZona(gradska);
+		luzRepository.save(luz1);
 
-		linija = linijaRepository.findByNaziv("linija 3");
-		linija.getZone().add(veternik);
-		linijaRepository.save(linija);
+		Linija linija2 = linijaRepository.findByNaziv("linija 2");		
+		
+		LinijaUZoni luz2 = new LinijaUZoni();
+		luz2.setLinija(linija2);
+		luz2.setZona(gradska);
+		luzRepository.save(luz2);
+		
+		LinijaUZoni luz3 = new LinijaUZoni();
+		luz3.setLinija(linija2);
+		luz3.setZona(prigradska);
+		luzRepository.save(luz3);
 
-		linija = linijaRepository.findByNaziv("linija 4");
-		linija.getZone().add(gradska);
-		linija.getZone().add(prigradska);
-		linija.getZone().add(veternik);
-		linijaRepository.save(linija);
+		Linija linija3 = linijaRepository.findByNaziv("linija 3");
+		LinijaUZoni luz4 = new LinijaUZoni();
+		luz4.setLinija(linija3);
+		luz4.setZona(prigradska);
+		luzRepository.save(luz4);
+
+		Linija linija4 = linijaRepository.findByNaziv("linija 4");
+		LinijaUZoni luz5 = new LinijaUZoni();
+		luz5.setLinija(linija4);
+		luz5.setZona(gradska);
+		luzRepository.save(luz5);
+		
+		LinijaUZoni luz6 = new LinijaUZoni();
+		luz6.setLinija(linija4);
+		luz6.setZona(prigradska);
+		luzRepository.save(luz6);
+		
+		LinijaUZoni luz7 = new LinijaUZoni();
+		luz7.setLinija(linija4);
+		luz7.setZona(veternik);
+		luzRepository.save(luz7);
+		
+		luzRepository.save(luz1);
+		luzRepository.save(luz2);
+		luzRepository.save(luz3);
+		luzRepository.save(luz4);
+		luzRepository.save(luz5);
+		luzRepository.save(luz6);
+		luzRepository.save(luz7);
 	}
 
 	public void seedStavkaCenovnika() {
 		int i = 0;
 		for (Stavka stavka : stavkaRepository.findAll()) {
-			Cenovnik cenovnik = cenovnikRepository.findAll().get(i%3);
-			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik, false));
+			Cenovnik cenovnik1 = cenovnikRepository.findAll().get(0);
+			Cenovnik cenovnik2 = cenovnikRepository.findAll().get(1);
+			Cenovnik cenovnik3 = cenovnikRepository.findAll().get(2);
+
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik1, false));
+			i++;
+			
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik2, false));
+			i++;
+			
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik3, false));
 			i++;
 		}
 
@@ -183,54 +233,41 @@ public class Seeder {
 		Linija linija;
 
 		for (TipKarteCenovnik tip : TipKarteCenovnik.values()) {
-			linija = linijaRepository.findByNaziv("linija 1");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+			if(tip.equals(TipKarteCenovnik.DNEVNA)){
+				linija = linijaRepository.findByNaziv("linija 1");
+				stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.METRO, linija, false));
+	
+				linija = linijaRepository.findByNaziv("linija 2");
+				stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.METRO, linija, false));
 
-			linija = linijaRepository.findByNaziv("linija 2");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+	
+				linija = linijaRepository.findByNaziv("linija 3");
+				stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.METRO, linija, false));
 
-			linija = linijaRepository.findByNaziv("linija 3");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+	
+				linija = linijaRepository.findByNaziv("linija 4");
+				stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.METRO, linija, false));
 
-			linija = linijaRepository.findByNaziv("linija 4");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+			}
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, false));
 			
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, false));
 			
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, false));
 		}
 	}
 	
@@ -446,28 +483,47 @@ public class Seeder {
 		Linija linija5=linijaRepository.findByNaziv("NazivLinije5");
 		Linija linija6=linijaRepository.findByNaziv("NazivLinije6");
 		
-		linija1.getZone().add(zona1);
-		linija1.getZone().add(zona2);
-		linija1.getZone().add(zona3);
-		linijaRepository.save(linija1);
+		LinijaUZoni luz1 = new LinijaUZoni();
+		LinijaUZoni luz2 = new LinijaUZoni();
+		LinijaUZoni luz3 = new LinijaUZoni();
+		LinijaUZoni luz4 = new LinijaUZoni();
+		LinijaUZoni luz5 = new LinijaUZoni();
+		LinijaUZoni luz6 = new LinijaUZoni();
+		LinijaUZoni luz7 = new LinijaUZoni();
+		LinijaUZoni luz8 = new LinijaUZoni();
 		
-		linija2.getZone().add(zona1);
-		linija2.getZone().add(zona2);
-		linijaRepository.save(linija2);
+		luz1.setZona(zona1);
+		luz1.setLinija(linija1);
 		
-		linija3.getZone().add(zona3);
-		linijaRepository.save(linija3);
+		luz2.setZona(zona1);
+		luz2.setLinija(linija2);
 		
-		linija4.getZone().add(zona2);
-		linija4.getZone().add(zona4);
-		linijaRepository.save(linija4);
+		luz3.setZona(zona2);
+		luz3.setLinija(linija1);
 		
-		linija5.getZone().add(zona3);
-		linija5.getZone().add(zona5);
-		linijaRepository.save(linija5);
+		luz4.setZona(zona2);
+		luz4.setLinija(linija2);
 		
-		linija6.getZone().add(zona2);
-		linijaRepository.save(linija6);
+		luz5.setZona(zona2);
+		luz5.setLinija(linija4);
+		
+		luz6.setZona(zona3);
+		luz6.setLinija(linija1);
+		
+		luz7.setZona(zona3);
+		luz7.setLinija(linija3);
+		
+		luz8.setZona(zona3);
+		luz8.setLinija(linija5);
+		
+		luzRepository.save(luz1);
+		luzRepository.save(luz2);
+		luzRepository.save(luz3);
+		luzRepository.save(luz4);
+		luzRepository.save(luz5);
+		luzRepository.save(luz6);
+		luzRepository.save(luz7);
+		luzRepository.save(luz8);
 		
 		stanicaRepository.save(new Stanica(false, "OznakaStanice1", 45.254827, 19.831585));
 		stanicaRepository.save(new Stanica(false, "OznakaStanice2",45.254223, 19.825620));
@@ -495,58 +551,104 @@ public class Seeder {
 		Stanica stanica11 = stanicaRepository.findByOznaka("OznakaStanice11");
 		Stanica stanica12 = stanicaRepository.findByOznaka("OznakaStanice12");
 		
-		stanica1.getLinije().add(linija1);
-		stanica1.getLinije().add(linija2);
-		stanicaRepository.save(stanica1);
-		
-		stanica2.getLinije().add(linija1);
-		stanica2.getLinije().add(linija2);
-		stanicaRepository.save(stanica2);
-		
-		stanica3.getLinije().add(linija1);
-		stanicaRepository.save(stanica3);
-		
-		stanica4.getLinije().add(linija1);
-		stanicaRepository.save(stanica4);
-		
-		stanica5.getLinije().add(linija1);
-		stanicaRepository.save(stanica5);
-		
-		
-		stanica6.getLinije().add(linija2);
-		stanicaRepository.save(stanica6);
-		
-		
-		stanica7.getLinije().add(linija2);
-		stanica7.getLinije().add(linija3);
-		stanica7.getLinije().add(linija4);
-		stanica7.getLinije().add(linija5);
-		stanicaRepository.save(stanica7);
-		
-		
-		stanica8.getLinije().add(linija3);
-		stanica8.getLinije().add(linija5);
-		stanica8.getLinije().add(linija6);
-		stanicaRepository.save(stanica8);
+		StanicaULiniji sul1 = new StanicaULiniji();
+		StanicaULiniji sul2 = new StanicaULiniji();
+		StanicaULiniji sul3 = new StanicaULiniji();
+		StanicaULiniji sul4 = new StanicaULiniji();
+		StanicaULiniji sul5 = new StanicaULiniji();
+		StanicaULiniji sul6 = new StanicaULiniji();
+		StanicaULiniji sul7 = new StanicaULiniji();
+		StanicaULiniji sul8 = new StanicaULiniji();
+		StanicaULiniji sul9 = new StanicaULiniji();
+		StanicaULiniji sul10 = new StanicaULiniji();
+		StanicaULiniji sul11 = new StanicaULiniji();
+		StanicaULiniji sul12 = new StanicaULiniji();
+		StanicaULiniji sul13 = new StanicaULiniji();
+		StanicaULiniji sul14 = new StanicaULiniji();
+		StanicaULiniji sul15 = new StanicaULiniji();
+		StanicaULiniji sul16 = new StanicaULiniji();
+		StanicaULiniji sul17 = new StanicaULiniji();
+		StanicaULiniji sul18 = new StanicaULiniji();
+		StanicaULiniji sul19 = new StanicaULiniji();
 
+		sul1.setLinija(linija1);
+		sul1.setStanica(stanica1);
 		
-		stanica9.getLinije().add(linija3);
-		stanica9.getLinije().add(linija4);
-		stanica9.getLinije().add(linija5);
-		stanica9.getLinije().add(linija6);
-		stanicaRepository.save(stanica9);
+		sul2.setLinija(linija1);
+		sul2.setStanica(stanica3);
 		
+		sul3.setLinija(linija1);
+		sul3.setStanica(stanica3);
 		
-		stanica10.getLinije().add(linija4);
-		stanica10.getLinije().add(linija5);
-		stanicaRepository.save(stanica10);
+		sul4.setLinija(linija1);
+		sul4.setStanica(stanica4);
 		
+		sul5.setLinija(linija1);
+		sul5.setStanica(stanica5);
 		
-		stanica11.getLinije().add(linija6);
-		stanicaRepository.save(stanica11);
+		sul6.setLinija(linija2);
+		sul6.setStanica(stanica1);
 		
-		stanica12.getLinije().add(linija6);
-		stanicaRepository.save(stanica12);
+		sul7.setLinija(linija2);
+		sul7.setStanica(stanica2);
+		
+		sul8.setLinija(linija2);
+		sul8.setStanica(stanica6);
+		
+		sul9.setLinija(linija2);
+		sul9.setStanica(stanica7);
+		
+		sul10.setLinija(linija3);
+		sul10.setStanica(stanica7);
+		
+		sul11.setLinija(linija3);
+		sul11.setStanica(stanica8);
+		
+		sul12.setLinija(linija3);
+		sul12.setStanica(stanica9);
+		
+		sul13.setLinija(linija4);
+		sul13.setStanica(stanica7);
+		
+		sul14.setLinija(linija4);
+		sul14.setStanica(stanica9);
+		
+		sul15.setLinija(linija4);
+		sul15.setStanica(stanica10);
+		
+		sul16.setLinija(linija5);
+		sul16.setStanica(stanica7);
+		
+		sul17.setLinija(linija5);
+		sul17.setStanica(stanica8);
+		
+		sul18.setLinija(linija5);
+		sul18.setStanica(stanica9);
+		
+		sul19.setLinija(linija5);
+		sul19.setStanica(stanica10);
+	
+		
+		sulRepository.save(sul1);
+		sulRepository.save(sul2);
+		sulRepository.save(sul3);
+		sulRepository.save(sul4);
+		sulRepository.save(sul5);
+		sulRepository.save(sul6);	
+		sulRepository.save(sul7);
+		sulRepository.save(sul8);
+		sulRepository.save(sul9);
+		sulRepository.save(sul10);
+		sulRepository.save(sul11);
+		sulRepository.save(sul12);
+		sulRepository.save(sul13);
+		sulRepository.save(sul14);
+		sulRepository.save(sul15);
+		sulRepository.save(sul16);
+		sulRepository.save(sul17);
+		sulRepository.save(sul18);
+		sulRepository.save(sul19);
+		
 		
 		Calendar vreme=Calendar.getInstance();
 		vreme.set(2019, 0, 2, 0, 0);

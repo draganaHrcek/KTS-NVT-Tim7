@@ -29,6 +29,9 @@ public class LinijaDTO {
 		
 		List<StanicaDTO> temp = new ArrayList<StanicaDTO>();
 		for(StanicaULiniji sul : line.getStanice()) {
+			if(sul.isObrisan()) {
+				continue;
+			}
 			StanicaDTO stationDTO = new StanicaDTO(sul.getStanica());
 			temp.add(stationDTO);
 		}
@@ -36,6 +39,9 @@ public class LinijaDTO {
 		
 		List<ZonaDTO> temp2 = new ArrayList<ZonaDTO>();
 		for(LinijaUZoni luz : line.getZone()) {
+			if(luz.isObrisan()) {
+				continue;
+			}
 			ZonaDTO zonaDTO = new ZonaDTO(luz.getZona());
 			temp2.add(zonaDTO);
 		}
@@ -43,6 +49,9 @@ public class LinijaDTO {
 		
 		List<VoziloDTO> temp3 = new ArrayList<VoziloDTO>();
 		for(Vozilo vehicle : line.getVozila()) {
+			if(vehicle.isObrisan()) {
+				continue;
+			}
 			VoziloDTO vehicleDTO = new VoziloDTO(vehicle);
 			temp3.add(vehicleDTO);
 		}

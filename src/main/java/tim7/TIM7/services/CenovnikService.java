@@ -101,7 +101,7 @@ public class CenovnikService {
 					stavka,cenovnik, false);
 			cenovnik.getStavke().add(stavkaCenovnika);
 		}
-		if(!checkWithFutureDates(cenovnikDto.getDatumObjavljivanja())){
+		if(!checkWithFutureDates(cenovnikDto.getDatumObjavljivanja(),null)){
 			return "Greska! Postoji vec cenovnik sa tim datumom objavljivanja";
 		}
 		if(!setAndCheckDate(cenovnik, cenovnikDto.getDatumObjavljivanja())){
@@ -117,10 +117,10 @@ public class CenovnikService {
 	}
 	
 	private boolean setAndCheckPopusti(Cenovnik cenovnik, CenovnikDTO cenovnikDto) {
-		if(isProcent(cenovnikDto.getPopustDjak()) && 
-				isProcent(cenovnikDto.getPopustNezaposlen()) && 
-				isProcent(cenovnikDto.getPopustPenzioner()) &&
-				isProcent(cenovnikDto.getPopustStudent())){
+		if(isProcentAndNotNull(cenovnikDto.getPopustDjak()) && 
+				isProcentAndNotNull(cenovnikDto.getPopustNezaposlen()) && 
+				isProcentAndNotNull(cenovnikDto.getPopustPenzioner()) &&
+				isProcentAndNotNull(cenovnikDto.getPopustStudent())){
 			cenovnik.setPopustDjak(cenovnikDto.getPopustDjak());
 			cenovnik.setPopustNezaposlen(cenovnikDto.getPopustNezaposlen());
 			cenovnik.setPopustPenzioner(cenovnikDto.getPopustPenzioner());
@@ -160,7 +160,10 @@ public class CenovnikService {
 		return false;		
 	}
 	
-	public boolean checkWithFutureDates(Date date){
+	public boolean checkWithFutureDates(Date date, Long id){
+		if(date == null){
+			return false;
+		}
 		Calendar day = Calendar.getInstance();
 		Calendar future = Calendar.getInstance();
 		day.setTime(date);
@@ -168,12 +171,14 @@ public class CenovnikService {
 		day.set(Calendar.MINUTE, 0);
 		day.set(Calendar.SECOND, 0);
 		for(Cenovnik cenovnik : cenovnikRepository.findAllByObrisanFalse()){
-			future.setTime(cenovnik.getDatumObjavljivanja());
-			future.set(Calendar.HOUR_OF_DAY, 0);
-			future.set(Calendar.MINUTE, 0);
-			future.set(Calendar.SECOND, 0);
-			if(day.equals(future)){
-				return false;
+			if((id != null && cenovnik.getId() != id )|| id == null){
+				future.setTime(cenovnik.getDatumObjavljivanja());
+				future.set(Calendar.HOUR_OF_DAY, 0);
+				future.set(Calendar.MINUTE, 0);
+				future.set(Calendar.SECOND, 0);
+				if(day.equals(future)){
+					return false;
+				}
 			}
 		}
 		return true;
@@ -214,8 +219,81 @@ public class CenovnikService {
 		}
 	}
 	
+	public boolean isProcentAndNotNull(Integer number){
+		return number!=null && isProcent(number);
+	}
+	
+	
 	public boolean isProcent(Integer number){
-		return number!=null && number >=0 && number <= 100;
+		return number>=0 && number<=100;
+	}
+
+	public CenovnikDTO editCenovnik(CenovnikDTO cenovnikDto) {
+		System.out.println(cenovnikDto.getId());
+		Cenovnik cenovnik = findOne(cenovnikDto.getId());
+		
+		if(cenovnik == null ){
+			System.out.println("null");
+			return null;
+		}
+		
+		if(cenovnikDto.getDatumObjavljivanja() != null){	
+			if(!checkWithFutureDates(cenovnikDto.getDatumObjavljivanja(), cenovnikDto.getId())){
+				return null;
+			}
+			if(!setAndCheckDate(cenovnik, cenovnikDto.getDatumObjavljivanja())){
+				return null;
+	
+			}
+		}
+		if(!setAndCheckPopustiEdit(cenovnik, cenovnikDto)){
+			return null;
+		}
+		cenovnik = cenovnikRepository.save(cenovnik);
+		for(StavkaCenovnika s : cenovnik.getStavke()){
+			System.out.println("printam: " + s.getCena());
+		}
+		CenovnikDTO res =  new CenovnikDTO(cenovnik);
+		//for(S)
+		return res;
+		
+	}
+
+	private boolean setAndCheckPopustiEdit(Cenovnik cenovnik, CenovnikDTO cenovnikDto) {
+		if(isProcentAndNotNull(cenovnikDto.getPopustDjak()))
+			cenovnik.setPopustDjak(cenovnikDto.getPopustDjak());
+		else if (cenovnikDto.getPopustDjak()!= null)
+			return false;
+		if(isProcentAndNotNull(cenovnikDto.getPopustStudent()))
+			cenovnik.setPopustStudent(cenovnikDto.getPopustStudent());
+		else if (cenovnikDto.getPopustStudent() != null)
+			return false;
+		if(isProcentAndNotNull(cenovnikDto.getPopustNezaposlen()))
+			cenovnik.setPopustNezaposlen(cenovnikDto.getPopustNezaposlen());
+		else if (cenovnikDto.getPopustNezaposlen() != null)
+			return false;
+		if(isProcentAndNotNull(cenovnikDto.getPopustPenzioner()))
+			cenovnik.setPopustPenzioner(cenovnikDto.getPopustPenzioner());
+		else if (cenovnikDto.getPopustPenzioner() != null)
+			return false;
+		return true;
+	}
+
+	public ArrayList<CenovnikDTO> getBuduci() {
+		deleteIstekli();
+		ArrayList<CenovnikDTO> retVal= new ArrayList<CenovnikDTO>(); 
+		try{
+			ArrayList<Cenovnik> cenovnici = (ArrayList<Cenovnik>) cenovnikRepository.findAllByObrisanFalse();
+			Collections.sort(cenovnici, new SortCenovniciByDate());
+			cenovnici.remove(0);
+			for(Cenovnik c : cenovnici){
+				retVal.add(new CenovnikDTO(c));
+			}
+			return retVal;	
+		}
+		catch(Exception e){
+			return null;
+		}
 	}
 	
 	

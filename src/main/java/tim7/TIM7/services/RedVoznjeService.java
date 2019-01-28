@@ -92,7 +92,7 @@ public class RedVoznjeService {
 	//dobavljanje buduceg reda voznje
 	public RedVoznjeDTO getBuduciRedVoznje() {		
 		RedVoznjeDTO trenutniRedVoznjeDto = getTrenutniRedVoznje();
-		RedVoznjeDTO buduciRedVodnje=null;
+		//RedVoznjeDTO buduciRedVoznje=null;
 		if (trenutniRedVoznjeDto==null){
 			List<RedVoznje> neobrisaniRedoviVoznje = redVoznjeRepository.findByObrisanFalse();
 			if (neobrisaniRedoviVoznje.size()==0){
@@ -105,7 +105,8 @@ public class RedVoznjeService {
 			if (buduciRedVoznje==null){
 				return null;
 			}else{
-				return new RedVoznjeDTO(buduciRedVoznje);
+				RedVoznjeDTO redic=new RedVoznjeDTO(buduciRedVoznje);
+				return redic;
 			}
 		}
 		
@@ -134,20 +135,27 @@ public class RedVoznjeService {
 	*/
 	
 	//za kreiranje novog reda voznje, postavljace se samo godina, mesec i dan, ne znam da li vreme da bude 00:00 ili 01:00, za sad 0
-	public String createRedVoznje(Date datumObjavljivanja){
+	public RedVoznjeDTO createRedVoznje(Date datumObjavljivanja){
+		if (datumObjavljivanja==null){
+			return null;
+		}
 		RedVoznjeDTO buduciRedVoznje=getBuduciRedVoznje();
 		Calendar sutrasnjiDatum=Calendar.getInstance();
 		sutrasnjiDatum.add(Calendar.DATE, 1);
 		sutrasnjiDatum.set(Calendar.HOUR_OF_DAY, 1);
 		sutrasnjiDatum.set(Calendar.MINUTE, 0);
 		if (buduciRedVoznje!=null){
-			return "POSTOJI";
+			return null;
 		}else if(datumObjavljivanja.before(sutrasnjiDatum.getTime())){
-			return "LOS DATUM"; 
+			return null;
 		}else{
+			System.out.println(datumObjavljivanja);
 			RedVoznje noviRedVoznje = new RedVoznje(false, datumObjavljivanja);
-			save(noviRedVoznje);
-			return "KREIRAN";
+			noviRedVoznje = save(noviRedVoznje);
+			System.out.println(noviRedVoznje.getId());
+			System.out.println(noviRedVoznje.getDatumObjavljivanja());
+			RedVoznjeDTO redic= new RedVoznjeDTO(noviRedVoznje);
+			return redic;
 		}
 	}
 	

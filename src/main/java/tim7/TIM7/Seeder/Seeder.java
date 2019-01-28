@@ -210,8 +210,17 @@ public class Seeder {
 	public void seedStavkaCenovnika() {
 		int i = 0;
 		for (Stavka stavka : stavkaRepository.findAll()) {
-			Cenovnik cenovnik = cenovnikRepository.findAll().get(i%3);
-			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik, false));
+			Cenovnik cenovnik1 = cenovnikRepository.findAll().get(0);
+			Cenovnik cenovnik2 = cenovnikRepository.findAll().get(1);
+			Cenovnik cenovnik3 = cenovnikRepository.findAll().get(2);
+
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik1, false));
+			i++;
+			
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik2, false));
+			i++;
+			
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik3, false));
 			i++;
 		}
 
@@ -224,54 +233,41 @@ public class Seeder {
 		Linija linija;
 
 		for (TipKarteCenovnik tip : TipKarteCenovnik.values()) {
-			linija = linijaRepository.findByNaziv("linija 1");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+			if(tip.equals(TipKarteCenovnik.DNEVNA)){
+				linija = linijaRepository.findByNaziv("linija 1");
+				stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.METRO, linija, false));
+	
+				linija = linijaRepository.findByNaziv("linija 2");
+				stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.METRO, linija, false));
 
-			linija = linijaRepository.findByNaziv("linija 2");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
+	
+				linija = linijaRepository.findByNaziv("linija 3");
+				stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.METRO, linija, false));
 
-			linija = linijaRepository.findByNaziv("linija 3");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+	
+				linija = linijaRepository.findByNaziv("linija 4");
+				stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, linija, false));
+				stavkaRepository.save(new Stavka(tip, TipVozila.METRO, linija, false));
 
-			linija = linijaRepository.findByNaziv("linija 4");
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, linija, false));
+			}
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, gradska, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, false));
 			
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, prigradska, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, prigradska, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, false));
 			
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, gradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, prigradska, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
-			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, linija, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.AUTOBUS, veternik, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.TRAMVAJ, veternik, false));
+			stavkaRepository.save(new Stavka(tip, TipVozila.METRO, veternik, false));
 		}
 	}
 	

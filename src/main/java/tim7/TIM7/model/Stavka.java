@@ -47,13 +47,29 @@ public class Stavka {
 	@Column(name = "obrisan")
 	boolean obrisan;
 
-	public Stavka(TipKarteCenovnik tipKarte, TipVozila vrstaPrevoza, Zona zona, Linija linija, boolean obrisan) {
+	public Stavka(TipKarteCenovnik tipKarte, TipVozila vrstaPrevoza,  Linija linija, boolean obrisan) {
+		super();
+		this.tipKarte = tipKarte;
+		this.vrstaPrevoza = vrstaPrevoza;
+		this.linija = linija;
+		this.obrisan = obrisan;
+	}
+	
+	public Stavka(TipKarteCenovnik tipKarte, TipVozila vrstaPrevoza, Zona zona,  boolean obrisan) {
 		super();
 		this.tipKarte = tipKarte;
 		this.vrstaPrevoza = vrstaPrevoza;
 		this.zona = zona;
-		this.linija = linija;
 		this.obrisan = obrisan;
+	}
+	
+	public Stavka(TipKarteCenovnik tipKarte, TipVozila vrstaPrevoza, Zona zona, Linija linija,  boolean obrisan) {
+		super();
+		this.tipKarte = tipKarte;
+		this.vrstaPrevoza = vrstaPrevoza;
+		this.zona = zona;
+		this.obrisan = obrisan;
+		this.linija = linija;
 	}
 
 	public Stavka() {

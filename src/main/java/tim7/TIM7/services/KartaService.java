@@ -101,24 +101,25 @@ public class KartaService {
 		for (StavkaCenovnika i : cenovnik.getStavke()) {
 			if (i.getStavka().getVrstaPrevoza().toString().equals(karta.getTipPrevoza())
 					&& i.getStavka().getTipKarte().toString().equals(karta.getTipKarte())) {
-				if (i.getStavka().getLinija().getNaziv().equals(karta.getLinijaZona())
-						|| i.getStavka().getZona().getNaziv().equals(karta.getLinijaZona())) {
-					cena = i.getCena();
-					break;
+				
+				if(karta.getTipKarte().equals("DNEVNA")) {
+					if (i.getStavka().getLinija().getNaziv().equals(karta.getLinijaZona())) {
+						cena = i.getCena();
+						break;
+					}
+				}else {
+					if (i.getStavka().getZona().getNaziv().equals(karta.getLinijaZona())) {
+						cena = i.getCena();
+						break;
 
+					}
 				}
-
 			}
 		}
 
-		if (karta.getTipKarte().equals("DNEVNA")) {
-			cena = cena;
-
-		} else {
-
+		if (!karta.getTipKarte().equals("DNEVNA")) {
 			if (StatusKorisnika.STUDENT.equals(kor.getStatus())) {
 				cena = cena * (100 - cenovnik.getPopustStudent()) / 100;
-				
 
 			} else if (StatusKorisnika.PENZIONER.equals(kor.getStatus())) {
 				cena = cena * (100 - cenovnik.getPopustPenzioner()) / 100;
@@ -127,9 +128,7 @@ public class KartaService {
 				cena = cena * (100 - cenovnik.getPopustDjak()) / 100;
 
 			} else if (StatusKorisnika.NEZAPOSLEN.equals(kor.getStatus())) {
-
 				cena = cena * (100 - cenovnik.getPopustNezaposlen()) / 100;
-
 			}
 		}
 		return cena;

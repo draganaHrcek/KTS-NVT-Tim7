@@ -17,9 +17,6 @@ public class StavkaCenovnikaService {
 	StavkaRepository stavkaRepository;
 	
 	public void save(StavkaCenovnika stavka){
-		System.out.println(stavka.getCena());
-		System.out.println(stavka.getStavka().getLinija().getNaziv());
-
 		stavkaRepository.save(stavka.getStavka());
 		stavkaCenovnikaRepository.save(stavka);
 	}

@@ -1,5 +1,6 @@
 package tim7.TIM7.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class RedVoznje {
 		super();
 		this.obrisan = obrisan;
 		this.datumObjavljivanja = datumObjavljivanja;
+		this.setRasporediVoznje(new ArrayList<RasporedVoznje>());
 	}
 
 

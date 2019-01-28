@@ -67,14 +67,12 @@ public class RedVoznjeController {
 	
 	//posto ovo moze da radi samo admin da li je potrebno da prosledim token
 	@RequestMapping(path="/kreirajNovi", method=RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> createRedVoznje(@RequestHeader ("X-Auth-Token") String token, @RequestBody RedVoznjeDTO redVoznjeDto){
-		String statusKreiranja=redVoznjeService.createRedVoznje(redVoznjeDto.getDatumObjavljivanja());
-		if (statusKreiranja.equals("POSTOJI")){
-			return new ResponseEntity<>("Vec postoji kreiran buduci red voznje", HttpStatus.ALREADY_REPORTED);
-		}else if(statusKreiranja.equals("LOS DATUM")){
-			return new ResponseEntity<>("Najraniji datum pocetka je sutrasnji", HttpStatus.BAD_REQUEST);
+	public ResponseEntity<RedVoznjeDTO> createRedVoznje(@RequestHeader ("X-Auth-Token") String token, @RequestBody RedVoznjeDTO redVoznjeDto){
+		RedVoznjeDTO novi=redVoznjeService.createRedVoznje(redVoznjeDto.getDatumObjavljivanja());
+		if (novi==null){
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else{
-			return new ResponseEntity<>("Red voznje uspesno kreiran", HttpStatus.CREATED);
+			return new ResponseEntity<>( novi, HttpStatus.CREATED);
 		}
 	}
 	
@@ -142,7 +140,9 @@ public class RedVoznjeController {
 	@RequestMapping(path="/dobaviBuduceRasporede", method=RequestMethod.GET)
 	public ResponseEntity<List<RasporedVoznjeDTO>> getBuduciNeobrisaniRasporedi(@RequestHeader ("X-Auth-Token") String token){
 		RedVoznjeDTO buduciRedVoznje=redVoznjeService.getBuduciRedVoznje();
+		System.out.println(buduciRedVoznje);
 		List<RasporedVoznjeDTO> buduciRasporedi=rasporedVoznjeService.getNeobrisaniRasporedi(buduciRedVoznje);
+		System.out.println(buduciRasporedi);
 		if (buduciRasporedi==null){
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}else{

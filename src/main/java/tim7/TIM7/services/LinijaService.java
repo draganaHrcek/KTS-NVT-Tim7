@@ -79,7 +79,12 @@ public class LinijaService {
 		return linijaRepository.findAll();
 	}
 	public Linija findByName(String name) {
-		return linijaRepository.findByNaziv( name);
+		try {
+			Linija line = linijaRepository.findByNaziv(name);
+			return line;
+		}catch(Exception e) {
+			return null;
+		}
 	}
 
 	public Linija save(Linija linija) {
@@ -150,6 +155,12 @@ public class LinijaService {
 		if(potential!=null) {
 			return false;
 		}
+		
+		potential = findByName(newLine.getName());
+		if(potential!=null) {
+			return false;
+		}
+
 		potential = new Linija();
 		potential.setNaziv(newLine.getName());
 		potential.setObrisan(false);

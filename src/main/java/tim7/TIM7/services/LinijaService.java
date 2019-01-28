@@ -2,18 +2,25 @@ package tim7.TIM7.services;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tim7.TIM7.dto.LinijaDTO;
+import tim7.TIM7.dto.RasporedVoznjeDTO;
+import tim7.TIM7.dto.RedVoznjeDTO;
 import tim7.TIM7.dto.StanicaDTO;
 import tim7.TIM7.dto.VoziloDTO;
 import tim7.TIM7.dto.ZonaDTO;
+import tim7.TIM7.helper.SortCenovniciByDate;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.LinijaUZoni;
+import tim7.TIM7.model.RasporedVoznje;
+import tim7.TIM7.model.RedVoznje;
 import tim7.TIM7.model.Stanica;
 import tim7.TIM7.model.StanicaULiniji;
 import tim7.TIM7.model.StavkaCenovnika;
@@ -22,6 +29,8 @@ import tim7.TIM7.model.Zona;
 import tim7.TIM7.repositories.CenovnikRepository;
 import tim7.TIM7.repositories.LinijaRepository;
 import tim7.TIM7.repositories.LinijaUZoniRepository;
+import tim7.TIM7.repositories.RasporedVoznjeRepository;
+import tim7.TIM7.repositories.RedVoznjeRepository;
 import tim7.TIM7.repositories.StanicaRepository;
 import tim7.TIM7.repositories.StanicaULinijiRepository;
 import tim7.TIM7.repositories.VoziloRepository;
@@ -51,6 +60,12 @@ public class LinijaService {
 	@Autowired
 	StanicaULinijiRepository sulRepository;
 	
+	@Autowired
+	RedVoznjeRepository redVoznjeRepository;
+	
+	@Autowired
+	RasporedVoznjeRepository rasporedVoznjeRepository;
+	
 	public Linija findOne(Long id) {
 		try {
 			Linija line = linijaRepository.findById(id).get();
@@ -77,8 +92,8 @@ public class LinijaService {
 		if(linija==null || linija.isObrisan()) {
 			return null;
 		}
-		Cenovnik current = getTrenutniCenovnik();
 		
+		Cenovnik current = getTrenutniCjenovnik();
 		if (current!=null) {
 			for(StavkaCenovnika item : current.getStavke()) {
 				if (item.getStavka().getLinija().getId()==id) {
@@ -86,6 +101,22 @@ public class LinijaService {
 				}
 			}
 		}
+		
+		RedVoznjeDTO currentRed = getTrenutniRedVoznje();
+		for(RasporedVoznjeDTO rasp : currentRed.getRasporediVoznje()) {
+			if(rasp.getNazivLinije().equals(linija.getNaziv())) {
+				return null;
+			}
+		}
+		
+		RedVoznjeDTO futureRed = getBuduciRedVoznje();
+		for(RasporedVoznjeDTO rasp : futureRed.getRasporediVoznje()) {
+			if(rasp.getNazivLinije().equals(linija.getNaziv())) {
+				return null;
+			}
+		}
+		
+		
 		
 		linija.setObrisan(true);
 		
@@ -272,52 +303,104 @@ public class LinijaService {
 		return retValue;	
 	}
 	
-	public Cenovnik getTrenutniCenovnik() {
-		Calendar now = Calendar.getInstance();
-		for(Cenovnik cenovnik : cenovnikRepository.findAll()){
-			if(cenovnik.getDatumObjavljivanja().before(now.getTime()) &&
-					cenovnik.getDatumIsteka().after(now.getTime())){
-				return cenovnik;
-			}
+	
+	// funkcije za dobavljanje trenutnog cjenovnika i reda voznje, koji
+	// su potrebni za provjere dozvole brisanja
+	public Cenovnik getTrenutniCjenovnik() {
+		deleteIstekli();
+		try{
+			ArrayList<Cenovnik> cenovnici = (ArrayList<Cenovnik>) cenovnikRepository.findAllByObrisanFalse();
+			Collections.sort(cenovnici, new SortCenovniciByDate());
+			return cenovnici.get(0);
 		}
-		return null;
-	}
-	/*
-	public List<ZonaDTO> getZonesOfLine(Linija line) {
-		List<ZonaDTO> retValue = new ArrayList<ZonaDTO>();
-		for(LinijeJedneZone ljz : ljzRepository.findAll()) {
-			if(ljz.getLinije().contains(line) && !ljz.getZona().isObrisan()) {
-				retValue.add(new ZonaDTO(ljz.getZona()));
-			}
+		catch(Exception e){
+			return null;
 		}
-		return retValue;
 	}
 	
-	//dobavlja zone iz baze na osnovu zonaDTO objekata; vraca listu
-	//parametri: newLine - dto objekat iz kojeg izvlacimo podatke, currentLine - objekat linije u koji dodajemo podatke
-	public List<Zona> getZonesFromDTO(UpdatedLinijaDTO newLine, Linija currentLine){
-		List<Zona> retValue = new ArrayList<Zona>();
+	public void deleteIstekli(){
+		ArrayList<Cenovnik> cenovnici = (ArrayList<Cenovnik>) cenovnikRepository.findAllByObrisanFalse();
+		Collections.sort(cenovnici, new SortCenovniciByDate());
+		Date now = Calendar.getInstance().getTime();
+		for(int i = 0; i< cenovnici.size(); i++){
+			if(i!= cenovnici.size()-1 &&
+					cenovnici.get(i).getDatumObjavljivanja().before(now) &&
+					cenovnici.get(i+1).getDatumObjavljivanja().before(now)){
+				deleteCjenovnik(cenovnici.get(i).getId());
+			}
+			else{
+				break;
+			}
+		}
+	}
+
+	public RedVoznjeDTO getTrenutniRedVoznje(){
+		List<RedVoznje> aktivniRedoviVoznje=redVoznjeRepository.findByObrisanFalse();
+		if (aktivniRedoviVoznje.size()==0){
+			return null;
+		}else{
+			Calendar now = Calendar.getInstance();
+			if (aktivniRedoviVoznje.size()==1){
+				if (now.getTime().after(aktivniRedoviVoznje.get(0).getDatumObjavljivanja())){					
+					return new RedVoznjeDTO(aktivniRedoviVoznje.get(0));
+				}else{
+					return null;
+				}
+			}else{
+				RedVoznje stari;
+				RedVoznje novi;
+				if (aktivniRedoviVoznje.get(0).getDatumObjavljivanja().before(aktivniRedoviVoznje.get(1).getDatumObjavljivanja())){
+					stari=aktivniRedoviVoznje.get(0);
+					novi=aktivniRedoviVoznje.get(1);
+				}else{
+					stari=aktivniRedoviVoznje.get(1);
+					novi=aktivniRedoviVoznje.get(0);
+				}
+				if (now.getTime().after(novi.getDatumObjavljivanja())){
+					deleteRedVoznje(stari.getId());
+					return new RedVoznjeDTO(novi);
+				}else{
+					return new RedVoznjeDTO(stari);
+				}
+			}
+		}
 		
-		for(ZonaDTO zoneDTO : newLine.getZones()) {
-			Zona zone = zonaRepository.findById(zoneDTO.getId()).get();
-			retValue.add(zone);
-			
-			//dodaje se trenutna linija u svaku zonu
-			List<Linija> linesOfThisZone = zone.getLinije();
-			linesOfThisZone.add(currentLine);
-			zone.setLinije(linesOfThisZone);
-			zonaRepository.save(zone);
-		}
-		return retValue;
 	}
 	
-	public List<Stanica> getStationsFromDTO(UpdatedLinijaDTO newLine){
-		List<Stanica> retValue = new ArrayList<Stanica>();
-		for(StanicaDTO stationDTO : newLine.getStations()) {
-			Stanica station = stanicaRepository.findById(stationDTO.getId()).get();
-			retValue.add(station);
+	public RedVoznjeDTO getBuduciRedVoznje() {		
+		RedVoznjeDTO trenutniRedVoznjeDto = getTrenutniRedVoznje();
+		if (trenutniRedVoznjeDto==null){
+			List<RedVoznje> neobrisaniRedoviVoznje = redVoznjeRepository.findByObrisanFalse();
+			if (neobrisaniRedoviVoznje.size()==0){
+				return null;
+			}else{
+				return new RedVoznjeDTO(neobrisaniRedoviVoznje.get(0));
+			}
+		}else{
+			RedVoznje buduciRedVoznje=redVoznjeRepository.findByIdNotAndObrisanFalse(trenutniRedVoznjeDto.getId());
+			if (buduciRedVoznje==null){
+				return null;
+			}else{
+				return new RedVoznjeDTO(buduciRedVoznje);
+			}
 		}
-		return retValue;
 	}
-	*/
+	
+	public void deleteRedVoznje(Long id){
+		RedVoznje redVoznje = redVoznjeRepository.findById(id).get();
+		redVoznje.setObrisan(true);
+		for (RasporedVoznje rv : redVoznje.getRasporediVoznje()){
+			rv.setObrisan(true);
+			rasporedVoznjeRepository.save(rv);
+		}
+		redVoznjeRepository.save(redVoznje);
+	}
+	
+	public void deleteCjenovnik(Long id) {
+		Cenovnik cenovnik=cenovnikRepository.findById(id).get();
+		cenovnik.setObrisan(true);
+		cenovnikRepository.save(cenovnik);
+	}
+	
+
 }

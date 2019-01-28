@@ -130,7 +130,6 @@ public class ZonaService {
 		return true;
 	}
 	
-	//kad moze da se obrise zona?
 	public boolean deleteZone(Long id) {
 		Zona potential = findOne(id);
 		if(potential==null) {
@@ -138,7 +137,7 @@ public class ZonaService {
 		}	
 		
 		
-		Cenovnik current = getTrenutni();
+		Cenovnik current = getTrenutniCjenovnik();
 		for(StavkaCenovnika sc : current.getStavke()) {
 			if(sc.getStavka().getZona().getId()==id) {
 				return false;
@@ -177,8 +176,9 @@ public class ZonaService {
 	
 	
 	
-	//za provjere dozvole brisanja 
-	public Cenovnik getTrenutni() {
+	// funkcije za dobavljanje trenutnog cjenovnika i reda voznje, koji
+	// su potrebni za provjere dozvole brisanja
+	public Cenovnik getTrenutniCjenovnik() {
 		deleteIstekli();
 		try{
 			ArrayList<Cenovnik> cenovnici = (ArrayList<Cenovnik>) cjenovnikRepository.findAllByObrisanFalse();
@@ -198,12 +198,17 @@ public class ZonaService {
 			if(i!= cenovnici.size()-1 &&
 					cenovnici.get(i).getDatumObjavljivanja().before(now) &&
 					cenovnici.get(i+1).getDatumObjavljivanja().before(now)){
-				cenovnici.get(i).setObrisan(true);
-				cjenovnikRepository.save(cenovnici.get(i));
+				deleteCjenovnik(cenovnici.get(i).getId());
 			}
 			else{
 				break;
 			}
 		}
+	}
+	
+	public void deleteCjenovnik(Long id) {
+		Cenovnik cenovnik=cjenovnikRepository.findById(id).get();
+		cenovnik.setObrisan(true);
+		cjenovnikRepository.save(cenovnik);
 	}
 }

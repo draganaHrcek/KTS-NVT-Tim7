@@ -55,6 +55,10 @@ public class Cenovnik {
 	
 	
 	
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public void setPopustStudent(Integer popustStudent) {
 		this.popustStudent = popustStudent;
 	}

@@ -11,6 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -33,11 +37,13 @@ import tim7.TIM7.TestUtil;
 import tim7.TIM7.dto.KartaDTO;
 import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Karta;
+import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
 import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.TipKarte;
 import tim7.TIM7.model.TipVozila;
+import tim7.TIM7.model.Verifikator;
 import tim7.TIM7.model.VisednevnaKarta;
 import tim7.TIM7.model.Zona;
 import tim7.TIM7.services.CenovnikService;
@@ -188,6 +194,132 @@ public class KartaControllerTest {
 		mockMvc.perform(post(URL_PREFIX + "/kupovinaKarte").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(TestUtil.json(kartaDTO)).header("X-Auth-Token", token)).andExpect(status().isCreated());
 		assertEquals(((Korisnik)osobaServ.findByUsername("KorIme3")).getKarte().size(), 1);
+		
+	}
+	
+	@Test
+	public void verifyKartaUspesno() throws Exception {
+		
+		Korisnik korisnik = new Korisnik();
+		korisnik.setKorIme("KorIme3");
+		korisnik.setStatus(StatusKorisnika.STUDENT);
+		korisnik.setKarte(new ArrayList());
+		
+		osobaServ.save(korisnik);
+		Kondukter kondukter = new Kondukter();
+		kondukter.setKorIme("kondukter");
+			
+		String token = TestUtil.generateToken(kondukter.getKorIme());
+		kartaServ.save(karta1);
+		mockMvc.perform(post(URL_PREFIX + "/proveriKartu/AUTOBUS/linija1/1se45nx4").header("X-Auth-Token", token)).andExpect(status().isOk())
+		.andExpect(jsonPath("$.odgovor").value("Karta uspesno cekirana"));	
+	}
+	
+	@Test
+	public void verifyKartaOdbijeno() throws Exception {
+		
+		Korisnik korisnik = new Korisnik();
+		korisnik.setKorIme("KorIme3");
+		korisnik.setStatus(StatusKorisnika.STUDENT);
+		korisnik.setKarte(new ArrayList());
+		
+		osobaServ.save(korisnik);
+		
+		Kondukter kondukter = new Kondukter();
+		kondukter.setKorIme("kondukter");
+			
+		String token = TestUtil.generateToken(kondukter.getKorIme());
+		
+		karta1.setDatumIsteka(Date.from(LocalDateTime.of(LocalDate.of(2000, 1, 1), LocalTime.of(23, 59, 59)).toInstant(ZoneOffset.UTC)));
+		karta1.setUpotrebljena(true);
+		kartaServ.save(karta1);
+		
+		mockMvc.perform(post(URL_PREFIX + "/proveriKartu/AUTOBUS/linija1/1se45nx4").header("X-Auth-Token", token)).andExpect(status().isBadRequest());	
+	}
+	
+
+	
+	@Test
+	public void odobriNepostojecuKartu() throws Exception {
+		
+		Korisnik korisnik = new Korisnik();
+		korisnik.setKorIme("KorIme3");
+		korisnik.setStatus(StatusKorisnika.STUDENT);
+		korisnik.setKarte(new ArrayList());
+		
+		osobaServ.save(korisnik);
+		Verifikator verifikator = new Verifikator ();
+		verifikator.setKorIme("verifikator");
+		
+		String token = TestUtil.generateToken(verifikator.getKorIme());
+		kartaServ.save(karta2);
+		mockMvc.perform(post(URL_PREFIX + "/odobriKartu/456/ODOBRENA").header("X-Auth-Token", token)).andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void odobriKartu() throws Exception {
+		
+		Korisnik korisnik = new Korisnik();
+		korisnik.setKorIme("KorIme3");
+		korisnik.setStatus(StatusKorisnika.STUDENT);
+		korisnik.setKarte(new ArrayList());
+		
+		osobaServ.save(korisnik);
+		
+		Verifikator verifikator = new Verifikator ();
+		verifikator.setKorIme("verifikator");
+		
+		String token = TestUtil.generateToken(verifikator.getKorIme());
+		kartaServ.save(karta2);
+		mockMvc.perform(post(URL_PREFIX + "/odobriKartu/"+karta2.getId()+"/ODOBRENA").header("X-Auth-Token", token)).andExpect(status().isOk())
+		.andExpect(jsonPath("$.odgovor").value("Karta je uspesno odobrena"));
+		
+	}
+	
+	@Test
+	public void nemaNeodobrenih() throws Exception {
+		
+		Korisnik korisnik = new Korisnik();
+		korisnik.setKorIme("KorIme3");
+		korisnik.setStatus(StatusKorisnika.STUDENT);
+		korisnik.setKarte(new ArrayList());
+		karta1.setKorisnik(korisnik);
+		karta2.setKorisnik(korisnik);
+		
+		osobaServ.save(korisnik);
+		
+		Verifikator verifikator = new Verifikator ();
+		verifikator.setKorIme("verifikator");
+		
+		String token = TestUtil.generateToken(verifikator.getKorIme());
+		
+		mockMvc.perform(get(URL_PREFIX + "/dobaviNeodobreneKarte").header("X-Auth-Token", token)).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void dobaviNeodobrene() throws Exception {
+		
+		Korisnik korisnik = new Korisnik();
+		korisnik.setKorIme("KorIme3");
+		korisnik.setStatus(StatusKorisnika.STUDENT);
+		korisnik.setKarte(new ArrayList());
+		karta1.setKorisnik(korisnik);
+		karta2.setKorisnik(korisnik);
+		
+		
+		Verifikator verifikator = new Verifikator ();
+		verifikator.setKorIme("verifikator");
+		
+		
+		osobaServ.save(korisnik);
+		
+		String token = TestUtil.generateToken(verifikator.getKorIme());
+		
+		kartaServ.save(karta1);		
+		kartaServ.save(karta2);
+		
+		mockMvc.perform(get(URL_PREFIX + "/dobaviNeodobreneKarte").header("X-Auth-Token", token)).andExpect(status().isOk())
+		.andExpect(jsonPath("$", hasSize(1)));
 		
 	}
 

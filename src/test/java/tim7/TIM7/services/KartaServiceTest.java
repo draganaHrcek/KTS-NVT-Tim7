@@ -33,11 +33,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import tim7.TIM7.TestUtil;
 import tim7.TIM7.dto.KartaDTO;
+import tim7.TIM7.dto.OdgovorDTO;
+import tim7.TIM7.dto.OdobrenjeKarteDTO;
 import tim7.TIM7.model.Cenovnik;
 import tim7.TIM7.model.DnevnaKarta;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Korisnik;
 import tim7.TIM7.model.Linija;
+import tim7.TIM7.model.LinijaUZoni;
 import tim7.TIM7.model.Osoba;
 import tim7.TIM7.model.StatusKorisnika;
 import tim7.TIM7.model.Stavka;
@@ -492,5 +495,337 @@ public class KartaServiceTest {
 
 
 	}
+	
+	
+	@Test
+	public void getNeodobreneKarte () {
+		
+		LocalDate cd = LocalDate.now();
+		
+		VisednevnaKarta  karta1 = new VisednevnaKarta ();
+		karta1.setOdobrena(false);
+		karta1.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		
+		VisednevnaKarta  karta2 = new VisednevnaKarta ();
+		karta2.setOdobrena(true);
+		karta2.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		
+		
+		//samo ova treba da bude vracena jer ona nije odbijena niti je odobrena kupovina
+		VisednevnaKarta  karta3 = new VisednevnaKarta ();
+		karta3.setOdobrena(null);
+		karta3.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		
+		Korisnik kor= new Korisnik();
+		kor.setIme("korIme");	
+		kor.setStatus(StatusKorisnika.STUDENT);
+		kor.setLokacijaDokumenta("");
+		
+		Zona zona= new Zona();
+		zona.setNaziv("ZONA1");
+		
+		
+		karta3.setKorisnik(kor);
+		karta3.setZona(zona);
+		karta3.setTipPrevoza(TipVozila.AUTOBUS);
+		karta3.setTip(TipKarte.GODISNJA);
+		
+		ArrayList<Karta> karte = new ArrayList<Karta>();
+		karte.add(karta1);
+		karte.add(karta2);
+		karte.add(karta3);
+		
+		
+		when(kartaRep.findAll()).thenReturn(karte);
+		
+		ArrayList <OdobrenjeKarteDTO> k= (ArrayList<OdobrenjeKarteDTO>) kartaServ.getNeodobreneKarte();
+	
+		
+		assertEquals(k.size(), 1);
+		
+		
+	
+		
+		
+	}
+	@Test
+	public void getNeodobreneKartePraznaLista () {
+		
+		ArrayList<Karta> karte = new ArrayList<Karta>();
+		when(kartaRep.findAll()).thenReturn(karte);
+		
+		ArrayList <OdobrenjeKarteDTO> k= (ArrayList<OdobrenjeKarteDTO>) kartaServ.getNeodobreneKarte();
+		
+		
+		assertEquals(k, null);
+		
+		
+		
+		
+		
+	}
+	
+	@Test
+	public void kartaExist () {
+		
+		LocalDate cd = LocalDate.now();
+		VisednevnaKarta karta = new VisednevnaKarta();
+		
+		Zona zona= new Zona();
+		zona.setNaziv("ZONA1");
+		karta.setZona(zona);
+		karta.setTip(TipKarte.GODISNJA);
+		karta.setTipPrevoza(TipVozila.AUTOBUS);
+		karta.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		ArrayList<Karta> karte = new ArrayList<Karta>();
+		karte.add(karta);
+		
+		Korisnik kor = new Korisnik ();
+		
+		kor.setKarte(karte);
+		
+		
+		KartaDTO kartaDTO= new KartaDTO();
+		kartaDTO.setLinijaZona(zona.getNaziv());
+		kartaDTO.setTipKarte("GODISNJA");
+		kartaDTO.setTipPrevoza("AUTOBUS");
+		
+		boolean exist= kartaServ.kartaExist(kartaDTO, kor);
+		
+		assertEquals(exist, true);
+		
+		
+		
+		
+		
+	}
+	@Test
+	public void kartaNotExist () {
+		
+		
+		Korisnik kor = new Korisnik ();
+		ArrayList<Karta> karte = new ArrayList<Karta>();
+		kor.setKarte(karte);
+		
+		
+		
+		KartaDTO kartaDTO= new KartaDTO();
+		
+		Zona zona= new Zona();
+		zona.setNaziv("ZONA1");
+		
+		kartaDTO.setLinijaZona(zona.getNaziv());
+		kartaDTO.setTipKarte("GODISNJA");
+		kartaDTO.setTipPrevoza("AUTOBUS");
+		
+		boolean exist= kartaServ.kartaExist(kartaDTO, kor);
+		
+		assertEquals(exist, false);
+		
+		
+		
+		
+		
+	}
+	@Test
+	public void checkKartaDnevna () {
+		
+		
+		DnevnaKarta karta= new DnevnaKarta();
+		karta.setTipPrevoza(TipVozila.AUTOBUS);
+		karta.setKod("12345678");
+		
+		Linija linija= new Linija();
+		linija.setNaziv("linija1");
+		karta.setLinija(linija);
+		
+		when(kartaRep.findByKod("12345678")).thenReturn(Optional.of(karta));
+		OdgovorDTO odg= kartaServ.checkKarta(TipVozila.AUTOBUS, "linija1", "12345678");
+		
+		assertEquals(odg.getOdgovor(), "Karta uspesno cekirana");
+		
+		
+		
+		
+		
+	}
+	
+	@Test
+	public void checkKartaUpotrebljenaDnevna () {
+		
+		
+		DnevnaKarta karta= new DnevnaKarta();
+		karta.setTipPrevoza(TipVozila.AUTOBUS);
+		karta.setKod("12345678");
+		karta.setUpotrebljena(true);
+		
+		Linija linija= new Linija();
+		linija.setNaziv("linija1");
+		karta.setLinija(linija);
+		
+		when(kartaRep.findByKod("12345678")).thenReturn(Optional.of(karta));
+		OdgovorDTO odg= kartaServ.checkKarta(TipVozila.AUTOBUS, "linija1", "12345678");
+		
+		assertEquals(odg, null);
+		
+		
+		
+		
+		
+	}
+	
+	@Test
+	public void checkKartaNepostojeca () {
+		
+		
+	
+		
+		when(kartaRep.findByKod("12345678")).thenReturn(Optional.ofNullable(null));
+		
+		OdgovorDTO odg= kartaServ.checkKarta(TipVozila.AUTOBUS, "linija1", "12345678");
+		
+		assertEquals(odg, null);
+		
+		
+		
+		
+		
+	}
+	@Test
+	public void checkKartaVazecaVisednevna () {
+		
+		
+		LocalDate cd = LocalDate.now();
+		VisednevnaKarta karta= new VisednevnaKarta();
+		karta.setTipPrevoza(TipVozila.AUTOBUS);
+		karta.setKod("12345678");
+		karta.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		
+		
+		Linija linija= new Linija();
+		linija.setNaziv("linija1");
+		
+		Zona zona= new Zona();
+		zona.setNaziv("ZONA1");
+		ArrayList<LinijaUZoni> linije = new ArrayList<LinijaUZoni>();
+		LinijaUZoni linijaUZoni = new LinijaUZoni(1l, linija, zona, false);
+		linije.add(linijaUZoni);
+		
+		zona.setLinije(linije);
+		
+		karta.setZona(zona);
+		karta.setOdobrena(true);
+	
+		
+	
+		
+		when(kartaRep.findByKod("12345678")).thenReturn(Optional.ofNullable(karta));
+		
+		OdgovorDTO odg= kartaServ.checkKarta(TipVozila.AUTOBUS, "linija1", "12345678");
+		
+		assertEquals(odg.getOdgovor(), "Karta je vazeca");
+		
+		
+		
+		
+		
+	}
+	
+	@Test
+	public void checkKartaVisednevnaIstekla() {
+		
+		
+		
+		VisednevnaKarta karta= new VisednevnaKarta();
+		karta.setTipPrevoza(TipVozila.AUTOBUS);
+		karta.setKod("12345678");
+		karta.setDatumIsteka(Date.from(LocalDateTime.of(LocalDate.of(2000, 1, 1), LocalTime.of(23, 59, 59)).toInstant(ZoneOffset.UTC)));
+		
+		
+		Linija linija= new Linija();
+		linija.setNaziv("linija1");
+		
+		Zona zona= new Zona();
+		zona.setNaziv("ZONA1");
+		ArrayList<LinijaUZoni> linije = new ArrayList<LinijaUZoni>();
+		LinijaUZoni linijaUZoni = new LinijaUZoni(1l, linija, zona, false);
+		linije.add(linijaUZoni);
+		
+		zona.setLinije(linije);
+		
+		karta.setZona(zona);
+		karta.setOdobrena(true);
+	
+		
+	
+		
+		when(kartaRep.findByKod("12345678")).thenReturn(Optional.ofNullable(karta));
+		
+		OdgovorDTO odg= kartaServ.checkKarta(TipVozila.AUTOBUS, "linija1", "12345678");
+		
+		assertEquals(odg, null);
+		
+		
+		
+		
+		
+	}
+	@Test
+	public void verifyKartaNepostojeca() {
+		
+		when(kartaRep.findById(Matchers.anyLong())).thenReturn(Optional.ofNullable(null));
+		
+		OdgovorDTO odg= kartaServ.verifyKarta(1L, "");
+		
+		assertEquals(odg, null);
+		
+		
+		
+		
+		
+	}
+	@Test
+	public void verifyKartaOdobrena() {
+		
+		LocalDate cd = LocalDate.now();
+		
+		VisednevnaKarta karta= new VisednevnaKarta();
+		karta.setOdobrena(null);
+		karta.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		
+		when(kartaRep.findById(Matchers.anyLong())).thenReturn(Optional.of(karta));
+		
+		OdgovorDTO odg= kartaServ.verifyKarta(1L, "ODOBRENA");
+		
+		assertEquals(odg.getOdgovor(), "Karta je uspesno odobrena");
+		
+		
+		
+		
+		
+	}
+	@Test
+	public void verifyKartaOdbijena() {
+		
+		LocalDate cd = LocalDate.now();
+		
+		VisednevnaKarta karta= new VisednevnaKarta();
+		karta.setOdobrena(null);
+		karta.setDatumIsteka(Date.from(cd.with(lastDayOfYear()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		
+		when(kartaRep.findById(Matchers.anyLong())).thenReturn(Optional.of(karta));
+		
+		OdgovorDTO odg= kartaServ.verifyKarta(1L, "PONISTENA");
+		
+		assertEquals(odg.getOdgovor(), "Karta je uspesno ponistena");
+		
+		
+		
+		
+		
+	}
+	
+	
+	
 
 }

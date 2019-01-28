@@ -1,5 +1,6 @@
 package tim7.TIM7.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,12 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 public class Zona {
@@ -42,6 +38,7 @@ public class Zona {
 	
 	public Zona() {
 		super();
+		this.linije = new ArrayList<LinijaUZoni>();
 		this.obrisan= false;
 	}
 	
@@ -49,6 +46,7 @@ public class Zona {
 		super();
 		this.obrisan= obrisan;
 		this.naziv = naziv;
+		this.linije = new ArrayList<LinijaUZoni>();
 	}
 
 	public boolean isObrisan() {

@@ -33,27 +33,30 @@ public class StanicaController {
 	}*/
 	
 	@RequestMapping(path="/dodaj", method = RequestMethod.POST, consumes="application/json")
-	public ResponseEntity<Void> addNovaStanica(@RequestBody StanicaDTO newStation, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<StanicaDTO>> addNovaStanica(@RequestBody StanicaDTO newStation, @RequestHeader ("X-Auth-Token") String token){
 		if(stanicaService.addNewStation(newStation)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<StanicaDTO> retValue = stanicaService.getAllStations();
+			return new ResponseEntity<List<StanicaDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 	
 	@RequestMapping(path="/brisi/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteStanica(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<StanicaDTO>> deleteStanica(@PathVariable Long id, @RequestHeader ("X-Auth-Token") String token){
 		if(stanicaService.deleteStation(id)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<StanicaDTO> retValue = stanicaService.getAllStations();
+			return new ResponseEntity<List<StanicaDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 	
 	@RequestMapping(path="/mijenjaj", method = RequestMethod.PUT, consumes="application/json")
-	public ResponseEntity<Void> updateStanica(@RequestBody StanicaDTO updatedStation, @RequestHeader ("X-Auth-Token") String token){
+	public ResponseEntity<List<StanicaDTO>> updateStanica(@RequestBody StanicaDTO updatedStation, @RequestHeader ("X-Auth-Token") String token){
 		if(stanicaService.updateStation(updatedStation)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			List<StanicaDTO> retValue = stanicaService.getAllStations();
+			return new ResponseEntity<List<StanicaDTO>>(retValue, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}

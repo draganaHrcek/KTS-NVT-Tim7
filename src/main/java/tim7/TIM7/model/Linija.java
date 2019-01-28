@@ -9,13 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import javax.persistence.OneToOne;
 
 
 @Entity
@@ -34,16 +29,11 @@ public class Linija {
 	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List<Stavka> stavkeCenovnika;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "linije_u_zonama",
-    			
-               joinColumns = @JoinColumn(name="linija_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="zona_id", referencedColumnName="id"))
-	List<Zona> zone;
+	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	List<LinijaUZoni> zone;
 	
-	@ManyToMany(mappedBy="linije", fetch = FetchType.EAGER)
-	@Fetch(value = FetchMode.SUBSELECT)
-	List<Stanica> stanice;
+	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	List<StanicaULiniji> stanice;
 
 	@OneToMany(mappedBy = "linija", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	List <RasporedVoznje> rasporedVoznje;
@@ -103,20 +93,22 @@ public class Linija {
 		this.vozila = vozila;
 	}
 
-	public List<Zona> getZone() {
+	
+
+	public List<LinijaUZoni> getZone() {
 		return zone;
 	}
 
-	public void setZone(List<Zona> zone) {
-		this.zone = zone;
+	public void setZone(List<LinijaUZoni> zoneLinije) {
+		this.zone = zoneLinije;
 	}
 
-	public List<Stanica> getStanice() {
+	public List<StanicaULiniji> getStanice() {
 		return stanice;
 	}
 
-	public void setStanice(List<Stanica> stanice) {
-		this.stanice = stanice;
+	public void setStanice(List<StanicaULiniji> staniceLinije) {
+		this.stanice = staniceLinije;
 	}
 
 	public String getNaziv() {

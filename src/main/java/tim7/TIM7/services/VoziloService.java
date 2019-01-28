@@ -152,49 +152,4 @@ public class VoziloService {
 		}
 		return retValue;
 	}
-	/*
-	public boolean addVehicleToLine(Long lineId, Long vehicleId) {
-		Vozilo vehicle = findOne(vehicleId);
-		if(vehicle.getLinija()!=null) {
-			return false;
-		}
-		Linija line = null;
-		try {
-			line = linijaRepository.findById(lineId).get();
-		}catch(Exception e) {
-			return false;
-		}
-		
-		List<Vozilo> vehicles = line.getVozila();
-		vehicle.setLinija(line);
-		vehicles.add(vehicle);
-		line.setVozila(vehicles);
-		save(vehicle);
-		linijaRepository.save(line);
-		
-		return true;
-	}
-	
-	public boolean removeVehicleFromLine(Long id) {
-		Vozilo vehicle = findOne(id);
-		if(vehicle.getLinija()==null) {
-			return false;
-		}
-		
-		Linija line = null;
-		try {
-			line = linijaRepository.findById(vehicle.getLinija().getId()).get();
-		}catch(Exception e) {
-			return false;
-		}
-		vehicle.setLinija(null);
-		
-		List<Vozilo> vehicles = line.getVozila();
-		vehicles.remove(vehicle);
-		line.setVozila(vehicles);
-		
-		save(vehicle);
-		linijaRepository.save(line);
-		return true;
-	}*/
 }

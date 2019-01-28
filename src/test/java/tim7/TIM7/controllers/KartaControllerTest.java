@@ -48,6 +48,7 @@ import tim7.TIM7.services.ZonaService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@Transactional
 public class KartaControllerTest {
 
 	private static final String URL_PREFIX = "/karte";
@@ -165,7 +166,6 @@ public class KartaControllerTest {
 	}
 	
 	@Test
-	@Transactional
 	public void upesnaKupovinaKarte() throws Exception {
 		
 		Korisnik korisnik = new Korisnik();

@@ -1,16 +1,24 @@
 package tim7.TIM7.dto;
 
-public class KorisnikTokenDTO {
+public class UlogovanDTO {
 
 	String korIme;
 	String uloga;
-
+	String token ;
 	String ime;
 	String prezime;
 	String email;
 	String status;
 	
 	
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 
 	public String getStatus() {
 		return status;

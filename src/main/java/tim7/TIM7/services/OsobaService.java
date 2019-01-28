@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import tim7.TIM7.dto.KorisnikDTO;
-import tim7.TIM7.dto.KorisnikTokenDTO;
+import tim7.TIM7.dto.RegistracijaDTO;
+import tim7.TIM7.dto.UlogovanDTO;
 import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Karta;
 import tim7.TIM7.model.Kondukter;
@@ -47,9 +47,9 @@ public class OsobaService {
 		save(osoba);
 	}
 	
-	public KorisnikTokenDTO findUlogovanog(Osoba o) {
+	public UlogovanDTO findUlogovanog(Osoba o) {
 
-		KorisnikTokenDTO kor= new KorisnikTokenDTO();
+		UlogovanDTO kor= new UlogovanDTO();
 		kor.setKorIme(o.getKorIme());
 		kor.setEmail(o.getEmail());
 		kor.setIme(o.getIme());
@@ -76,7 +76,7 @@ public class OsobaService {
 		return kor;
 		
 	}
-	public void createNewUser(KorisnikDTO registracijaForma) {
+	public void createNewUser(RegistracijaDTO registracijaForma) {
 		
 		Korisnik noviKorisnik= new Korisnik();
 		

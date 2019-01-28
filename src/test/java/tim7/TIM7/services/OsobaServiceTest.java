@@ -28,8 +28,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import tim7.TIM7.dto.KorisnikDTO;
-import tim7.TIM7.dto.KorisnikTokenDTO;
+import tim7.TIM7.dto.RegistracijaDTO;
+import tim7.TIM7.dto.UlogovanDTO;
 import tim7.TIM7.model.Administrator;
 import tim7.TIM7.model.Kondukter;
 import tim7.TIM7.model.Korisnik;
@@ -213,7 +213,7 @@ public class OsobaServiceTest {
 	@Test
 	public void createNewUser ()  {
 		
-		 KorisnikDTO korDTO = new KorisnikDTO();
+		 RegistracijaDTO korDTO = new RegistracijaDTO();
 		 korDTO.setKorIme("dragana123");
 		 korDTO.setIme("Dragana");
 		 korDTO.setPrezime("Hrcek");
@@ -242,7 +242,7 @@ public class OsobaServiceTest {
 	@Test
 	public void findUlogovanogKorisnik ()  {
 		
-		KorisnikTokenDTO ulogovan = osobaServ.findUlogovanog(korisnik);
+		UlogovanDTO ulogovan = osobaServ.findUlogovanog(korisnik);
 		assertEquals(ulogovan.getKorIme() , "KorIme1");
 		assertEquals(ulogovan.getIme() , "Ime1");
 		assertEquals(ulogovan.getPrezime() , "Prezime1");
@@ -257,7 +257,7 @@ public class OsobaServiceTest {
 	@Test
 	public void findUlogovanogKorisnikBezStatusa ()  {
 		
-		KorisnikTokenDTO ulogovan = osobaServ.findUlogovanog(korisnikBezStatusa);
+		UlogovanDTO ulogovan = osobaServ.findUlogovanog(korisnikBezStatusa);
 		assertEquals(ulogovan.getKorIme() , "KorIme2");
 		assertEquals(ulogovan.getIme() , "Ime2");
 		assertEquals(ulogovan.getPrezime() , "Prezime2");
@@ -272,7 +272,7 @@ public class OsobaServiceTest {
 	@Test
 	public void findUlogovanogAdmin ()  {
 		
-		KorisnikTokenDTO ulogovan = osobaServ.findUlogovanog(admin);
+		UlogovanDTO ulogovan = osobaServ.findUlogovanog(admin);
 		assertEquals(ulogovan.getKorIme() , "Admin");
 		assertEquals(ulogovan.getIme() , "AdminIme");
 		assertEquals(ulogovan.getPrezime() , "AdminPrezime");
@@ -285,7 +285,7 @@ public class OsobaServiceTest {
 	@Test
 	public void findUlogovanogVerifikator()  {
 		
-		KorisnikTokenDTO ulogovan = osobaServ.findUlogovanog(verifikator);
+		UlogovanDTO ulogovan = osobaServ.findUlogovanog(verifikator);
 		assertEquals(ulogovan.getKorIme() , "Verifikator");
 		assertEquals(ulogovan.getIme() , "VerifikatorIme");
 		assertEquals(ulogovan.getPrezime() , "VerifikatorPrezime");
@@ -298,7 +298,7 @@ public class OsobaServiceTest {
 	@Test
 	public void findUlogovanogKondukter ()  {
 		
-		KorisnikTokenDTO ulogovan = osobaServ.findUlogovanog(kondukter);
+		UlogovanDTO ulogovan = osobaServ.findUlogovanog(kondukter);
 		assertEquals(ulogovan.getKorIme() , "Kondukter");
 		assertEquals(ulogovan.getIme() , "KondukterIme");
 		assertEquals(ulogovan.getPrezime() , "KondukterPrezime");

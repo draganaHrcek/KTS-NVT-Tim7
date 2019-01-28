@@ -1,5 +1,8 @@
 package tim7.TIM7.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,12 +54,34 @@ public class CenovnikController {
 		}
 	}
 	
+	@RequestMapping(path="", method=RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<CenovnikDTO> editCenovnik(
+			@RequestBody CenovnikDTO cenovnikDto,
+			@RequestHeader ("X-Auth-Token") String token){
+		
+		CenovnikDTO success = cenovnikService.editCenovnik(cenovnikDto);
+		if(success!=null){
+			System.out.println("vracam sta treba");
+			return new ResponseEntity<CenovnikDTO>(success, HttpStatus.OK);	
+		}
+		else{
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+	
 	@RequestMapping(value="/zaCenovnik", produces = "application/json" ,method = RequestMethod.GET)
 	public ResponseEntity<LinijeZoneTipovi> getLinije(@RequestHeader ("X-Auth-Token") String token ) {
 		
 		LinijeZoneTipovi response = cenovnikService.getSveZaCenovnik();
 		
 		return new ResponseEntity<LinijeZoneTipovi>(response, HttpStatus.OK);
+	
+	}
+	
+	@RequestMapping(value="/buduci", produces = "application/json" ,method = RequestMethod.GET)
+	public ResponseEntity<List<CenovnikDTO>> getBuduci(@RequestHeader ("X-Auth-Token") String token ) {	
+		ArrayList<CenovnikDTO> response = cenovnikService.getBuduci(); 
+		return new ResponseEntity<List<CenovnikDTO>>(response, HttpStatus.OK);
 	
 	}
 

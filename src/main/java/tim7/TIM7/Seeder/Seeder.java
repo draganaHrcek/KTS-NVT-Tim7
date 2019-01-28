@@ -100,17 +100,17 @@ public class Seeder {
 
 	@EventListener
 	public void seed(ContextRefreshedEvent event) {
-//		seedCenovnik();
-//		seedZona();
-//		seedLinija();
-//		connectZonaLinija();
-//		seedStavka();
-//		seedStavkaCenovnika();
-//		seedOsoba();
-//		seedIkija();
-//		seedZoneLinijeStaniceRedoviRasporediVoznje();
-//		seedKarte();
-//		seedOdobreneNeodobreneKarte();
+		seedCenovnik();
+		seedZona();
+		seedLinija();
+		connectZonaLinija();
+		seedStavka();
+		seedStavkaCenovnika();
+		seedOsoba();
+		seedIkija();
+		seedZoneLinijeStaniceRedoviRasporediVoznje();
+		seedKarte();
+		seedOdobreneNeodobreneKarte();
 		
 	}
 
@@ -210,8 +210,17 @@ public class Seeder {
 	public void seedStavkaCenovnika() {
 		int i = 0;
 		for (Stavka stavka : stavkaRepository.findAll()) {
-			Cenovnik cenovnik = cenovnikRepository.findAll().get(i%3);
-			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik, false));
+			Cenovnik cenovnik1 = cenovnikRepository.findAll().get(0);
+			Cenovnik cenovnik2 = cenovnikRepository.findAll().get(1);
+			Cenovnik cenovnik3 = cenovnikRepository.findAll().get(2);
+
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik1, false));
+			i++;
+			
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik2, false));
+			i++;
+			
+			stavkaCenovnikaRepository.save(new StavkaCenovnika(100 + i * 10, stavka, cenovnik3, false));
 			i++;
 		}
 
